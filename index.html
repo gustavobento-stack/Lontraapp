@@ -92,6 +92,12 @@
             z-index: 200; max-width: 88vw; text-align: center;
         }
         #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
+
+        /* Animação do Vinil rodando */
+        @keyframes spin-vinyl {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body class="antialiased">
@@ -295,7 +301,7 @@
 
                         <div class="relative z-10 text-center mt-4">
                             <h2 class="text-white font-black text-3xl leading-[1.1] mb-2 tracking-tight">
-                                Seu<br>Presente<br><span class="text-[#cba4f1]">Wrapped</span>
+                                Seu<br>Presente<br><span class="text-[#cba4f1]">Especial</span>
                             </h2>
                             <p class="text-white/50 font-medium text-[10px] uppercase tracking-widest mt-2">Explore o seu tempo juntos</p>
                         </div>
@@ -464,9 +470,9 @@
                             <p class="text-[#8a8a9e] font-medium text-[14px] leading-relaxed mb-6">
                                 Seu presente vai para a nuvem imediatamente. Para sempre online, acessível de qualquer lugar do mundo.
                             </p>
-                            <!-- Placeholder Decorativo -->
-                            <div class="mt-auto flex justify-center pb-2 group-hover:scale-105 transition-transform duration-300">
-                                <img src="https://em-content.zobj.net/source/animated-noto-color-emoji/461/otter_1f9a6.gif" alt="Otter" class="w-20 h-20 opacity-40 grayscale group-hover:grayscale-0 group-hover:opacity-100 transition-all">
+                            <!-- Imagem Atualizada -->
+                            <div class="mt-auto flex justify-center pb-2">
+                                <img src="https://i.imgur.com/QzBdzGI.png" alt="Para sempre no ar" class="h-32 w-auto object-contain group-hover:scale-105 transition-transform duration-300">
                             </div>
                         </div>
 
@@ -483,8 +489,9 @@
                             <p class="text-[#8a8a9e] font-medium text-[14px] leading-relaxed mb-6">
                                 Escolha fotos, músicas, mensagens e datas importantes. Cada detalhe pensado para emocionar!
                             </p>
-                            <div class="mt-auto flex justify-center pb-2 group-hover:scale-105 transition-transform duration-300">
-                                <img src="https://em-content.zobj.net/source/animated-noto-color-emoji/461/otter_1f9a6.gif" alt="Otter" class="w-20 h-20 opacity-40 grayscale group-hover:grayscale-0 group-hover:opacity-100 transition-all">
+                            <!-- Imagem Atualizada -->
+                            <div class="mt-auto flex justify-center pb-2">
+                                <img src="https://i.imgur.com/S8FOeUH.png" alt="100% personalizável" class="h-32 w-auto object-contain group-hover:scale-105 transition-transform duration-300">
                             </div>
                         </div>
 
@@ -503,30 +510,80 @@
                         <p class="text-[#8a8a9e] font-medium text-[14px] leading-relaxed mb-6 relative z-20 max-w-lg">
                             O presente digital que faz quem você ama sentir o quanto é especial. Reúna todas as melhores memórias.
                         </p>
-
-                        <div class="mt-auto flex justify-center pb-2 group-hover:scale-105 transition-transform duration-300">
-                            <img src="https://em-content.zobj.net/source/animated-noto-color-emoji/461/otter_1f9a6.gif" alt="Otter" class="w-24 h-24 opacity-40 grayscale group-hover:grayscale-0 group-hover:opacity-100 transition-all">
+                        <!-- Imagem Atualizada -->
+                        <div class="mt-auto flex justify-center pb-2">
+                            <img src="https://i.imgur.com/IlRUIKq.png" alt="Relembre seus melhores momentos" class="h-40 w-auto object-contain group-hover:scale-105 transition-transform duration-300">
                         </div>
                     </div>
 
                 </div>
 
-                <!-- Grupo da Direita (Card Vertical sem mockup) -->
+                <!-- Grupo da Direita (Card Vertical com Animação da Vitrola) -->
                 <div class="reveal delay-300 group bg-white border-2 border-gray-100 rounded-[24px] shadow-[0_4px_0_0_#f1f1f5] p-8 flex flex-col relative overflow-hidden lg:h-full hover:border-[#a874e4] hover:bg-[#fdfaff] hover:shadow-[0_4px_0_0_#dcc3f5] transition-all duration-300 cursor-default">
                     <div class="flex items-center gap-4 mb-4 relative z-20">
                         <div class="w-12 h-12 bg-[#f8f5ff] border-2 border-gray-100 rounded-[16px] flex items-center justify-center text-[#a874e4] shrink-0 group-hover:-translate-y-1 group-hover:border-[#dcc3f5] transition-all">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
+                                <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/>
                             </svg>
                         </div>
-                        <h3 class="text-[20px] font-bold text-[#4a4a5f] leading-tight">Retrospectiva única</h3>
+                        <h3 class="text-[20px] font-bold text-[#4a4a5f] leading-tight">Trilha sonora especial</h3>
                     </div>
                     <p class="text-[#8a8a9e] font-medium text-[14px] leading-relaxed mb-8 relative z-20">
-                        Uma retrospectiva animada no estilo "Wrapped" para relembrar os melhores momentos dessa história especial de forma interativa.
+                        Escolha a música que marcou a história de vocês. Uma vitrola digital tocará a sua canção enquanto as memórias passam na tela.
                     </p>
 
-                    <div class="mt-auto flex justify-center pb-2 group-hover:scale-105 transition-transform duration-300">
-                        <img src="https://em-content.zobj.net/source/animated-noto-color-emoji/461/otter_1f9a6.gif" alt="Otter" class="w-32 h-32 opacity-40 grayscale group-hover:grayscale-0 group-hover:opacity-100 transition-all">
+                    <!-- Ilustração da Vitrola (Top Down CSS) -->
+                    <div class="mt-auto flex justify-center pb-2">
+                        <!-- Container principal da vitrola -->
+                        <div class="relative w-48 h-36 bg-[#f0e6da] border-4 border-[#e2d5c5] rounded-xl shadow-lg flex items-center justify-center overflow-hidden transition-all duration-300 group-hover:shadow-xl group-hover:-translate-y-1">
+                            
+                            <!-- Prato Giratório (Turntable base) -->
+                            <div class="absolute left-4 w-28 h-28 bg-[#d8ccc0] rounded-full flex items-center justify-center border-2 border-[#cfc1b4]">
+                                
+                                <!-- Disco de Vinil Animado -->
+                                <div class="w-26 h-26 bg-gradient-to-br from-[#2a2a2a] to-[#111] rounded-full shadow-[0_2px_10px_rgba(0,0,0,0.5)] flex items-center justify-center transition-all duration-500 group-hover:rotate-[360deg]" style="animation: spin-vinyl 4s linear infinite; animation-play-state: paused;">
+                                    <!-- Inicia a animação de girar o disco ao fazer o hover no card todo (o css em style injeta na hora do JS ou puro CSS) -->
+                                    <style>
+                                        .group:hover .group-hover\:rotate-\[360deg\] {
+                                            animation-play-state: running !important;
+                                        }
+                                    </style>
+                                    
+                                    <!-- Ranhuras do vinil (Grooves) -->
+                                    <div class="absolute w-22 h-22 rounded-full border border-gray-600/30"></div>
+                                    <div class="absolute w-18 h-18 rounded-full border border-gray-600/30"></div>
+                                    <div class="absolute w-14 h-14 rounded-full border border-gray-600/30"></div>
+                                    
+                                    <!-- Rótulo Central (Label) -->
+                                    <div class="w-8 h-8 bg-gradient-to-tr from-[#a874e4] to-[#cba4f1] rounded-full flex items-center justify-center shadow-inner">
+                                        <div class="w-1.5 h-1.5 bg-gray-200 rounded-full shadow-sm"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Braço da Vitrola (Tonearm) -->
+                            <div class="absolute right-6 top-6 w-8 h-24 origin-top transition-transform duration-500 group-hover:rotate-12">
+                                <!-- Base do braço -->
+                                <div class="absolute top-0 left-1/2 -translate-x-1/2 w-6 h-6 bg-[#b8b8c4] rounded-full border border-gray-300 shadow-sm flex items-center justify-center z-20">
+                                    <div class="w-2 h-2 bg-gray-600 rounded-full"></div>
+                                </div>
+                                <!-- Haste do braço -->
+                                <div class="absolute top-3 left-1/2 -translate-x-1/2 w-1.5 h-16 bg-gradient-to-b from-gray-300 to-gray-400 rounded-full z-10 shadow-sm"></div>
+                                <!-- Agulha (Stylus) -->
+                                <div class="absolute bottom-2 left-1/2 -translate-x-[70%] w-3 h-5 bg-gray-700 rounded-sm transform rotate-[25deg] z-20 shadow-md"></div>
+                            </div>
+                            
+                            <!-- Botões de controle decorativos -->
+                            <div class="absolute bottom-4 right-4 flex gap-1">
+                                <div class="w-3 h-3 rounded-full bg-red-400 border border-red-500/50 shadow-inner group-hover:bg-red-500 transition-colors"></div>
+                                <div class="w-3 h-3 rounded-full bg-gray-400 border border-gray-500/50 shadow-inner"></div>
+                            </div>
+
+                            <!-- Notas Musicais Saindo (Efeito Animado) -->
+                            <svg class="absolute top-4 left-8 w-4 h-4 text-[#a874e4] opacity-0 group-hover:opacity-100 transition-opacity duration-300 -translate-y-2 group-hover:-translate-y-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+                            <svg class="absolute top-8 left-4 w-3 h-3 text-[#cba4f1] opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100 -translate-y-2 group-hover:-translate-y-8 translate-x-2 group-hover:-translate-x-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+
+                        </div>
                     </div>
                 </div>
 
@@ -954,10 +1011,10 @@
             <div class="flex flex-col gap-5">
                 
                 <!-- Pergunta 1 -->
-                <div class="reveal delay-100 bg-white border-2 border-gray-100 rounded-[20px] shadow-[0_4px_0_0_#f1f1f5] overflow-hidden transition-all duration-300">
+                <div class="faq-item reveal delay-100 bg-white border-2 border-gray-100 rounded-[20px] shadow-[0_4px_0_0_#f1f1f5] overflow-hidden transition-all duration-300">
                     <button class="accordion-btn w-full flex justify-between items-center p-5 md:p-6 text-left focus:outline-none hover:bg-gray-50 transition-colors" aria-expanded="false">
                         <span class="text-[#5b4a78] font-bold text-[15px] md:text-[16px]">Para quem posso criar um presente?</span>
-                        <div class="w-8 h-8 rounded-full bg-[#f8f5ff] flex items-center justify-center shrink-0">
+                        <div class="icon-container w-8 h-8 rounded-full bg-[#f8f5ff] flex items-center justify-center shrink-0">
                             <svg class="chevron transition-transform duration-300 text-[#a874e4]" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                                 <polyline points="6 9 12 15 18 9"></polyline>
                             </svg>
@@ -971,10 +1028,10 @@
                 </div>
 
                 <!-- Pergunta 2 -->
-                <div class="reveal delay-100 bg-white border-2 border-gray-100 rounded-[20px] shadow-[0_4px_0_0_#f1f1f5] overflow-hidden transition-all duration-300">
+                <div class="faq-item reveal delay-100 bg-white border-2 border-gray-100 rounded-[20px] shadow-[0_4px_0_0_#f1f1f5] overflow-hidden transition-all duration-300">
                     <button class="accordion-btn w-full flex justify-between items-center p-5 md:p-6 text-left focus:outline-none hover:bg-gray-50 transition-colors" aria-expanded="false">
                         <span class="text-[#5b4a78] font-bold text-[15px] md:text-[16px]">Como funciona? Preciso saber editar?</span>
-                        <div class="w-8 h-8 rounded-full bg-[#f8f5ff] flex items-center justify-center shrink-0">
+                        <div class="icon-container w-8 h-8 rounded-full bg-[#f8f5ff] flex items-center justify-center shrink-0">
                             <svg class="chevron transition-transform duration-300 text-[#a874e4]" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                                 <polyline points="6 9 12 15 18 9"></polyline>
                             </svg>
@@ -988,10 +1045,10 @@
                 </div>
 
                 <!-- Pergunta 3 -->
-                <div class="reveal delay-200 bg-white border-2 border-gray-100 rounded-[20px] shadow-[0_4px_0_0_#f1f1f5] overflow-hidden transition-all duration-300">
+                <div class="faq-item reveal delay-200 bg-white border-2 border-gray-100 rounded-[20px] shadow-[0_4px_0_0_#f1f1f5] overflow-hidden transition-all duration-300">
                     <button class="accordion-btn w-full flex justify-between items-center p-5 md:p-6 text-left focus:outline-none hover:bg-gray-50 transition-colors" aria-expanded="false">
                         <span class="text-[#5b4a78] font-bold text-[15px] md:text-[16px]">O site fica no ar para sempre?</span>
-                        <div class="w-8 h-8 rounded-full bg-[#f8f5ff] flex items-center justify-center shrink-0">
+                        <div class="icon-container w-8 h-8 rounded-full bg-[#f8f5ff] flex items-center justify-center shrink-0">
                             <svg class="chevron transition-transform duration-300 text-[#a874e4]" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                                 <polyline points="6 9 12 15 18 9"></polyline>
                             </svg>
@@ -1005,10 +1062,10 @@
                 </div>
 
                 <!-- Pergunta 4 -->
-                <div class="reveal delay-200 bg-white border-2 border-gray-100 rounded-[20px] shadow-[0_4px_0_0_#f1f1f5] overflow-hidden transition-all duration-300">
+                <div class="faq-item reveal delay-200 bg-white border-2 border-gray-100 rounded-[20px] shadow-[0_4px_0_0_#f1f1f5] overflow-hidden transition-all duration-300">
                     <button class="accordion-btn w-full flex justify-between items-center p-5 md:p-6 text-left focus:outline-none hover:bg-gray-50 transition-colors" aria-expanded="false">
                         <span class="text-[#5b4a78] font-bold text-[15px] md:text-[16px]">Como entrego a surpresa?</span>
-                        <div class="w-8 h-8 rounded-full bg-[#f8f5ff] flex items-center justify-center shrink-0">
+                        <div class="icon-container w-8 h-8 rounded-full bg-[#f8f5ff] flex items-center justify-center shrink-0">
                             <svg class="chevron transition-transform duration-300 text-[#a874e4]" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                                 <polyline points="6 9 12 15 18 9"></polyline>
                             </svg>
@@ -1113,46 +1170,60 @@
             }
             typeWriter();
 
-            // --- 2. Lógica do Acordeão (FAQ) ---
-            const accordions = document.querySelectorAll(".accordion-btn");
+            // --- 2. Lógica do Acordeão (FAQ) Melhorada e Simples ---
+            const faqItems = document.querySelectorAll('.faq-item');
 
-            accordions.forEach(acc => {
-                acc.addEventListener("click", function() {
-                    const isExpanded = this.getAttribute("aria-expanded") === "true";
-                    this.setAttribute("aria-expanded", !isExpanded);
-                    
-                    const content = this.nextElementSibling;
-                    const chevron = this.querySelector('.chevron');
+            faqItems.forEach(item => {
+                const btn = item.querySelector('.accordion-btn');
+                const content = item.querySelector('.accordion-content');
+                const chevron = item.querySelector('.chevron');
+                const iconContainer = item.querySelector('.icon-container');
 
-                    // Fechar todos os outros acordeões
-                    accordions.forEach(otherAcc => {
-                        if (otherAcc !== acc) {
-                            otherAcc.setAttribute("aria-expanded", "false");
-                            otherAcc.nextElementSibling.style.maxHeight = null;
-                            otherAcc.querySelector('.chevron').style.transform = "rotate(0deg)";
+                btn.addEventListener('click', () => {
+                    const isOpen = btn.getAttribute('aria-expanded') === 'true';
+
+                    // 1. Fechar todos os outros abertos
+                    faqItems.forEach(otherItem => {
+                        if (otherItem !== item) {
+                            const otherBtn = otherItem.querySelector('.accordion-btn');
+                            const otherContent = otherItem.querySelector('.accordion-content');
+                            const otherChevron = otherItem.querySelector('.chevron');
+                            const otherIconContainer = otherItem.querySelector('.icon-container');
+
+                            otherBtn.setAttribute('aria-expanded', 'false');
+                            otherContent.style.maxHeight = null;
+                            otherChevron.style.transform = "rotate(0deg)";
                             
-                            // Reset classes
-                            otherAcc.parentElement.classList.remove("border-[#a874e4]", "shadow-[0_4px_0_0_#dcc3f5]");
-                            otherAcc.parentElement.classList.add("border-gray-100", "shadow-[0_4px_0_0_#f1f1f5]");
-                            otherAcc.querySelector('.bg-[#f8f5ff]')?.classList.remove('bg-[#a874e4]');
-                            otherAcc.querySelector('.text-[#a874e4]')?.classList.replace('text-white', 'text-[#a874e4]');
+                            // Cores de fechado
+                            otherItem.classList.remove("border-[#a874e4]", "shadow-[0_4px_0_0_#dcc3f5]");
+                            otherItem.classList.add("border-gray-100", "shadow-[0_4px_0_0_#f1f1f5]");
+                            otherIconContainer.classList.replace('bg-[#a874e4]', 'bg-[#f8f5ff]');
+                            otherChevron.classList.replace('text-white', 'text-[#a874e4]');
                         }
                     });
 
-                    // Abrir ou fechar o clicado
-                    if (content.style.maxHeight) {
+                    // 2. Alternar o clicado
+                    if (isOpen) {
+                        // Fechar
+                        btn.setAttribute('aria-expanded', 'false');
                         content.style.maxHeight = null;
                         chevron.style.transform = "rotate(0deg)";
-                        this.parentElement.classList.remove("border-[#a874e4]", "shadow-[0_4px_0_0_#dcc3f5]");
-                        this.parentElement.classList.add("border-gray-100", "shadow-[0_4px_0_0_#f1f1f5]");
-                        this.querySelector('.bg-[#a874e4]')?.classList.replace('bg-[#a874e4]', 'bg-[#f8f5ff]');
+                        
+                        // Cores de fechado
+                        item.classList.remove("border-[#a874e4]", "shadow-[0_4px_0_0_#dcc3f5]");
+                        item.classList.add("border-gray-100", "shadow-[0_4px_0_0_#f1f1f5]");
+                        iconContainer.classList.replace('bg-[#a874e4]', 'bg-[#f8f5ff]');
                         chevron.classList.replace('text-white', 'text-[#a874e4]');
                     } else {
+                        // Abrir
+                        btn.setAttribute('aria-expanded', 'true');
                         content.style.maxHeight = content.scrollHeight + "px";
                         chevron.style.transform = "rotate(180deg)";
-                        this.parentElement.classList.remove("border-gray-100", "shadow-[0_4px_0_0_#f1f1f5]");
-                        this.parentElement.classList.add("border-[#a874e4]", "shadow-[0_4px_0_0_#dcc3f5]");
-                        this.querySelector('.bg-[#f8f5ff]')?.classList.replace('bg-[#f8f5ff]', 'bg-[#a874e4]');
+                        
+                        // Cores de aberto
+                        item.classList.remove("border-gray-100", "shadow-[0_4px_0_0_#f1f1f5]");
+                        item.classList.add("border-[#a874e4]", "shadow-[0_4px_0_0_#dcc3f5]");
+                        iconContainer.classList.replace('bg-[#f8f5ff]', 'bg-[#a874e4]');
                         chevron.classList.replace('text-[#a874e4]', 'text-white');
                     }
                 });
