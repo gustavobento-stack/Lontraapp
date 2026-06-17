@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Palavra Secreta</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap');
+
+        body {
+            background-color: #050208;
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Poppins', system-ui, -apple-system, sans-serif;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Efeitos de Fundo Espacial */
+        @keyframes pulse-glow {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+            50% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
+        }
+        .ambient-light-1 { animation: pulse-glow 8s ease-in-out infinite; }
+        .ambient-light-2 { animation: pulse-glow 12s ease-in-out infinite reverse; }
+
+        #game-board {
+            display: grid;
+            gap: 6px;
+            margin: 0 auto;
+            max-width: 400px;
+            padding: 10px;
+            justify-content: center;
+        }
+
+        .tile {
+            width: 100%;
+            aspect-ratio: 1/1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 800;
+            color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.08);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 6px;
+            text-transform: uppercase;
+            transition: transform 0.15s ease, border-color 0.2s, background-color 0.2s;
+        }
+
+        /* Animação quando digita uma letra */
+        .tile[data-state="filled"] {
+            border-color: #dcc3f5;
+            background-color: rgba(255, 255, 255, 0.15);
+            animation: popIn 0.15s ease-in-out;
+            box-shadow: 0 0 10px rgba(220, 195, 245, 0.3);
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.8); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .tile.reveal {
+            animation: flipIn 0.6s ease-in-out forwards;
+        }
+
+        @keyframes flipIn {
+            0% { transform: rotateX(0); }
+            50% { transform: rotateX(90deg); }
+            100% { transform: rotateX(0); }
+        }
+
+        /* Cores de status após o enter */
+        .tile[data-status="correct"] {
+            background-color: #25D366; /* Verde suave */
+            border-color: #25D366;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+        }
+
+        .tile[data-status="present"] {
+            background-color: #FBBF24; /* Amarelo/Dourado */
+            border-color: #FBBF24;
+            box-shadow: 0 4px 15px rgba(251, 191, 36, 0.4);
+        }
+
+        .tile[data-status="absent"] {
+            background-color: #312e42; /* Cinza escuro */
+            border-color: #312e42;
+            color: #8a8a9e;
+        }
+
+        /* Efeito de Erro (Palavra não existe / incompleta) */
+        .shake {
+            animation: shake 0.4s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+
+        #keyboard {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 0 8px;
+        }
+
+        .keyboard-row {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .key {
+            flex: 1;
+            height: 50px;
+            max-width: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-bottom: 3px solid rgba(0,0,0,0.3);
+        }
+        
+        .key:active {
+            transform: translateY(2px);
+            border-bottom-width: 1px;
+        }
+
+        .key.wide {
+            flex: 1.5;
+            max-width: 65px;
+            font-size: 12px;
+        }
+
+        @media (max-width: 400px) {
+            .key { height: 44px; font-size: 11px; max-width: 32px; }
+            .key.wide { max-width: 50px; }
+            .tile { font-size: 1.5rem; border-radius: 4px; }
+            #game-board { gap: 4px; padding: 4px; }
+        }
+
+        /* Cores do teclado */
+        .key[data-status="correct"] { background-color: #25D366; border-bottom-color: #1a9e4b; }
+        .key[data-status="present"] { background-color: #FBBF24; border-bottom-color: #c4941b; }
+        .key[data-status="absent"] { background-color: #312e42; border-bottom-color: #1a1824; color: #8a8a9e; }
+
+        #toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            background-color: #fff;
+            color: #4a4a5f;
+            padding: 12px 24px;
+            border-radius: 16px;
+            font-weight: 700;
+            font-size: 14px;
+            box-shadow: 0 8px 0 0 #dcc3f5;
+            border: 2px solid #dcc3f5;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 100;
+        }
+        #toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .modal-overlay {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .modal-content {
+            transform: scale(0.8);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+
+    </style>
+</head>
+<body class="h-[100dvh] flex flex-col relative">
+
+    <!-- Fundo Espacial -->
+    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <div class="ambient-light-1 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] h-[90vw] max-w-[800px] max-h-[800px] bg-purple-900/20 blur-[120px] rounded-full"></div>
+        <div class="ambient-light-2 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60vw] h-[60vw] max-w-[500px] max-h-[500px] bg-pink-600/10 blur-[100px] rounded-full"></div>
+    </div>
+
+    <!-- Toast de Mensagens -->
+    <div id="toast">Mensagem de erro aqui</div>
+
+    <!-- Cabeçalho -->
+    <div class="relative z-20 w-full p-4 flex justify-between items-center max-w-lg mx-auto shrink-0">
+        <div>
+            <h1 class="text-xl md:text-2xl font-black tracking-tight text-white leading-none">
+                Palavra Secreta
+            </h1>
+            <p class="text-[11px] text-[#dcc3f5] font-medium mt-1">Palavra <span id="wordCounter">1</span> de 5</p>
+        </div>
+        
+        <!-- Botão de Dica -->
+        <button onclick="showHint()" class="bg-[#f8f5ff] text-[#a874e4] px-4 py-2 rounded-[16px] border-2 border-[#dcc3f5] shadow-[0_4px_0_0_#dcc3f5] font-bold text-xs flex items-center gap-2 hover:bg-white active:translate-y-1 active:shadow-none transition-all">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2v1"/><path d="M12 7a5 5 0 0 0-5 5c0 2 1.5 3 2 5h6c.5-2 2-3 2-5a5 5 0 0 0-5-5Z"/></svg>
+            Dica
+        </button>
+    </div>
+
+    <!-- Área do Tabuleiro -->
+    <div class="relative z-20 flex-grow flex flex-col items-center justify-center w-full min-h-0">
+        <div id="game-board">
+            <!-- Tiles gerados pelo JS -->
+        </div>
+    </div>
+
+    <!-- Área do Teclado -->
+    <div class="relative z-20 w-full pb-6 pt-2 shrink-0">
+        <div id="keyboard">
+            <!-- Linha 1 -->
+            <div class="keyboard-row">
+                <div class="key" data-key="Q">Q</div>
+                <div class="key" data-key="W">W</div>
+                <div class="key" data-key="E">E</div>
+                <div class="key" data-key="R">R</div>
+                <div class="key" data-key="T">T</div>
+                <div class="key" data-key="Y">Y</div>
+                <div class="key" data-key="U">U</div>
+                <div class="key" data-key="I">I</div>
+                <div class="key" data-key="O">O</div>
+                <div class="key" data-key="P">P</div>
+            </div>
+            <!-- Linha 2 -->
+            <div class="keyboard-row">
+                <div class="key" data-key="A">A</div>
+                <div class="key" data-key="S">S</div>
+                <div class="key" data-key="D">D</div>
+                <div class="key" data-key="F">F</div>
+                <div class="key" data-key="G">G</div>
+                <div class="key" data-key="H">H</div>
+                <div class="key" data-key="J">J</div>
+                <div class="key" data-key="K">K</div>
+                <div class="key" data-key="L">L</div>
+            </div>
+            <!-- Linha 3 -->
+            <div class="keyboard-row">
+                <div class="key wide" data-key="ENTER">ENTER</div>
+                <div class="key" data-key="Z">Z</div>
+                <div class="key" data-key="X">X</div>
+                <div class="key" data-key="C">C</div>
+                <div class="key" data-key="V">V</div>
+                <div class="key" data-key="B">B</div>
+                <div class="key" data-key="N">N</div>
+                <div class="key" data-key="M">M</div>
+                <div class="key wide" data-key="BACKSPACE">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/><path d="m18 9-6 6"/><path d="m12 9 6 6"/></svg>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Rodapé -->
+        <div class="w-full flex justify-center mt-4">
+            <a href="jogos.html" class="pointer-events-auto text-[10px] font-semibold text-[#b4b4c4] bg-black/40 px-4 py-1 rounded-full backdrop-blur-md border border-white/10 hover:text-white transition-colors">
+                Criado com <span class="text-[#a874e4] font-bold">Lontra</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Modal de Dica -->
+    <div id="hintModal" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center bg-black/80 px-4">
+        <div class="modal-content w-full max-w-sm bg-white border-2 border-[#dcc3f5] rounded-[32px] shadow-[0_8px_0_0_#dcc3f5] p-6 text-center relative overflow-hidden">
+            <div class="w-16 h-16 bg-[#f8f5ff] rounded-full flex items-center justify-center text-[#a874e4] mb-4 shadow-inner border-2 border-[#dcc3f5] mx-auto">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2v1"/><path d="M12 7a5 5 0 0 0-5 5c0 2 1.5 3 2 5h6c.5-2 2-3 2-5a5 5 0 0 0-5-5Z"/></svg>
+            </div>
+            <h2 class="text-[#4a4a5f] font-black text-xl mb-2">Dica Especial</h2>
+            <p id="hintText" class="text-[#8a8a9e] font-medium text-sm mb-6 pb-2">Aqui vai a dica.</p>
+            <button onclick="closeModals()" class="w-full bg-white border-2 border-gray-200 text-[#4a4a5f] font-bold text-[14px] py-3 rounded-[20px] hover:border-[#a874e4] hover:bg-[#f8f5ff] hover:text-[#a874e4] shadow-[0_4px_0_0_#f1f1f5] active:translate-y-1 active:shadow-none transition-all">
+                Voltar ao Jogo
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal de Resultado (Acertou uma palavra) -->
+    <div id="resultModal" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center bg-black/80 px-4">
+        <div class="modal-content w-full max-w-sm bg-white border-2 border-[#dcc3f5] rounded-[32px] shadow-[0_8px_0_0_#dcc3f5] p-6 text-center relative overflow-hidden">
+            <div id="resultIcon" class="w-20 h-20 bg-[#f8f5ff] rounded-full flex items-center justify-center text-4xl mb-4 shadow-inner border-2 border-[#dcc3f5] mx-auto">
+                🎉
+            </div>
+            <h2 id="resultTitle" class="text-[#4a4a5f] font-black text-2xl leading-tight mb-2">Muito Bem!</h2>
+            <p id="resultDesc" class="text-[#8a8a9e] font-medium text-sm mb-6">A palavra era <span id="correctWordDisplay" class="font-black text-[#a874e4] uppercase">AMOR</span>.</p>
+            
+            <button id="nextWordBtn" onclick="nextWord()" class="w-full bg-[#a874e4] text-white font-bold text-[15px] py-4 rounded-[20px] shadow-[0_4px_0_0_#8b5bc4] hover:bg-[#9760d6] active:translate-y-1 active:shadow-none transition-all flex items-center justify-center gap-2">
+                Próxima Palavra
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Configuração das 5 Palavras Românticas
+        const wordsList = [
+            { answer: "BEIJO", hint: "O que eu mais gosto de te dar quando nos encontramos." },
+            { answer: "FUTURO", hint: "O lugar onde eu quero construir uma vida ao seu lado." },
+            { answer: "ABRACO", hint: "O melhor lugar do mundo para se estar (dica: sem 'Ç')." },
+            { answer: "VIAGEM", hint: "Nosso passatempo favorito para colecionar memórias." },
+            { answer: "AMOR", hint: "O sentimento mais forte que eu tenho por você." }
+        ];
+
+        let currentWordIndex = 0;
+        const maxAttempts = 5; // 5 Vidas
+        let currentAttempt = 0;
+        let currentGuess = [];
+        let isGameOver = false;
+        let isAnimating = false;
+
+        const board = document.getElementById('game-board');
+        const keyboard = document.getElementById('keyboard');
+        const toast = document.getElementById('toast');
+        const wordCounterDisplay = document.getElementById('wordCounter');
+
+        // Inicializa o jogo para a palavra atual
+        function initGame() {
+            const wordData = wordsList[currentWordIndex];
+            const wordLength = wordData.answer.length;
+
+            wordCounterDisplay.innerText = currentWordIndex + 1;
+            
+            // Reseta variáveis
+            currentAttempt = 0;
+            currentGuess = [];
+            isGameOver = false;
+            isAnimating = false;
+
+            // Limpa o teclado
+            document.querySelectorAll('.key').forEach(key => {
+                key.removeAttribute('data-status');
+            });
+
+            // Constrói o grid dinamicamente baseado no tamanho da palavra
+            board.innerHTML = '';
+            board.style.gridTemplateColumns = `repeat(${wordLength}, minmax(40px, 65px))`;
+            
+            for (let i = 0; i < maxAttempts * wordLength; i++) {
+                const tile = document.createElement('div');
+                tile.classList.add('tile');
+                tile.setAttribute('id', `tile-${i}`);
+                board.appendChild(tile);
+            }
+        }
+
+        // Exibe mensagem no topo
+        function showMessage(msg) {
+            toast.innerText = msg;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2000);
+        }
+
+        // Modais
+        function showHint() {
+            document.getElementById('hintText').innerText = wordsList[currentWordIndex].hint;
+            document.getElementById('hintModal').classList.add('active');
+        }
+
+        function closeModals() {
+            document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('active'));
+        }
+
+        function showResultModal(isWin) {
+            setTimeout(() => {
+                document.getElementById('resultModal').classList.add('active');
+                const title = document.getElementById('resultTitle');
+                const desc = document.getElementById('resultDesc');
+                const icon = document.getElementById('resultIcon');
+                const btn = document.getElementById('nextWordBtn');
+
+                document.getElementById('correctWordDisplay').innerText = wordsList[currentWordIndex].answer;
+
+                if (isWin) {
+                    title.innerText = "Perfeito! 🥰";
+                    desc.innerHTML = `Você descobriu: <span class="font-black text-[#a874e4] uppercase">${wordsList[currentWordIndex].answer}</span>.`;
+                    icon.innerText = "✨";
+                } else {
+                    title.innerText = "Puxa... 💔";
+                    desc.innerHTML = `A palavra secreta era: <span class="font-black text-[#a874e4] uppercase">${wordsList[currentWordIndex].answer}</span>.`;
+                    icon.innerText = "🥺";
+                }
+
+                if (currentWordIndex === wordsList.length - 1) {
+                    btn.innerText = "Finalizar Surpresa";
+                    btn.onclick = finishGame;
+                } else {
+                    btn.innerText = "Próxima Palavra";
+                    btn.onclick = nextWord;
+                }
+            }, 1500); // Espera a animação das cartas virarem
+        }
+
+        function nextWord() {
+            closeModals();
+            currentWordIndex++;
+            setTimeout(initGame, 300);
+        }
+
+        function finishGame() {
+            closeModals();
+            // Ao finalizar todas as palavras
+            setTimeout(() => {
+                board.innerHTML = `<div class="col-span-full text-center p-8 bg-white/10 backdrop-blur-md rounded-[24px] border border-white/20">
+                    <div class="text-5xl mb-4 animate-bounce">💖</div>
+                    <h2 class="text-xl font-black text-white mb-2">Você completou o jogo!</h2>
+                    <p class="text-sm text-[#dcc3f5]">Espero que tenha gostado de relembrar essas coisas.</p>
+                </div>`;
+                document.querySelector('.bg-\\[\\#f8f5ff\\]').style.display = 'none'; // Esconde botão de dica
+                keyboard.style.display = 'none'; // Esconde teclado
+                wordCounterDisplay.parentElement.innerHTML = '<h1 class="text-2xl font-black tracking-tight text-white leading-none">Te amo <span class="text-[#a874e4]">demais!</span></h1>';
+            }, 300);
+        }
+
+        // Interação com o teclado virtual e físico
+        function handleKey(key) {
+            if (isGameOver || isAnimating) return;
+            const wordLength = wordsList[currentWordIndex].answer.length;
+
+            if (key === 'ENTER') {
+                if (currentGuess.length !== wordLength) {
+                    showMessage('Palavra incompleta!');
+                    shakeCurrentRow();
+                    return;
+                }
+                submitGuess();
+            } else if (key === 'BACKSPACE') {
+                if (currentGuess.length > 0) {
+                    currentGuess.pop();
+                    updateGrid();
+                }
+            } else if (/^[A-Z]$/.test(key)) {
+                if (currentGuess.length < wordLength) {
+                    currentGuess.push(key);
+                    updateGrid();
+                }
+            }
+        }
+
+        function updateGrid() {
+            const wordLength = wordsList[currentWordIndex].answer.length;
+            const startIndex = currentAttempt * wordLength;
+
+            for (let i = 0; i < wordLength; i++) {
+                const tile = document.getElementById(`tile-${startIndex + i}`);
+                tile.innerText = currentGuess[i] || '';
+                
+                if (currentGuess[i]) {
+                    tile.setAttribute('data-state', 'filled');
+                } else {
+                    tile.removeAttribute('data-state');
+                }
+            }
+        }
+
+        function shakeCurrentRow() {
+            const wordLength = wordsList[currentWordIndex].answer.length;
+            const startIndex = currentAttempt * wordLength;
+            for (let i = 0; i < wordLength; i++) {
+                const tile = document.getElementById(`tile-${startIndex + i}`);
+                tile.classList.remove('shake');
+                void tile.offsetWidth; // trigger reflow
+                tile.classList.add('shake');
+            }
+        }
+
+        function submitGuess() {
+            isAnimating = true;
+            const answer = wordsList[currentWordIndex].answer;
+            const wordLength = answer.length;
+            const startIndex = currentAttempt * wordLength;
+            
+            const guessString = currentGuess.join('');
+            
+            // Array para saber quais letras já foram "gastas" para não dar dica amarela duplicada
+            let answerLetterCounts = {};
+            for (let char of answer) {
+                answerLetterCounts[char] = (answerLetterCounts[char] || 0) + 1;
+            }
+
+            let statuses = Array(wordLength).fill('absent');
+
+            // Primeiro passo: Encontrar os verdes (correct)
+            for (let i = 0; i < wordLength; i++) {
+                if (currentGuess[i] === answer[i]) {
+                    statuses[i] = 'correct';
+                    answerLetterCounts[currentGuess[i]] -= 1;
+                }
+            }
+
+            // Segundo passo: Encontrar os amarelos (present)
+            for (let i = 0; i < wordLength; i++) {
+                if (statuses[i] !== 'correct') {
+                    const letter = currentGuess[i];
+                    if (answerLetterCounts[letter] > 0) {
+                        statuses[i] = 'present';
+                        answerLetterCounts[letter] -= 1;
+                    }
+                }
+            }
+
+            // Animar as cartas virando uma a uma
+            for (let i = 0; i < wordLength; i++) {
+                const tile = document.getElementById(`tile-${startIndex + i}`);
+                
+                setTimeout(() => {
+                    tile.classList.add('reveal');
+                    
+                    // Muda a cor na metade da animação
+                    setTimeout(() => {
+                        tile.setAttribute('data-status', statuses[i]);
+                        updateKeyboardColor(currentGuess[i], statuses[i]);
+                    }, 300);
+
+                    // Finaliza tudo na última letra
+                    if (i === wordLength - 1) {
+                        setTimeout(() => {
+                            if (guessString === answer) {
+                                isGameOver = true;
+                                showResultModal(true);
+                            } else {
+                                currentAttempt++;
+                                currentGuess = [];
+                                if (currentAttempt >= maxAttempts) {
+                                    isGameOver = true;
+                                    showResultModal(false);
+                                } else {
+                                    isAnimating = false;
+                                }
+                            }
+                        }, 400); // Espera a última animação de virar terminar
+                    }
+                }, i * 250); // Delay em cascata
+            }
+        }
+
+        function updateKeyboardColor(letter, status) {
+            const keyEl = document.querySelector(`.key[data-key="${letter}"]`);
+            if (!keyEl) return;
+
+            const currentStatus = keyEl.getAttribute('data-status');
+            
+            // Ordem de prioridade das cores: Correct > Present > Absent
+            if (status === 'correct') {
+                keyEl.setAttribute('data-status', 'correct');
+            } else if (status === 'present' && currentStatus !== 'correct') {
+                keyEl.setAttribute('data-status', 'present');
+            } else if (status === 'absent' && currentStatus !== 'correct' && currentStatus !== 'present') {
+                keyEl.setAttribute('data-status', 'absent');
+            }
+        }
+
+        // Listeners do Teclado da Tela
+        document.querySelectorAll('.key').forEach(button => {
+            button.addEventListener('click', (e) => {
+                // Prevenir clique duplo/zoom em mobile
+                e.preventDefault();
+                let key = button.getAttribute('data-key');
+                handleKey(key);
+            });
+        });
+
+        // Listener do Teclado Físico
+        window.addEventListener('keydown', (e) => {
+            let key = e.key.toUpperCase();
+            if (key === 'ENTER' || key === 'BACKSPACE') {
+                handleKey(key);
+            } else if (/^[A-Z]$/.test(key)) {
+                handleKey(key);
+            }
+        });
+
+        // Inicia
+        window.onload = initGame;
+
+    </script>
+</body>
+</html>
