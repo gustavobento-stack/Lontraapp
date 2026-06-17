@@ -84,7 +84,7 @@
         .delay-200 { transition-delay: 200ms; }
         .delay-300 { transition-delay: 300ms; }
 
-        /* Animação de flutuação para os corações ao fundo */
+        /* Animação de flutuação para os corações ao fundo e notas */
         @keyframes float {
             0%, 100% { transform: translateY(0) rotate(0deg); }
             50% { transform: translateY(-15px) rotate(5deg); }
@@ -146,7 +146,7 @@
     <div id="toast"></div>
 
     <!-- Cabeçalho de Navegação -->
-    <header class="relative w-full flex flex-col z-50">
+    <header class="relative w-full flex flex-col z-50 transition-all duration-300">
         <!-- Top Banner Roxo -->
         <div id="promo-banner" class="bg-[#a874e4] text-white text-[10.5px] md:text-xs font-medium tracking-wide text-center py-2.5 px-4 w-full shadow-sm">
             <span class="font-bold text-white uppercase">+100.000 pessoas já fizeram alguém chorar de emoção.</span>
@@ -177,7 +177,7 @@
                         </svg>
                     </button>
                     
-                    <!-- NOVO: Botão Fazer Login (Desktop) -->
+                    <!-- Botão Fazer Login (Desktop) -->
                     <button id="accountBtn" class="hidden md:flex items-center gap-2 px-4 py-2 bg-[#f4f2f7] hover:bg-[#e9e4f0] text-[#4a4a5f] font-bold text-[14.5px] rounded-[12px] transition-colors shadow-sm border border-[#ede9f5]">
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/>
@@ -302,9 +302,9 @@
                 </div>
 
                 <!-- Celular Direito -->
-                <div class="absolute w-[260px] h-[540px] bg-white rounded-[2.5rem] transform rotate-[15deg] translate-x-[160px] translate-y-10 border-4 border-gray-100 shadow-[0_12px_24px_-8px_rgba(168,116,228,0.2)] z-10 overflow-hidden flex flex-col hover:z-40 hover:-translate-y-2 hover:rotate-6 transition-all duration-500 cursor-default">
+                <div class="absolute w-[260px] h-[540px] bg-white rounded-[2.5rem] transform rotate-[15deg] translate-x-[160px] translate-y-10 border-4 border-gray-100 shadow-[0_12px_24px_-8px_rgba(168,116,228,0.2)] z-10 overflow-hidden flex flex-col hover:z-40 hover:-translate-y-2 hover:rotate-6 transition-all duration-700 ease-out cursor-default">
                     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-6 bg-gray-100 rounded-b-xl z-20"></div>
-                    <div class="w-full h-full bg-[#a874e4] p-6 pt-16 flex flex-col text-white">
+                    <div class="w-full h-full bg-[#a874e4] p-6 pt-16 flex flex-col text-white pointer-events-none">
                         <h4 class="font-black text-2xl mt-4 leading-tight">Uma mensagem<br>especial.</h4>
                         <div class="mt-6 space-y-3">
                             <div class="w-full h-3 bg-white/30 rounded-full"></div>
@@ -319,7 +319,7 @@
                 </div>
 
                 <!-- Celular Central (Principal - Vídeo) -->
-                <div class="absolute w-[280px] h-[580px] bg-[#2a2a35] rounded-[2.5rem] border-[8px] border-[#1e1e26] shadow-[0_20px_50px_rgba(0,0,0,0.3)] z-30 overflow-hidden flex flex-col relative hover:scale-[1.02] hover:-translate-y-4 transition-all duration-500 cursor-default">
+                <div class="absolute w-[280px] h-[580px] bg-[#2a2a35] rounded-[2.5rem] border-[8px] border-[#1e1e26] shadow-[0_20px_50px_rgba(0,0,0,0.3)] z-30 overflow-hidden flex flex-col relative hover:scale-[1.02] hover:-translate-y-4 hover:shadow-[0_30px_60px_rgba(0,0,0,0.4)] transition-all duration-700 ease-out cursor-default">
                     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-28 h-6 bg-[#1e1e26] rounded-b-2xl z-20"></div>
                     
                     <!-- Vídeo Principal -->
@@ -330,19 +330,128 @@
         </div>
     </section>
 
+    <!-- Seção: Como Funciona -->
+    <section id="como-funciona" class="w-full py-20 px-4 md:px-8 font-sans">
+        <div class="max-w-7xl mx-auto">
+            
+            <div class="flex flex-col items-center text-center mb-16 md:mb-20 reveal">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#f8f5ff] border-2 border-[#dcc3f5] text-[#a874e4] font-bold text-[11px] uppercase tracking-widest mb-6 cursor-default shadow-[0_2px_0_0_#f1f1f5]">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="animate-pulse">
+                        <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+                    </svg>
+                    <span>Como Funciona</span>
+                </div>
+                
+                <h2 class="text-[32px] md:text-[44px] font-black text-[#4a4a5f] mb-4 tracking-tight leading-tight">
+                    Crie um presente inesquecível <br class="hidden md:block"> em <span class="text-[#a874e4]">4 passos simples</span>
+                </h2>
+                
+                <p class="text-[15px] md:text-[16px] font-medium text-[#8a8a9e] max-w-3xl mt-2 leading-relaxed">
+                    Nossa plataforma torna fácil criar uma experiência digital e personalizada que vai emocionar quem você ama.
+                </p>
+            </div>
+
+            <!-- Grid de Passos -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-6 relative">
+                
+                <!-- Passo 1 -->
+                <div class="reveal delay-100 group relative flex flex-col items-center text-center bg-white border-2 border-gray-100 rounded-[24px] shadow-[0_4px_0_0_#f1f1f5] hover:border-[#a874e4] hover:bg-[#fdfaff] hover:shadow-[0_4px_0_0_#dcc3f5] p-8 pt-12 mt-6 lg:mt-0 transition-all duration-300 cursor-default">
+                    <div class="absolute -top-6 left-1/2 -translate-x-1/2 w-12 h-12 bg-[#a874e4] shadow-[0_4px_0_0_#8b5bc4] text-white rounded-[16px] flex items-center justify-center text-xl font-black group-hover:-translate-y-2 transition-transform">
+                        1
+                    </div>
+
+                    <div class="w-32 h-32 bg-[#f8f5ff] rounded-full mb-8 flex items-center justify-center shadow-inner group-hover:bg-[#f3e8ff] transition-colors border-2 border-gray-50">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-[#cba4f1] group-hover:text-[#a874e4] group-hover:scale-110 transition-all duration-300">
+                            <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
+                            <circle cx="9" cy="9" r="2"/>
+                            <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+                        </svg>
+                    </div>
+
+                    <h3 class="text-lg font-bold text-[#4a4a5f] group-hover:text-[#5b4a78] mb-3 transition-colors">
+                        Conte a sua história
+                    </h3>
+                    <p class="text-[#8a8a9e] font-medium leading-relaxed text-[13.5px]">
+                        Preencha os dados e escolha elementos únicos para surpreender quem você ama.
+                    </p>
+                </div>
+
+                <!-- Passo 2 -->
+                <div class="reveal delay-200 group relative flex flex-col items-center text-center bg-white border-2 border-gray-100 rounded-[24px] shadow-[0_4px_0_0_#f1f1f5] hover:border-[#a874e4] hover:bg-[#fdfaff] hover:shadow-[0_4px_0_0_#dcc3f5] p-8 pt-12 mt-6 lg:mt-0 transition-all duration-300 cursor-default">
+                    <div class="absolute -top-6 left-1/2 -translate-x-1/2 w-12 h-12 bg-[#a874e4] shadow-[0_4px_0_0_#8b5bc4] text-white rounded-[16px] flex items-center justify-center text-xl font-black group-hover:-translate-y-2 transition-transform">
+                        2
+                    </div>
+
+                    <div class="w-32 h-32 bg-[#f8f5ff] rounded-full mb-8 flex items-center justify-center shadow-inner group-hover:bg-[#f3e8ff] transition-colors border-2 border-gray-50">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-[#cba4f1] group-hover:text-[#a874e4] group-hover:scale-110 transition-all duration-300">
+                            <circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/>
+                        </svg>
+                    </div>
+
+                    <h3 class="text-lg font-bold text-[#4a4a5f] group-hover:text-[#5b4a78] mb-3 transition-colors">
+                        Personalize cada detalhe
+                    </h3>
+                    <p class="text-[#8a8a9e] font-medium leading-relaxed text-[13.5px]">
+                        Escolha suas melhores fotos, a trilha sonora perfeita e defina o estilo visual.
+                    </p>
+                </div>
+
+                <!-- Passo 3 -->
+                <div class="reveal delay-300 group relative flex flex-col items-center text-center bg-white border-2 border-gray-100 rounded-[24px] shadow-[0_4px_0_0_#f1f1f5] hover:border-[#a874e4] hover:bg-[#fdfaff] hover:shadow-[0_4px_0_0_#dcc3f5] p-8 pt-12 mt-6 lg:mt-0 transition-all duration-300 cursor-default">
+                    <div class="absolute -top-6 left-1/2 -translate-x-1/2 w-12 h-12 bg-[#a874e4] shadow-[0_4px_0_0_#8b5bc4] text-white rounded-[16px] flex items-center justify-center text-xl font-black group-hover:-translate-y-2 transition-transform">
+                        3
+                    </div>
+
+                    <div class="w-32 h-32 bg-[#f8f5ff] rounded-full mb-8 flex items-center justify-center shadow-inner group-hover:bg-[#f3e8ff] transition-colors border-2 border-gray-50">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-[#cba4f1] group-hover:text-[#a874e4] group-hover:scale-110 transition-all duration-300">
+                            <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/>
+                        </svg>
+                    </div>
+
+                    <h3 class="text-lg font-bold text-[#4a4a5f] group-hover:text-[#5b4a78] mb-3 transition-colors">
+                        Receba seu Acesso
+                    </h3>
+                    <p class="text-[#8a8a9e] font-medium leading-relaxed text-[13.5px]">
+                        Após o pagamento, receba instantaneamente o link da página e o QR Code.
+                    </p>
+                </div>
+
+                <!-- Passo 4 -->
+                <div class="reveal delay-300 group relative flex flex-col items-center text-center bg-white border-2 border-gray-100 rounded-[24px] shadow-[0_4px_0_0_#f1f1f5] hover:border-[#a874e4] hover:bg-[#fdfaff] hover:shadow-[0_4px_0_0_#dcc3f5] p-8 pt-12 mt-6 lg:mt-0 transition-all duration-300 cursor-default">
+                    <div class="absolute -top-6 left-1/2 -translate-x-1/2 w-12 h-12 bg-[#a874e4] shadow-[0_4px_0_0_#8b5bc4] text-white rounded-[16px] flex items-center justify-center text-xl font-black group-hover:-translate-y-2 transition-transform">
+                        4
+                    </div>
+
+                    <div class="w-32 h-32 bg-[#f8f5ff] rounded-full mb-8 flex items-center justify-center shadow-inner group-hover:bg-[#f3e8ff] transition-colors border-2 border-gray-50">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-[#cba4f1] group-hover:text-[#a874e4] group-hover:scale-110 transition-all duration-300">
+                             <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+                        </svg>
+                    </div>
+
+                    <h3 class="text-lg font-bold text-[#4a4a5f] group-hover:text-[#5b4a78] mb-3 transition-colors">
+                        Emocione quem ama
+                    </h3>
+                    <p class="text-[#8a8a9e] font-medium leading-relaxed text-[13.5px]">
+                        Envie o presente e prepare-se para as lágrimas de felicidade. Ficará marcado.
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
     <!-- Seção: Carrossel Interativo -->
-    <section id="funcionalidades-carrossel" class="w-full relative px-4 md:px-8 font-sans bg-[#faf9fc] overflow-hidden py-20 border-t-2 border-gray-100">
-        <!-- Alterado para grid-cols-12 para dar mais espaço (7 colunas) para os celulares e (5 colunas) para os textos -->
-        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+    <section id="funcionalidades-carrossel" class="w-full relative px-4 md:px-8 py-8 md:py-12 font-sans bg-[#faf9fc] overflow-hidden">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             
             <!-- COLUNA ESQUERDA: Carrossel 3D de Celulares -->
-            <div class="lg:col-span-7 relative w-full h-[580px] md:h-[650px] flex items-center justify-center reveal">
+            <div class="lg:col-span-7 relative w-full h-[460px] sm:h-[520px] md:h-[650px] flex items-center justify-center reveal mt-6 lg:mt-0">
                 
-                <!-- Corações Flutuantes (Background) -->
-                <svg class="absolute top-[5%] left-[5%] w-24 h-24 text-[#cba4f1] fill-current animate-float opacity-80 z-0" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-                <svg class="absolute bottom-[5%] left-[15%] w-16 h-16 text-[#a874e4] fill-current animate-float-delayed opacity-70 transform -rotate-12 z-0" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-                <svg class="absolute top-[20%] right-[0%] w-20 h-20 text-[#cba4f1] fill-current animate-float opacity-90 transform rotate-12 z-0" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-                <svg class="absolute bottom-[20%] right-[10%] w-24 h-24 text-[#a874e4] fill-current animate-float-delayed opacity-50 transform -rotate-6 z-0" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                <!-- Corações Flutuantes (Background) adaptados para mobile -->
+                <svg class="absolute top-[5%] left-[0%] md:left-[5%] w-16 md:w-24 h-16 md:h-24 text-[#cba4f1] fill-current animate-float opacity-80 z-0" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                <svg class="absolute bottom-[5%] left-[5%] md:left-[15%] w-12 md:w-16 h-12 md:h-16 text-[#a874e4] fill-current animate-float-delayed opacity-70 transform -rotate-12 z-0" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                <svg class="absolute top-[20%] right-[0%] md:right-[0%] w-14 md:w-20 h-14 md:h-20 text-[#cba4f1] fill-current animate-float opacity-90 transform rotate-12 z-0" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                <svg class="absolute bottom-[15%] right-[5%] md:right-[10%] w-16 md:w-24 h-16 md:h-24 text-[#a874e4] fill-current animate-float-delayed opacity-50 transform -rotate-6 z-0" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
 
                 <!-- Container do Carrossel 3D -->
                 <div id="phones-container" class="relative w-full h-full perspective-[1200px] z-10 flex items-center justify-center">
@@ -351,47 +460,47 @@
             </div>
 
             <!-- COLUNA DIREITA: Textos Dinâmicos e Controles -->
-            <div class="lg:col-span-5 flex flex-col items-start z-20 reveal delay-100 relative">
+            <div class="lg:col-span-5 flex flex-col items-center lg:items-start text-center lg:text-left z-20 reveal delay-100 relative">
 
                 <!-- Wrapper com animação de Fade para os textos -->
-                <div id="text-wrapper" class="transition-all duration-300 opacity-100 transform translate-x-0 w-full min-h-[220px]">
+                <div id="text-wrapper" class="transition-all duration-300 opacity-100 transform translate-x-0 w-full min-h-[180px] md:min-h-[220px] flex flex-col items-center lg:items-start">
                     <!-- Ícone Dinâmico -->
-                    <div id="slide-icon-container" class="w-16 h-16 rounded-[20px] border-2 border-[#dcc3f5] bg-white flex items-center justify-center text-[#a874e4] mb-6 shadow-[0_4px_0_0_#f1f1f5]">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <div id="slide-icon-container" class="w-14 h-14 md:w-16 md:h-16 rounded-[16px] md:rounded-[20px] border-2 border-[#dcc3f5] bg-white flex items-center justify-center text-[#a874e4] mb-5 md:mb-6 shadow-[0_4px_0_0_#f1f1f5]">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="md:w-[28px] md:h-[28px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
                         </svg>
                     </div>
 
                     <!-- Título Dinâmico -->
-                    <h2 id="slide-title" class="text-[36px] md:text-[46px] font-black text-[#323240] mb-4 tracking-tight leading-tight">
+                    <h2 id="slide-title" class="text-[30px] sm:text-[36px] md:text-[46px] font-black text-[#323240] mb-3 md:mb-4 tracking-tight leading-tight">
                         Linha do Tempo
                     </h2>
                     
                     <!-- Descrição Dinâmica -->
-                    <p id="slide-desc" class="text-[16px] md:text-[18px] font-medium text-[#8a8a9e] leading-relaxed max-w-[500px]">
+                    <p id="slide-desc" class="text-[15px] md:text-[18px] font-medium text-[#8a8a9e] leading-relaxed max-w-[500px]">
                         Reviva sua jornada com uma linha do tempo animada e elegante, destacando os marcos mais importantes da sua história.
                     </p>
                 </div>
 
-                <!-- Controles do Carrossel (Setas e Bolinhas) -->
-                <div class="flex items-center gap-4 mt-8 mb-10" id="controls-container">
-                    <button id="btn-prev" class="w-12 h-12 rounded-full bg-[#f3e8ff] flex items-center justify-center text-[#a874e4] hover:bg-[#dcc3f5] hover:text-white transition-all shadow-[0_2px_0_0_#e4daef] active:translate-y-[2px] active:shadow-none">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                <!-- Controles do Carrossel (Setas e Bolinhas) centralizados no mobile -->
+                <div class="flex items-center justify-center lg:justify-start w-full gap-4 mt-6 md:mt-8 mb-8 md:mb-10" id="controls-container">
+                    <button id="btn-prev" class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#f3e8ff] flex items-center justify-center text-[#a874e4] hover:bg-[#dcc3f5] hover:text-white transition-all shadow-[0_2px_0_0_#e4daef] active:translate-y-[2px] active:shadow-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" class="md:w-[22px] md:h-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
                     </button>
                     
                     <div id="dots-container" class="flex items-center gap-2">
                         <!-- Bolinhas injetadas pelo Javascript -->
                     </div>
 
-                    <button id="btn-next" class="w-12 h-12 rounded-full bg-[#f3e8ff] flex items-center justify-center text-[#a874e4] hover:bg-[#dcc3f5] hover:text-white transition-all shadow-[0_2px_0_0_#e4daef] active:translate-y-[2px] active:shadow-none">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                    <button id="btn-next" class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#f3e8ff] flex items-center justify-center text-[#a874e4] hover:bg-[#dcc3f5] hover:text-white transition-all shadow-[0_2px_0_0_#e4daef] active:translate-y-[2px] active:shadow-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" class="md:w-[22px] md:h-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
                     </button>
                 </div>
 
                 <!-- Botão CTA Final -->
-                <a href="quiz.html" class="bg-[#a874e4] text-white font-bold text-[17px] rounded-[16px] px-8 py-4 flex items-center justify-center gap-3 transition-all duration-150 active:translate-y-[2px] active:shadow-none shadow-[0_4px_0_0_#8b5bc4] hover:bg-[#9760d6] group cursor-pointer w-full md:w-auto">
-                    Criar meu presente 
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform">
+                <a href="quiz.html" class="bg-[#a874e4] text-white font-bold text-[16px] md:text-[17px] rounded-[16px] px-6 md:px-8 py-3.5 md:py-4 flex items-center justify-center gap-3 transition-all duration-150 active:translate-y-[2px] active:shadow-none shadow-[0_4px_0_0_#8b5bc4] hover:bg-[#9760d6] group cursor-pointer w-[95%] max-w-[320px] sm:max-w-none sm:w-auto mb-4 md:mb-0">
+                    <span class="whitespace-nowrap">Criar meu presente</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" class="md:w-[20px] md:h-[20px] shrink-0 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M5 19 19 5"/><path d="M10 5h9v9"/>
                     </svg>
                 </a>
@@ -411,24 +520,35 @@
                     </svg>
                     <span>Funcionalidades</span>
                 </div>
-                <h2 class="text-[32px] md:text-[44px] font-black text-[#4a4a5f] mb-4 tracking-tight leading-tight">Tudo que você <span class="text-[#a874e4]">precisa</span></h2>
-                <p class="text-[15px] md:text-[16px] font-medium text-[#8a8a9e] max-w-2xl mt-2 leading-relaxed">Recursos exclusivos criados com muito cuidado para tornar o seu presente ainda mais especial.</p>
+                
+                <h2 class="text-[32px] md:text-[44px] font-black text-[#4a4a5f] mb-4 tracking-tight leading-tight">
+                    Tudo que você <span class="text-[#a874e4]">precisa</span>
+                </h2>
+                
+                <p class="text-[15px] md:text-[16px] font-medium text-[#8a8a9e] max-w-2xl mt-2 leading-relaxed">
+                    Recursos exclusivos criados com muito cuidado para tornar o seu presente ainda mais especial.
+                </p>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 
                 <!-- Grupo da Esquerda -->
                 <div class="lg:col-span-2 flex flex-col gap-6">
+                    
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <!-- Card 1 -->
                         <div class="reveal group bg-white border-2 border-gray-100 rounded-[24px] shadow-[0_4px_0_0_#f1f1f5] p-8 flex flex-col relative overflow-hidden hover:border-[#a874e4] hover:bg-[#fdfaff] hover:shadow-[0_4px_0_0_#dcc3f5] transition-all duration-300 cursor-default">
                             <div class="flex items-center gap-4 mb-4">
                                 <div class="w-12 h-12 bg-[#f8f5ff] border-2 border-gray-100 rounded-[16px] flex items-center justify-center text-[#a874e4] shrink-0 group-hover:rotate-12 group-hover:border-[#dcc3f5] transition-all">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>
+                                    </svg>
                                 </div>
                                 <h3 class="text-[20px] font-bold text-[#4a4a5f] leading-tight">Para sempre no ar</h3>
                             </div>
-                            <p class="text-[#8a8a9e] font-medium text-[14px] leading-relaxed mb-6">Seu presente vai para a nuvem imediatamente. Para sempre online, acessível de qualquer lugar do mundo.</p>
+                            <p class="text-[#8a8a9e] font-medium text-[14px] leading-relaxed mb-6">
+                                Seu presente vai para a nuvem imediatamente. Para sempre online, acessível de qualquer lugar do mundo.
+                            </p>
                             <div class="mt-auto flex justify-center pb-2">
                                 <img src="https://i.imgur.com/QzBdzGI.png" alt="Para sempre no ar" class="h-32 w-auto object-contain group-hover:scale-105 transition-transform duration-300">
                             </div>
@@ -438,11 +558,15 @@
                         <div class="reveal delay-100 group bg-white border-2 border-gray-100 rounded-[24px] shadow-[0_4px_0_0_#f1f1f5] p-8 flex flex-col relative overflow-hidden hover:border-[#a874e4] hover:bg-[#fdfaff] hover:shadow-[0_4px_0_0_#dcc3f5] transition-all duration-300 cursor-default">
                             <div class="flex items-center gap-4 mb-4">
                                 <div class="w-12 h-12 bg-[#f8f5ff] border-2 border-gray-100 rounded-[16px] flex items-center justify-center text-[#a874e4] shrink-0 group-hover:-rotate-12 group-hover:border-[#dcc3f5] transition-all">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/>
+                                    </svg>
                                 </div>
                                 <h3 class="text-[20px] font-bold text-[#4a4a5f] leading-tight">100% personalizável</h3>
                             </div>
-                            <p class="text-[#8a8a9e] font-medium text-[14px] leading-relaxed mb-6">Escolha fotos, músicas, mensagens e datas importantes. Cada detalhe pensado para emocionar!</p>
+                            <p class="text-[#8a8a9e] font-medium text-[14px] leading-relaxed mb-6">
+                                Escolha fotos, músicas, mensagens e datas importantes. Cada detalhe pensado para emocionar!
+                            </p>
                             <div class="mt-auto flex justify-center pb-2">
                                 <img src="https://i.imgur.com/S8FOeUH.png" alt="100% personalizável" class="h-32 w-auto object-contain group-hover:scale-105 transition-transform duration-300">
                             </div>
@@ -453,15 +577,20 @@
                     <div class="reveal delay-200 group bg-white border-2 border-gray-100 rounded-[24px] shadow-[0_4px_0_0_#f1f1f5] p-8 flex flex-col relative overflow-hidden flex-1 hover:border-[#a874e4] hover:bg-[#fdfaff] hover:shadow-[0_4px_0_0_#dcc3f5] transition-all duration-300 cursor-default">
                         <div class="flex items-center gap-4 mb-2 relative z-20">
                             <div class="w-12 h-12 bg-[#f8f5ff] border-2 border-gray-100 rounded-[16px] flex items-center justify-center text-[#a874e4] shrink-0 group-hover:rotate-12 group-hover:border-[#dcc3f5] transition-all">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/>
+                                </svg>
                             </div>
                             <h3 class="text-[20px] font-bold text-[#4a4a5f] leading-tight">Relembre seus melhores momentos</h3>
                         </div>
-                        <p class="text-[#8a8a9e] font-medium text-[14px] leading-relaxed mb-6 relative z-20 max-w-lg">O presente digital que faz quem você ama sentir o quanto é especial. Reúna todas as melhores memórias.</p>
+                        <p class="text-[#8a8a9e] font-medium text-[14px] leading-relaxed mb-6 relative z-20 max-w-lg">
+                            O presente digital que faz quem você ama sentir o quanto é especial. Reúna todas as melhores memórias.
+                        </p>
                         <div class="mt-auto flex justify-center pb-2">
                             <img src="https://i.imgur.com/IlRUIKq.png" alt="Relembre seus melhores momentos" class="h-40 w-auto object-contain group-hover:scale-105 transition-transform duration-300">
                         </div>
                     </div>
+
                 </div>
 
                 <!-- Grupo da Direita (NOVA VITROLA E PLAYER) -->
@@ -553,7 +682,7 @@
         </div>
     </section>
 
-    <!-- Seção: Banner de Demo Interativa (Âncora inserida aqui) -->
+    <!-- Seção: Banner de Demo Interativa -->
     <section id="demonstracao" class="w-full px-4 md:px-8 py-10 pb-24 font-sans reveal">
         <div class="max-w-7xl mx-auto relative bg-[#a874e4] rounded-[32px] overflow-hidden flex flex-col items-center justify-center min-h-[380px] shadow-[0_8px_0_0_#8b5bc4] hover:translate-y-[2px] hover:shadow-[0_6px_0_0_#8b5bc4] transition-all duration-300 group cursor-pointer border-4 border-white">
             
@@ -651,7 +780,6 @@
                 </div>
                 <!-- Duplicata Linha 1 -->
                 <div class="flex gap-6" aria-hidden="true">
-                    <!-- Duplicata dos cards omitida visualmente, mas fisicamente presente -->
                     <div class="w-[300px] md:w-[380px] bg-white border-2 border-gray-100 rounded-[24px] shadow-[0_4px_0_0_#f1f1f5] p-6 md:p-8 flex flex-col justify-between shrink-0 hover:border-[#a874e4] hover:-translate-y-1 transition-all duration-300">
                         <div>
                             <div class="flex gap-1 text-[#a874e4] mb-4">
@@ -703,7 +831,7 @@
                 </div>
             </div>
 
-            <!-- Linha 2: Vai para a Direita -->
+            <!-- Linha 2: Vai para a Direita (.animate-marquee-reverse) -->
             <div class="flex gap-6 w-max animate-marquee-reverse pause-on-hover px-4 mt-6">
                 <div class="flex gap-6">
                     <!-- Card 4 -->
@@ -758,8 +886,9 @@
                         </div>
                     </div>
                 </div>
-                <!-- Duplicata Linha 2 -->
+                <!-- Duplicata para loop infinito (Linha 2) -->
                 <div class="flex gap-6" aria-hidden="true">
+                    <!-- Card 4 -->
                     <div class="w-[300px] md:w-[380px] bg-white border-2 border-gray-100 rounded-[24px] shadow-[0_4px_0_0_#f1f1f5] p-6 md:p-8 flex flex-col justify-between shrink-0 hover:border-[#a874e4] hover:-translate-y-1 transition-all duration-300">
                         <div>
                             <div class="flex gap-1 text-[#a874e4] mb-4">
@@ -776,6 +905,7 @@
                             <div><h4 class="text-[#5b4a78] font-bold text-sm">Fernanda e Rafa</h4><span class="text-gray-400 font-medium text-xs">2 semanas atrás</span></div>
                         </div>
                     </div>
+                    <!-- Card 5 -->
                     <div class="w-[300px] md:w-[380px] bg-white border-2 border-gray-100 rounded-[24px] shadow-[0_4px_0_0_#f1f1f5] p-6 md:p-8 flex flex-col justify-between shrink-0 hover:border-[#a874e4] hover:-translate-y-1 transition-all duration-300">
                         <div>
                             <div class="flex gap-1 text-[#a874e4] mb-4">
@@ -792,6 +922,7 @@
                             <div><h4 class="text-[#5b4a78] font-bold text-sm">Marcos</h4><span class="text-gray-400 font-medium text-xs">5 dias atrás</span></div>
                         </div>
                     </div>
+                    <!-- Card 6 -->
                     <div class="w-[300px] md:w-[380px] bg-white border-2 border-gray-100 rounded-[24px] shadow-[0_4px_0_0_#f1f1f5] p-6 md:p-8 flex flex-col justify-between shrink-0 hover:border-[#a874e4] hover:-translate-y-1 transition-all duration-300">
                         <div>
                             <div class="flex gap-1 text-[#a874e4] mb-4">
@@ -810,12 +941,15 @@
                     </div>
                 </div>
             </div>
+
         </div>
     </section>
 
     <!-- Seção: Planos e Preços -->
     <section class="w-full bg-[#faf9fc] py-24 px-4 md:px-8 font-sans border-t-2 border-gray-100">
         <div class="max-w-5xl mx-auto">
+            
+            <!-- Cabeçalho da Seção -->
             <div class="flex flex-col items-center text-center mb-16 reveal">
                 <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#f8f5ff] border-2 border-[#dcc3f5] text-[#a874e4] font-bold text-[11px] uppercase tracking-widest mb-6 cursor-default shadow-[0_2px_0_0_#f1f1f5]">
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
@@ -823,49 +957,98 @@
                     </svg>
                     <span>Planos e Preços</span>
                 </div>
-                <h2 class="text-[32px] md:text-[44px] font-black text-[#4a4a5f] mb-4 tracking-tight leading-tight">Escolha o plano <span class="text-[#a874e4]">ideal</span></h2>
-                <p class="text-[15px] md:text-[16px] font-medium text-[#8a8a9e] max-w-2xl mt-2 leading-relaxed">Pagamento único, sem assinatura. Crie seu presente digital agora e surpreenda quem você ama.</p>
+                
+                <h2 class="text-[32px] md:text-[44px] font-black text-[#4a4a5f] mb-4 tracking-tight leading-tight">
+                    Escolha o plano <span class="text-[#a874e4]">ideal</span>
+                </h2>
+                
+                <p class="text-[15px] md:text-[16px] font-medium text-[#8a8a9e] max-w-2xl mt-2 leading-relaxed">
+                    Pagamento único, sem assinatura. Crie seu presente digital agora e surpreenda quem você ama.
+                </p>
             </div>
 
+            <!-- Container dos Cards -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-6 lg:gap-10 max-w-4xl mx-auto relative mt-8">
-                <!-- Card Econômico -->
+                
+                <!-- Card 1: Econômico -->
                 <div class="reveal delay-100 relative bg-white border-2 border-gray-100 rounded-[32px] p-8 pt-12 flex flex-col mt-4 md:mt-0 hover:-translate-y-2 hover:shadow-[0_8px_0_0_#f1f1f5] shadow-[0_4px_0_0_#f1f1f5] hover:border-gray-200 transition-all duration-300">
-                    <div class="absolute -top-[16px] left-8 bg-white border-2 border-gray-200 text-[#8a8a9e] text-[11px] font-bold px-4 py-1.5 rounded-full uppercase tracking-widest shadow-sm">ECONÔMICO</div>
-                    <h3 class="text-2xl font-black text-[#5b4a78] mb-6">Só Hoje (24h)</h3>
+                    <div class="absolute -top-[16px] left-8 bg-white border-2 border-gray-200 text-[#8a8a9e] text-[11px] font-bold px-4 py-1.5 rounded-full uppercase tracking-widest shadow-sm">
+                        ECONÔMICO
+                    </div>
+
+                    <h3 class="text-2xl font-black text-[#5b4a78] mb-6">
+                        Só Hoje (24h)
+                    </h3>
+                    
                     <div class="mb-6 pb-8 border-b-2 border-gray-100">
                         <p class="text-[#b4b4c4] line-through text-sm font-bold mb-1">R$ 29,90</p>
                         <div class="text-[#4a4a5f] font-bold flex items-baseline gap-1">
-                            <span class="text-2xl font-bold">R$</span><span class="text-[52px] md:text-[64px] font-black tracking-tight">19</span><span class="text-3xl font-bold">,90</span>
+                            <span class="text-2xl font-bold">R$</span>
+                            <span class="text-[52px] md:text-[64px] font-black tracking-tight">19</span>
+                            <span class="text-3xl font-bold">,90</span>
                         </div>
-                        <p class="text-[#8a8a9e] font-medium text-[14px] mt-4">Uma surpresa rápida e emocionante.</p>
+                        <p class="text-[#8a8a9e] font-medium text-[14px] mt-4">
+                            Uma surpresa rápida e emocionante.
+                        </p>
                     </div>
+
                     <ul class="flex flex-col gap-5 mb-4">
-                        <li class="flex items-center gap-3 text-[#4a4a5f] font-semibold"><div class="bg-[#f8f5ff] p-1 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="text-[#a874e4] shrink-0"><path d="M20 6 9 17l-5-5"/></svg></div><span>Acesso por 1 dia</span></li>
-                        <li class="flex items-center gap-3 text-[#4a4a5f] font-semibold"><div class="bg-[#f8f5ff] p-1 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="text-[#a874e4] shrink-0"><path d="M20 6 9 17l-5-5"/></svg></div><span>Edições Ilimitadas</span></li>
+                        <li class="flex items-center gap-3 text-[#4a4a5f] font-semibold">
+                            <div class="bg-[#f8f5ff] p-1 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="text-[#a874e4] shrink-0"><path d="M20 6 9 17l-5-5"/></svg></div>
+                            <span>Acesso por 1 dia</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-[#4a4a5f] font-semibold">
+                            <div class="bg-[#f8f5ff] p-1 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="text-[#a874e4] shrink-0"><path d="M20 6 9 17l-5-5"/></svg></div>
+                            <span>Edições Ilimitadas</span>
+                        </li>
                     </ul>
                 </div>
 
-                <!-- Card Melhor Custo-Benefício -->
+                <!-- Card 2: Melhor Custo-Benefício -->
                 <div class="reveal delay-200 relative bg-[#fdfaff] border-4 border-[#a874e4] rounded-[32px] p-8 pt-12 flex flex-col shadow-[0_8px_0_0_#dcc3f5] mt-8 md:mt-0 md:-mt-4 hover:-translate-y-3 hover:shadow-[0_12px_0_0_#dcc3f5] transition-all duration-300">
-                    <div class="absolute -top-[16px] left-8 bg-[#a874e4] text-white text-[11px] font-bold px-4 py-1.5 rounded-full uppercase tracking-widest shadow-sm">MELHOR CUSTO-BENEFÍCIO</div>
-                    <h3 class="text-2xl font-black text-[#5b4a78] mb-6">Para Sempre (Vitalício)</h3>
+                    <div class="absolute -top-[16px] left-8 bg-[#a874e4] text-white text-[11px] font-bold px-4 py-1.5 rounded-full uppercase tracking-widest shadow-sm">
+                        MELHOR CUSTO-BENEFÍCIO
+                    </div>
+
+                    <h3 class="text-2xl font-black text-[#5b4a78] mb-6">
+                        Para Sempre (Vitalício)
+                    </h3>
+                    
                     <div class="mb-6 pb-8 border-b-2 border-[#dcc3f5]">
                         <p class="text-[#cba4f1] line-through text-sm font-bold mb-1">R$ 69,90</p>
                         <div class="text-[#a874e4] font-bold flex items-baseline gap-1">
-                            <span class="text-2xl font-bold">R$</span><span class="text-[52px] md:text-[64px] font-black tracking-tight">29</span><span class="text-3xl font-bold">,90</span>
+                            <span class="text-2xl font-bold">R$</span>
+                            <span class="text-[52px] md:text-[64px] font-black tracking-tight">29</span>
+                            <span class="text-3xl font-bold">,90</span>
                         </div>
-                        <p class="text-[#5b4a78] font-semibold text-[14px] mt-4">Guarde esse momento para sempre.</p>
+                        <p class="text-[#5b4a78] font-semibold text-[14px] mt-4">
+                            Guarde esse momento para sempre.
+                        </p>
                     </div>
+
                     <ul class="flex flex-col gap-5 mb-4">
-                        <li class="flex items-center gap-3 text-[#5b4a78] font-bold"><div class="bg-[#a874e4] p-1 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><path d="M20 6 9 17l-5-5"/></svg></div><span>Acesso Para Sempre</span></li>
-                        <li class="flex items-center gap-3 text-[#5b4a78] font-bold"><div class="bg-[#a874e4] p-1 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><path d="M20 6 9 17l-5-5"/></svg></div><span>Edições Ilimitadas</span></li>
-                        <li class="flex items-center gap-3 text-[#5b4a78] font-bold"><div class="bg-[#a874e4] p-1 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><path d="M20 6 9 17l-5-5"/></svg></div><span>Fotos e Música Ilimitadas</span></li>
+                        <li class="flex items-center gap-3 text-[#5b4a78] font-bold">
+                            <div class="bg-[#a874e4] p-1 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><path d="M20 6 9 17l-5-5"/></svg></div>
+                            <span>Acesso Para Sempre</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-[#5b4a78] font-bold">
+                            <div class="bg-[#a874e4] p-1 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><path d="M20 6 9 17l-5-5"/></svg></div>
+                            <span>Edições Ilimitadas</span>
+                        </li>
+                        <li class="flex items-center gap-3 text-[#5b4a78] font-bold">
+                            <div class="bg-[#a874e4] p-1 rounded-full"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><path d="M20 6 9 17l-5-5"/></svg></div>
+                            <span>Fotos e Música Ilimitadas</span>
+                        </li>
                     </ul>
                 </div>
             </div>
 
+            <!-- Rodapé da Seção (Call to Action) -->
             <div class="mt-12 flex flex-col items-center reveal delay-300">
-                <p class="text-[#8a8a9e] text-[13px] md:text-sm font-semibold mb-6 text-center tracking-wide">Pagamento único · Sem assinatura · Acesso imediato</p>
+                <p class="text-[#8a8a9e] text-[13px] md:text-sm font-semibold mb-6 text-center tracking-wide">
+                    Pagamento único · Sem assinatura · Acesso imediato
+                </p>
+                
                 <a href="quiz.html" class="bg-[#a874e4] text-white font-bold text-lg px-12 py-5 rounded-[20px] flex items-center justify-center gap-3 transition-all duration-150 active:translate-y-[4px] active:shadow-none shadow-[0_4px_0_0_#8b5bc4] hover:bg-[#9760d6] w-full md:w-auto min-w-[300px] cursor-pointer group">
                     Criar presente agora
                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="group-hover:translate-x-1 transition-transform">
@@ -873,12 +1056,14 @@
                     </svg>
                 </a>
             </div>
+
         </div>
     </section>
 
     <!-- Seção: Perguntas Frequentes (FAQ) -->
     <section id="faq" class="w-full bg-white py-24 px-4 md:px-8 font-sans border-t-2 border-gray-100">
         <div class="max-w-3xl mx-auto">
+            
             <div class="flex flex-col items-center text-center mb-16 reveal">
                 <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#f8f5ff] border-2 border-[#dcc3f5] text-[#a874e4] font-bold text-[11px] uppercase tracking-widest mb-6 cursor-default shadow-[0_2px_0_0_#f1f1f5]">
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
@@ -886,23 +1071,28 @@
                     </svg>
                     <span>Dúvidas</span>
                 </div>
-                <h2 class="text-[32px] md:text-[44px] font-black text-[#4a4a5f] mb-4 tracking-tight leading-tight">Perguntas Frequentes</h2>
+                <h2 class="text-[32px] md:text-[44px] font-black text-[#4a4a5f] mb-4 tracking-tight leading-tight">
+                    Perguntas Frequentes
+                </h2>
             </div>
 
             <!-- Acordeão de Perguntas -->
             <div class="flex flex-col gap-5">
+                
                 <!-- Pergunta 1 -->
                 <div class="reveal delay-100 bg-white border-2 border-gray-100 rounded-[20px] shadow-[0_4px_0_0_#f1f1f5] overflow-hidden transition-all duration-300">
                     <button class="accordion-btn w-full flex justify-between items-center p-5 md:p-6 text-left focus:outline-none hover:bg-gray-50 transition-colors" aria-expanded="false">
                         <span class="text-[#5b4a78] font-bold text-[15px] md:text-[16px]">Para quem posso criar um presente?</span>
-                        <div class="w-8 h-8 rounded-full bg-[#f8f5ff] flex items-center justify-center shrink-0 transition-colors duration-300">
-                            <svg class="chevron text-[#a874e4] transition-all duration-300" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                        <div class="w-8 h-8 rounded-full bg-[#f8f5ff] flex items-center justify-center shrink-0">
+                            <svg class="chevron transition-transform duration-300 text-[#a874e4]" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                                 <polyline points="6 9 12 15 18 9"></polyline>
                             </svg>
                         </div>
                     </button>
                     <div class="accordion-content bg-white px-5 md:px-6 text-[#8a8a9e] text-[14px] md:text-[14.5px] font-medium leading-relaxed">
-                        <div class="pb-6">Você pode criar para seu namorado(a), mãe, pai, amigos, ou qualquer pessoa especial que você queira emocionar. O presente é 100% personalizável para qualquer ocasião!</div>
+                        <div class="pb-6">
+                            Você pode criar para seu namorado(a), mãe, pai, amigos, ou qualquer pessoa especial que você queira emocionar. O presente é 100% personalizável para qualquer ocasião!
+                        </div>
                     </div>
                 </div>
 
@@ -910,14 +1100,16 @@
                 <div class="reveal delay-100 bg-white border-2 border-gray-100 rounded-[20px] shadow-[0_4px_0_0_#f1f1f5] overflow-hidden transition-all duration-300">
                     <button class="accordion-btn w-full flex justify-between items-center p-5 md:p-6 text-left focus:outline-none hover:bg-gray-50 transition-colors" aria-expanded="false">
                         <span class="text-[#5b4a78] font-bold text-[15px] md:text-[16px]">Como funciona? Preciso saber editar?</span>
-                        <div class="w-8 h-8 rounded-full bg-[#f8f5ff] flex items-center justify-center shrink-0 transition-colors duration-300">
-                            <svg class="chevron text-[#a874e4] transition-all duration-300" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                        <div class="w-8 h-8 rounded-full bg-[#f8f5ff] flex items-center justify-center shrink-0">
+                            <svg class="chevron transition-transform duration-300 text-[#a874e4]" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                                 <polyline points="6 9 12 15 18 9"></polyline>
                             </svg>
                         </div>
                     </button>
                     <div class="accordion-content bg-white px-5 md:px-6 text-[#8a8a9e] text-[14px] md:text-[14.5px] font-medium leading-relaxed">
-                        <div class="pb-6">É super simples! Basta preencher as informações no nosso quiz, subir suas fotos favoritas e nós geramos a página automaticamente. Você não precisa de nenhum conhecimento técnico.</div>
+                        <div class="pb-6">
+                            É super simples! Basta preencher as informações no nosso quiz, subir suas fotos favoritas e nós geramos a página automaticamente. Você não precisa de nenhum conhecimento técnico.
+                        </div>
                     </div>
                 </div>
 
@@ -925,14 +1117,16 @@
                 <div class="reveal delay-200 bg-white border-2 border-gray-100 rounded-[20px] shadow-[0_4px_0_0_#f1f1f5] overflow-hidden transition-all duration-300">
                     <button class="accordion-btn w-full flex justify-between items-center p-5 md:p-6 text-left focus:outline-none hover:bg-gray-50 transition-colors" aria-expanded="false">
                         <span class="text-[#5b4a78] font-bold text-[15px] md:text-[16px]">O site fica no ar para sempre?</span>
-                        <div class="w-8 h-8 rounded-full bg-[#f8f5ff] flex items-center justify-center shrink-0 transition-colors duration-300">
-                            <svg class="chevron text-[#a874e4] transition-all duration-300" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                        <div class="w-8 h-8 rounded-full bg-[#f8f5ff] flex items-center justify-center shrink-0">
+                            <svg class="chevron transition-transform duration-300 text-[#a874e4]" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                                 <polyline points="6 9 12 15 18 9"></polyline>
                             </svg>
                         </div>
                     </button>
                     <div class="accordion-content bg-white px-5 md:px-6 text-[#8a8a9e] text-[14px] md:text-[14.5px] font-medium leading-relaxed">
-                        <div class="pb-6">Depende do plano escolhido. O plano Vitalício garante que a página fique no ar para sempre, sem expirar. Já o plano Econômico mantém o seu presente ativo por 24 horas.</div>
+                        <div class="pb-6">
+                            Depende do plano escolhido. O plano Vitalício garante que a página fique no ar para sempre, sem expirar. Já o plano Econômico mantém o seu presente ativo por 24 horas.
+                        </div>
                     </div>
                 </div>
 
@@ -940,16 +1134,19 @@
                 <div class="reveal delay-200 bg-white border-2 border-gray-100 rounded-[20px] shadow-[0_4px_0_0_#f1f1f5] overflow-hidden transition-all duration-300">
                     <button class="accordion-btn w-full flex justify-between items-center p-5 md:p-6 text-left focus:outline-none hover:bg-gray-50 transition-colors" aria-expanded="false">
                         <span class="text-[#5b4a78] font-bold text-[15px] md:text-[16px]">Como entrego a surpresa?</span>
-                        <div class="w-8 h-8 rounded-full bg-[#f8f5ff] flex items-center justify-center shrink-0 transition-colors duration-300">
-                            <svg class="chevron text-[#a874e4] transition-all duration-300" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                        <div class="w-8 h-8 rounded-full bg-[#f8f5ff] flex items-center justify-center shrink-0">
+                            <svg class="chevron transition-transform duration-300 text-[#a874e4]" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                                 <polyline points="6 9 12 15 18 9"></polyline>
                             </svg>
                         </div>
                     </button>
                     <div class="accordion-content bg-white px-5 md:px-6 text-[#8a8a9e] text-[14px] md:text-[14.5px] font-medium leading-relaxed">
-                        <div class="pb-6">Após a criação, você receberá um link exclusivo e um QR Code. Você pode enviar o link diretamente pelo WhatsApp ou imprimir o QR Code para colocar dentro de um cartão ou caixa de presente física.</div>
+                        <div class="pb-6">
+                            Após a criação, você receberá um link exclusivo e um QR Code. Você pode enviar o link diretamente pelo WhatsApp ou imprimir o QR Code para colocar dentro de um cartão ou caixa de presente física.
+                        </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </section>
@@ -958,7 +1155,9 @@
     <footer class="w-full bg-[#faf9fc] pt-16 pb-8 border-t-2 border-gray-100 font-sans">
         <div class="max-w-7xl mx-auto px-4 md:px-8">
             
+            <!-- Grid Principal do Footer -->
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 lg:gap-12 mb-16">
+                
                 <!-- Coluna 1: Logo e Descrição -->
                 <div class="col-span-2 md:col-span-3 lg:col-span-2 flex flex-col items-start">
                     <a href="index.html" class="flex items-center gap-3 mb-6 group">
@@ -973,19 +1172,19 @@
                 </div>
 
                 <!-- Coluna 2: Produto -->
-                <div class="flex flex-col gap-5 mt-2 md:mt-0">
+                <div class="flex flex-col gap-5">
                     <h4 class="text-[#4a4a5f] font-bold text-[16px]">Produto</h4>
                     <ul class="flex flex-col gap-3.5 text-[#8a8a9e] text-[14px] font-medium">
                         <li><a href="#como-funciona" class="hover:text-[#a874e4] hover:underline transition-colors">Como Funciona</a></li>
-                        <li><a href="#" class="hover:text-[#a874e4] hover:underline transition-colors">Recursos</a></li>
-                        <li><a href="#" class="hover:text-[#a874e4] hover:underline transition-colors">Preços</a></li>
+                        <li><a href="#recursos" class="hover:text-[#a874e4] hover:underline transition-colors">Recursos</a></li>
+                        <li><a href="#precos" class="hover:text-[#a874e4] hover:underline transition-colors">Preços</a></li>
                         <li><a href="demo.html" class="hover:text-[#a874e4] hover:underline transition-colors">Exemplo</a></li>
                         <li><a href="quiz.html" class="hover:text-[#a874e4] hover:underline transition-colors">Criar Presente</a></li>
                     </ul>
                 </div>
 
                 <!-- Coluna 3: Presentes -->
-                <div class="flex flex-col gap-5 mt-2 md:mt-0">
+                <div class="flex flex-col gap-5">
                     <h4 class="text-[#4a4a5f] font-bold text-[16px]">Presentes</h4>
                     <ul class="flex flex-col gap-3.5 text-[#8a8a9e] text-[14px] font-medium">
                         <li><a href="#" class="hover:text-[#a874e4] hover:underline transition-colors">Para Namorada(o)</a></li>
@@ -998,7 +1197,7 @@
                 </div>
 
                 <!-- Coluna 4: Empresa -->
-                <div class="flex flex-col gap-5 mt-2 md:mt-0">
+                <div class="flex flex-col gap-5">
                     <h4 class="text-[#4a4a5f] font-bold text-[16px]">Empresa</h4>
                     <ul class="flex flex-col gap-3.5 text-[#8a8a9e] text-[14px] font-medium">
                         <li><a href="#como-funciona" class="hover:text-[#a874e4] hover:underline transition-colors">Sobre Nós</a></li>
@@ -1009,7 +1208,7 @@
                 </div>
 
                 <!-- Coluna 5: Legal -->
-                <div class="flex flex-col gap-5 mt-2 md:mt-0">
+                <div class="flex flex-col gap-5">
                     <h4 class="text-[#4a4a5f] font-bold text-[16px]">Legal</h4>
                     <ul class="flex flex-col gap-3.5 text-[#8a8a9e] text-[14px] font-medium">
                         <li><a href="#" class="hover:text-[#a874e4] hover:underline transition-colors">Termos de Uso</a></li>
@@ -1017,12 +1216,13 @@
                         <li><a href="#" class="hover:text-[#a874e4] hover:underline transition-colors">Política de Cookies</a></li>
                     </ul>
                 </div>
+
             </div>
 
             <!-- Linha Inferior (Copyright) -->
-            <div class="pt-8 border-t-2 border-gray-100 text-center text-[12px] md:text-[13px] text-[#b4b4c4] flex flex-col md:flex-row items-center justify-center md:justify-between gap-3 font-semibold">
+            <div class="pt-8 border-t-2 border-gray-100 text-center text-[11.5px] md:text-[12px] text-[#b4b4c4] flex flex-col md:flex-row items-center justify-center md:justify-between gap-3 font-semibold">
                 <span>© <span id="current-year">2024</span> Lontra. Todos os direitos reservados.</span>
-                <span class="flex items-center gap-1">Feito com <span class="text-[16px]">🦦</span> no Brasil</span>
+                <span class="flex items-center gap-1">Feito com <span class="text-sm">🦦</span> no Brasil</span>
             </div>
         </div>
     </footer>
@@ -1054,7 +1254,7 @@
             const accountBtn = document.getElementById('accountBtn');
             if (accountBtn) accountBtn.addEventListener('click', () => showToast('Área de conta chegando em breve! 💜'));
 
-            // --- Menu Mobile Animado (Melhorado) ---
+            // --- Menu Mobile Lógica ---
             const mobileMenuBtn = document.getElementById('mobile-menu-btn');
             const mobileMenu = document.getElementById('mobile-menu');
             const hamburgerIcon = document.getElementById('hamburger-icon');
@@ -1126,72 +1326,64 @@
             }
             typeWriter();
 
-            // --- 2. Lógica do Acordeão (FAQ Seguro) ---
+            // --- 2. Lógica do Acordeão (FAQ) Melhorada e Robusta ---
             const accordions = document.querySelectorAll(".accordion-btn");
 
             accordions.forEach(acc => {
                 acc.addEventListener("click", function() {
-                    const isExpanded = this.getAttribute("aria-expanded") === "true";
-                    this.setAttribute("aria-expanded", !isExpanded);
-                    
                     const content = this.nextElementSibling;
                     const chevron = this.querySelector('.chevron');
                     const iconContainer = this.querySelector('.rounded-full');
+                    const parent = this.parentElement;
 
-                    // Fechar todos os outros acordeões
+                    const isCurrentlyOpen = content.style.maxHeight && content.style.maxHeight !== "0px";
+
+                    // Fechar todos
                     accordions.forEach(otherAcc => {
-                        if (otherAcc !== acc) {
-                            otherAcc.setAttribute("aria-expanded", "false");
-                            otherAcc.nextElementSibling.style.maxHeight = null;
-                            
-                            const otherChevron = otherAcc.querySelector('.chevron');
-                            if(otherChevron) otherChevron.style.transform = "rotate(0deg)";
-                            
-                            // Reset classes
-                            otherAcc.parentElement.classList.remove("border-[#a874e4]", "shadow-[0_4px_0_0_#dcc3f5]");
-                            otherAcc.parentElement.classList.add("border-gray-100", "shadow-[0_4px_0_0_#f1f1f5]");
-                            
-                            const otherIconContainer = otherAcc.querySelector('.rounded-full');
-                            if (otherIconContainer) {
-                                otherIconContainer.classList.remove('bg-[#a874e4]');
-                                otherIconContainer.classList.add('bg-[#f8f5ff]');
-                            }
-
-                            if (otherChevron) {
-                                otherChevron.classList.remove('text-white');
-                                otherChevron.classList.add('text-[#a874e4]');
-                            }
+                        otherAcc.setAttribute("aria-expanded", "false");
+                        const otherContent = otherAcc.nextElementSibling;
+                        const otherChevron = otherAcc.querySelector('.chevron');
+                        const otherIconContainer = otherAcc.querySelector('.rounded-full');
+                        const otherParent = otherAcc.parentElement;
+                        
+                        if (otherContent) otherContent.style.maxHeight = null;
+                        
+                        if (otherChevron) {
+                            otherChevron.style.transform = "rotate(0deg)";
+                            otherChevron.classList.remove('text-white');
+                            otherChevron.classList.add('text-[#a874e4]');
+                        }
+                        
+                        if (otherParent) {
+                            otherParent.classList.remove("border-[#a874e4]", "shadow-[0_4px_0_0_#dcc3f5]");
+                            otherParent.classList.add("border-gray-100", "shadow-[0_4px_0_0_#f1f1f5]");
+                        }
+                        
+                        if (otherIconContainer) {
+                            otherIconContainer.classList.remove('bg-[#a874e4]');
+                            otherIconContainer.classList.add('bg-[#f8f5ff]');
                         }
                     });
 
-                    // Abrir ou fechar o clicado
-                    if (content.style.maxHeight) {
-                        content.style.maxHeight = null;
-                        if(chevron) chevron.style.transform = "rotate(0deg)";
-                        this.parentElement.classList.remove("border-[#a874e4]", "shadow-[0_4px_0_0_#dcc3f5]");
-                        this.parentElement.classList.add("border-gray-100", "shadow-[0_4px_0_0_#f1f1f5]");
+                    // Se não estava aberto, abre o atual
+                    if (!isCurrentlyOpen) {
+                        this.setAttribute("aria-expanded", "true");
+                        if (content) content.style.maxHeight = content.scrollHeight + "px";
                         
-                        if(iconContainer) {
-                            iconContainer.classList.remove('bg-[#a874e4]');
-                            iconContainer.classList.add('bg-[#f8f5ff]');
-                        }
-                        if(chevron) {
-                            chevron.classList.remove('text-white');
-                            chevron.classList.add('text-[#a874e4]');
-                        }
-                    } else {
-                        content.style.maxHeight = content.scrollHeight + "px";
-                        if(chevron) chevron.style.transform = "rotate(180deg)";
-                        this.parentElement.classList.remove("border-gray-100", "shadow-[0_4px_0_0_#f1f1f5]");
-                        this.parentElement.classList.add("border-[#a874e4]", "shadow-[0_4px_0_0_#dcc3f5]");
-                        
-                        if(iconContainer) {
-                            iconContainer.classList.remove('bg-[#f8f5ff]');
-                            iconContainer.classList.add('bg-[#a874e4]');
-                        }
-                        if(chevron) {
+                        if (chevron) {
+                            chevron.style.transform = "rotate(180deg)";
                             chevron.classList.remove('text-[#a874e4]');
                             chevron.classList.add('text-white');
+                        }
+                        
+                        if (parent) {
+                            parent.classList.remove("border-gray-100", "shadow-[0_4px_0_0_#f1f1f5]");
+                            parent.classList.add("border-[#a874e4]", "shadow-[0_4px_0_0_#dcc3f5]");
+                        }
+                        
+                        if (iconContainer) {
+                            iconContainer.classList.remove('bg-[#f8f5ff]');
+                            iconContainer.classList.add('bg-[#a874e4]');
                         }
                     }
                 });
@@ -1254,191 +1446,203 @@
             }
 
             // --- 5. Lógica do Carrossel 3D de Funcionalidades ---
-            const slides = [
-                {
-                    title: "Linha do Tempo",
-                    desc: "Reviva sua jornada com uma linha do tempo animada e elegante, destacando os marcos mais importantes da sua história.",
-                    icon: `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>`,
-                    video: "https://i.imgur.com/USPKKBl.mp4"
-                },
-                {
-                    title: "Jogo de Palavras",
-                    desc: "Desafie seu amor com um jogo de palavras personalizado! Escolha uma palavra secreta e veja se ele(a) consegue adivinhar.",
-                    icon: `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>`,
-                    video: "https://i.imgur.com/Vs7SoNP.mp4" 
-                },
-                {
-                    title: "Jogo da Memória",
-                    desc: "Um clássico atemporal, mas agora feito só com as fotos de vocês! Teste a memória do seu parceiro(a) combinando os pares.",
-                    icon: `<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>`,
-                    video: "https://i.imgur.com/dcDRRva.mp4"
-                }
-            ];
+            (function() {
+                const slides = [
+                    {
+                        title: "Linha do Tempo",
+                        desc: "Reviva sua jornada com uma linha do tempo animada e elegante, destacando os marcos mais importantes da sua história.",
+                        icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="md:w-[28px] md:h-[28px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>`,
+                        video: "https://i.imgur.com/USPKKBl.mp4"
+                    },
+                    {
+                        title: "Jogo de Palavras",
+                        desc: "Desafie seu amor com um jogo de palavras personalizado! Escolha uma palavra secreta e veja se ele(a) consegue adivinhar.",
+                        icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="md:w-[28px] md:h-[28px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>`,
+                        video: "https://i.imgur.com/Vs7SoNP.mp4" 
+                    },
+                    {
+                        title: "Jogo da Memória",
+                        desc: "Um clássico atemporal, mas agora feito só com as fotos de vocês! Teste a memória do seu parceiro(a) combinando os pares.",
+                        icon: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="md:w-[28px] md:h-[28px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>`,
+                        video: "https://i.imgur.com/dcDRRva.mp4"
+                    }
+                ];
 
-            let currentIndexCarousel = 0;
-            let isAnimatingCarousel = false;
-            let autoplayTimerCarousel;
-            const AUTOPLAY_DELAY_CAROUSEL = 10000;
+                let currentIndex = 0;
+                let isAnimating = false;
+                let autoplayTimer;
+                const AUTOPLAY_DELAY = 15000;
 
-            const phonesContainer = document.getElementById('phones-container');
-            const phoneElements = [];
-            
-            const titleEl = document.getElementById('slide-title');
-            const descEl = document.getElementById('slide-desc');
-            const iconEl = document.getElementById('slide-icon-container');
-            const textWrapper = document.getElementById('text-wrapper');
-            const dotsContainer = document.getElementById('dots-container');
-            const sectionEl = document.getElementById('funcionalidades-carrossel');
+                const phonesContainer = document.getElementById('phones-container');
+                const phoneElements = [];
+                
+                const titleEl = document.getElementById('slide-title');
+                const descEl = document.getElementById('slide-desc');
+                const iconEl = document.getElementById('slide-icon-container');
+                const textWrapper = document.getElementById('text-wrapper');
+                const dotsContainer = document.getElementById('dots-container');
+                const sectionEl = document.getElementById('funcionalidades-carrossel');
 
-            if (phonesContainer) {
-                function initCarousel() {
-                    dotsContainer.innerHTML = '';
-                    
-                    slides.forEach((slide, i) => {
-                        const phone = document.createElement('div');
+                if (phonesContainer) {
+                    function initCarousel() {
+                        dotsContainer.innerHTML = '';
                         
-                        phone.className = 'absolute left-1/2 top-1/2 w-[240px] md:w-[280px] h-[500px] md:h-[580px] bg-[#2a2a35] rounded-[2.5rem] border-[8px] border-[#1e1e26] overflow-hidden flex flex-col origin-center transition-all duration-[800ms] ease-[cubic-bezier(0.25,1,0.5,1)] cursor-pointer';
-                        phone.style.transformStyle = "preserve-3d"; 
-                        
-                        phone.innerHTML = `
-                            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-28 h-6 bg-[#1e1e26] rounded-b-2xl z-40"></div>
-                            <video src="${slide.video}" loop muted playsinline class="w-full h-full object-cover relative z-10 pointer-events-none rounded-[1.8rem]"></video>
-                            <div class="screen-blur absolute inset-0 bg-[#faf9fc]/30 backdrop-blur-[6px] z-20 transition-opacity duration-[800ms] opacity-0 pointer-events-none rounded-[1.8rem]"></div>
-                        `;
-                        
-                        phone.addEventListener('click', () => {
-                            if(i !== currentIndexCarousel && !isAnimatingCarousel) changeSlide(i, i > currentIndexCarousel ? 'next' : 'prev');
+                        slides.forEach((slide, i) => {
+                            const phone = document.createElement('div');
+                            
+                            phone.className = 'absolute left-1/2 top-1/2 w-[200px] sm:w-[240px] md:w-[280px] h-[430px] sm:h-[500px] md:h-[580px] bg-[#2a2a35] rounded-[2rem] md:rounded-[2.5rem] border-[6px] md:border-[8px] border-[#1e1e26] overflow-hidden flex flex-col origin-center transition-all duration-[800ms] ease-[cubic-bezier(0.25,1,0.5,1)] cursor-pointer';
+                            phone.style.transformStyle = "preserve-3d"; 
+                            
+                            phone.innerHTML = `
+                                <div class="absolute top-0 left-1/2 -translate-x-1/2 w-24 md:w-28 h-5 md:h-6 bg-[#1e1e26] rounded-b-xl md:rounded-b-2xl z-40"></div>
+                                <video src="${slide.video}" loop muted playsinline class="w-full h-full object-cover relative z-10 pointer-events-none rounded-[1.5rem] md:rounded-[1.8rem]"></video>
+                                <div class="screen-blur absolute inset-0 bg-[#faf9fc]/30 backdrop-blur-[6px] z-20 transition-opacity duration-[800ms] opacity-0 pointer-events-none rounded-[1.5rem] md:rounded-[1.8rem]"></div>
+                            `;
+                            
+                            phone.addEventListener('click', () => {
+                                if(i !== currentIndex && !isAnimating) changeSlide(i, i > currentIndex ? 'next' : 'prev');
+                            });
+                            
+                            phonesContainer.appendChild(phone);
+                            phoneElements.push(phone);
+
+                            const dot = document.createElement('div');
+                            dot.className = `rounded-full cursor-pointer transition-all duration-300 ${i === currentIndex ? 'w-6 md:w-8 h-2 md:h-2.5 bg-[#a874e4]' : 'w-2 md:w-2.5 h-2 md:h-2.5 bg-[#e4daef] hover:bg-[#dcc3f5]'}`;
+                            dot.addEventListener('click', () => {
+                                if(i !== currentIndex && !isAnimating) changeSlide(i, i > currentIndex ? 'next' : 'prev');
+                            });
+                            dotsContainer.appendChild(dot);
                         });
-                        
-                        phonesContainer.appendChild(phone);
-                        phoneElements.push(phone);
-
-                        const dot = document.createElement('div');
-                        dot.className = `rounded-full cursor-pointer transition-all duration-300 ${i === currentIndexCarousel ? 'w-8 h-2.5 bg-[#a874e4]' : 'w-2.5 h-2.5 bg-[#e4daef] hover:bg-[#dcc3f5]'}`;
-                        dot.addEventListener('click', () => {
-                            if(i !== currentIndexCarousel && !isAnimatingCarousel) changeSlide(i, i > currentIndexCarousel ? 'next' : 'prev');
-                        });
-                        dotsContainer.appendChild(dot);
-                    });
-
-                    update3DPositions();
-                    startAutoplayCarousel();
-                }
-
-                function update3DPositions() {
-                    const len = slides.length;
-                    const transformBase = 'translate(-50%, -50%)';
-                    
-                    phoneElements.forEach((phone, i) => {
-                        let diff = i - currentIndexCarousel;
-                        
-                        if (diff < -Math.floor(len/2)) diff += len;
-                        if (diff > Math.floor(len/2)) diff -= len;
-
-                        const video = phone.querySelector('video');
-                        const blur = phone.querySelector('.screen-blur');
-
-                        if (diff === 0) {
-                            phone.style.transform = `${transformBase} translateX(0) scale(1) rotateY(0deg) rotateZ(0deg) translateZ(0)`;
-                            phone.style.zIndex = '30';
-                            phone.style.opacity = '1';
-                            phone.style.boxShadow = '0 25px 50px -12px rgba(0,0,0,0.4)';
-                            blur.style.opacity = '0';
-                            video.play().catch(e => {});
-                        } else if (diff === -1 || (len === 2 && diff === 1)) {
-                            phone.style.transform = `${transformBase} translateX(-55%) scale(0.85) rotateY(15deg) rotateZ(-4deg) translateZ(-50px)`;
-                            phone.style.zIndex = '20';
-                            phone.style.opacity = '0.9';
-                            phone.style.boxShadow = '0 10px 30px -10px rgba(0,0,0,0.2)';
-                            blur.style.opacity = '1';
-                            video.pause();
-                        } else if (diff === 1) {
-                            phone.style.transform = `${transformBase} translateX(55%) scale(0.85) rotateY(-15deg) rotateZ(4deg) translateZ(-50px)`;
-                            phone.style.zIndex = '20';
-                            phone.style.opacity = '0.9';
-                            phone.style.boxShadow = '0 10px 30px -10px rgba(0,0,0,0.2)';
-                            blur.style.opacity = '1';
-                            video.pause();
-                        } else {
-                            const sign = Math.sign(diff) || 1;
-                            phone.style.transform = `${transformBase} translateX(${sign * 75}%) scale(0.6) rotateY(${sign * -25}deg) rotateZ(${sign * 8}deg) translateZ(-100px)`;
-                            phone.style.zIndex = '10';
-                            phone.style.opacity = '0';
-                            phone.style.boxShadow = 'none';
-                            blur.style.opacity = '1';
-                            video.pause();
-                        }
-                    });
-
-                    Array.from(dotsContainer.children).forEach((dot, i) => {
-                        dot.className = i === currentIndexCarousel 
-                            ? 'w-8 h-2.5 bg-[#a874e4] rounded-full cursor-pointer transition-all duration-300' 
-                            : 'w-2.5 h-2.5 bg-[#e4daef] hover:bg-[#dcc3f5] rounded-full cursor-pointer transition-all duration-300';
-                    });
-                }
-
-                function changeSlide(newIndex, direction = 'next') {
-                    if (isAnimatingCarousel) return;
-                    isAnimatingCarousel = true;
-                    
-                    resetAutoplayCarousel();
-
-                    textWrapper.classList.add('opacity-0', direction === 'next' ? '-translate-x-6' : 'translate-x-6');
-
-                    setTimeout(() => {
-                        currentIndexCarousel = newIndex;
-                        const slide = slides[currentIndexCarousel];
-                        
-                        titleEl.innerHTML = slide.title;
-                        descEl.innerHTML = slide.desc;
-                        iconEl.innerHTML = slide.icon;
-                        
-                        textWrapper.classList.remove('-translate-x-6', 'translate-x-6');
-                        textWrapper.classList.add(direction === 'next' ? 'translate-x-6' : '-translate-x-6');
-                        void textWrapper.offsetWidth;
 
                         update3DPositions();
+                        startAutoplay();
+                    }
 
-                        textWrapper.classList.remove('opacity-0', 'translate-x-6', '-translate-x-6');
+                    // Atualiza o design baseado no tamanho da tela dinamicamente
+                    function update3DPositions() {
+                        const len = slides.length;
+                        const transformBase = 'translate(-50%, -50%)'; 
+                        
+                        // Detecta se é mobile para aplicar transformações mais contidas
+                        const isMobile = window.innerWidth < 768;
+                        
+                        const sideTranslateX = isMobile ? 55 : 55;  
+                        const sideScale = isMobile ? 0.80 : 0.85;   
+                        const sideRotY = isMobile ? 20 : 15;        
+                        const sideRotZ = isMobile ? 6 : 4;          
 
-                        setTimeout(() => { isAnimatingCarousel = false; }, 500);
-                    }, 300);
+                        phoneElements.forEach((phone, i) => {
+                            let diff = i - currentIndex;
+                            
+                            if (diff < -Math.floor(len/2)) diff += len;
+                            if (diff > Math.floor(len/2)) diff -= len;
+
+                            const video = phone.querySelector('video');
+                            const blur = phone.querySelector('.screen-blur');
+
+                            if (diff === 0) {
+                                // Ativo
+                                phone.style.transform = `${transformBase} translateX(0) scale(1) rotateY(0deg) rotateZ(0deg) translateZ(0)`;
+                                phone.style.zIndex = '30';
+                                phone.style.opacity = '1';
+                                phone.style.boxShadow = isMobile ? '0 15px 30px -10px rgba(0,0,0,0.4)' : '0 25px 50px -12px rgba(0,0,0,0.4)';
+                                blur.style.opacity = '0';
+                                video.play().catch(e => {}); 
+                            } else if (diff === -1 || (len === 2 && diff === 1)) {
+                                // Esquerda
+                                phone.style.transform = `${transformBase} translateX(-${sideTranslateX}%) scale(${sideScale}) rotateY(${sideRotY}deg) rotateZ(-${sideRotZ}deg) translateZ(-50px)`;
+                                phone.style.zIndex = '20';
+                                phone.style.opacity = '0.9';
+                                phone.style.boxShadow = '0 10px 20px -10px rgba(0,0,0,0.2)';
+                                blur.style.opacity = '1';
+                                video.pause();
+                            } else if (diff === 1) {
+                                // Direita
+                                phone.style.transform = `${transformBase} translateX(${sideTranslateX}%) scale(${sideScale}) rotateY(-${sideRotY}deg) rotateZ(${sideRotZ}deg) translateZ(-50px)`;
+                                phone.style.zIndex = '20';
+                                phone.style.opacity = '0.9';
+                                phone.style.boxShadow = '0 10px 20px -10px rgba(0,0,0,0.2)';
+                                blur.style.opacity = '1';
+                                video.pause();
+                            } else {
+                                // Trás
+                                const sign = Math.sign(diff) || 1;
+                                phone.style.transform = `${transformBase} translateX(${sign * (sideTranslateX + 20)}%) scale(0.6) rotateY(${sign * -25}deg) rotateZ(${sign * 8}deg) translateZ(-100px)`;
+                                phone.style.zIndex = '10';
+                                phone.style.opacity = '0';
+                                phone.style.boxShadow = 'none';
+                                blur.style.opacity = '1';
+                                video.pause();
+                            }
+                        });
+
+                        Array.from(dotsContainer.children).forEach((dot, i) => {
+                            dot.className = i === currentIndex 
+                                ? 'w-6 md:w-8 h-2 md:h-2.5 bg-[#a874e4] rounded-full cursor-pointer transition-all duration-300' 
+                                : 'w-2 md:w-2.5 h-2 md:h-2.5 bg-[#e4daef] hover:bg-[#dcc3f5] rounded-full cursor-pointer transition-all duration-300';
+                        });
+                    }
+
+                    function changeSlide(newIndex, direction = 'next') {
+                        if (isAnimating) return;
+                        isAnimating = true;
+                        
+                        resetAutoplay();
+
+                        textWrapper.classList.add('opacity-0', direction === 'next' ? '-translate-x-6' : 'translate-x-6');
+
+                        setTimeout(() => {
+                            currentIndex = newIndex;
+                            const slide = slides[currentIndex];
+                            
+                            titleEl.innerHTML = slide.title;
+                            descEl.innerHTML = slide.desc;
+                            iconEl.innerHTML = slide.icon;
+                            
+                            textWrapper.classList.remove('-translate-x-6', 'translate-x-6');
+                            textWrapper.classList.add(direction === 'next' ? 'translate-x-6' : '-translate-x-6');
+                            void textWrapper.offsetWidth; 
+
+                            update3DPositions();
+
+                            textWrapper.classList.remove('opacity-0', 'translate-x-6', '-translate-x-6');
+
+                            setTimeout(() => { isAnimating = false; }, 500);
+                        }, 300);
+                    }
+
+                    function startAutoplay() {
+                        autoplayTimer = setTimeout(() => {
+                            let nextIndex = currentIndex + 1;
+                            if (nextIndex >= slides.length) nextIndex = 0; 
+                            changeSlide(nextIndex, 'next');
+                        }, AUTOPLAY_DELAY);
+                    }
+
+                    function stopAutoplay() { clearTimeout(autoplayTimer); }
+                    function resetAutoplay() { stopAutoplay(); startAutoplay(); }
+
+                    sectionEl.addEventListener('mouseenter', stopAutoplay);
+                    sectionEl.addEventListener('mouseleave', startAutoplay);
+
+                    document.getElementById('btn-prev').addEventListener('click', () => {
+                        let newIndex = currentIndex - 1;
+                        if (newIndex < 0) newIndex = slides.length - 1; 
+                        changeSlide(newIndex, 'prev');
+                    });
+
+                    document.getElementById('btn-next').addEventListener('click', () => {
+                        let newIndex = currentIndex + 1;
+                        if (newIndex >= slides.length) newIndex = 0;
+                        changeSlide(newIndex, 'next');
+                    });
+
+                    // Atualiza layout em resize do navegador
+                    window.addEventListener('resize', update3DPositions);
+
+                    initCarousel();
                 }
-
-                function startAutoplayCarousel() {
-                    autoplayTimerCarousel = setTimeout(() => {
-                        let nextIndex = currentIndexCarousel + 1;
-                        if (nextIndex >= slides.length) nextIndex = 0;
-                        changeSlide(nextIndex, 'next');
-                    }, AUTOPLAY_DELAY_CAROUSEL);
-                }
-
-                function stopAutoplayCarousel() {
-                    clearTimeout(autoplayTimerCarousel);
-                }
-
-                function resetAutoplayCarousel() {
-                    stopAutoplayCarousel();
-                    startAutoplayCarousel();
-                }
-
-                sectionEl.addEventListener('mouseenter', stopAutoplayCarousel);
-                sectionEl.addEventListener('mouseleave', startAutoplayCarousel);
-
-                document.getElementById('btn-prev').addEventListener('click', () => {
-                    let newIndex = currentIndexCarousel - 1;
-                    if (newIndex < 0) newIndex = slides.length - 1;
-                    changeSlide(newIndex, 'prev');
-                });
-
-                document.getElementById('btn-next').addEventListener('click', () => {
-                    let newIndex = currentIndexCarousel + 1;
-                    if (newIndex >= slides.length) newIndex = 0;
-                    changeSlide(newIndex, 'next');
-                });
-
-                initCarousel();
-            }
+            })();
         });
     </script>
 </body>
