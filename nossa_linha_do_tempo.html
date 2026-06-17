@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Nossa Linha do Tempo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+
+        body {
+            background-color: #050208;
+            margin: 0;
+            overflow: hidden;
+            touch-action: none;
+            font-family: 'Poppins', system-ui, -apple-system, sans-serif;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        /* O SEGREDOS DO "MAIOR NA FRENTE, MENOR ATRÁS":
+           A propriedade 'perspective' baixa (800px) força a lente do 3D
+           a distorcer a profundidade violentamente. O que vai pra longe (Z negativo) 
+           encolhe, e o que vem pra perto (Z positivo) cresce!
+        */
+        #scene {
+            perspective: 700px;
+            transform-style: preserve-3d;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+        }
+
+        @media (min-width: 768px) {
+            #scene {
+                perspective: 1000px;
+            }
+        }
+
+        #universe, .card-container, .card-billboard {
+            pointer-events: none;
+            transform-style: preserve-3d;
+        }
+
+        #universe {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+        }
+
+        .card-container {
+            position: absolute;
+            left: 0; top: 0;
+        }
+
+        .card-billboard {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Mantendo o design limpo e flutuante com sombra roxa sutil */
+        .card-content {
+            pointer-events: auto;
+            position: relative;
+            width: 80px;
+            height: 110px;
+            border-radius: 12px;
+            background-color: #1a1a1a;
+            box-shadow: 0 4px 20px rgba(168, 85, 247, 0.4);
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
+            cursor: pointer;
+            overflow: hidden;
+            transform: translate(-50%, -50%);
+        }
+
+        @media (min-width: 768px) {
+            .card-content {
+                width: 110px;
+                height: 150px;
+                border-radius: 16px;
+            }
+        }
+
+        .card-content:hover {
+            transform: translate(-50%, -50%) scale(1.15);
+            box-shadow: 0 10px 30px rgba(244, 114, 182, 0.6);
+            z-index: 50;
+        }
+
+        .card-content img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            pointer-events: none;
+        }
+
+        .card-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.5) 50%, transparent 100%);
+            padding: 12px 6px 6px 6px;
+            pointer-events: none;
+        }
+
+        .card-title {
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            line-height: 1.2;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .card-date {
+            color: #dcc3f5;
+            font-size: 7px;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        /* Modal Perfeito */
+        #modal {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        #modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        .modal-card {
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        #modal.active .modal-card {
+            transform: scale(1);
+        }
+
+        /* Luzes Volumétricas de Fundo */
+        @keyframes pulse-glow {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.7; }
+            50% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; }
+        }
+        .ambient-light-1 { animation: pulse-glow 8s ease-in-out infinite; }
+        .ambient-light-2 { animation: pulse-glow 12s ease-in-out infinite reverse; }
+    </style>
+</head>
+<body class="text-white relative">
+
+    <!-- Estrelas Nítidas -->
+    <canvas id="stars" class="absolute inset-0 w-full h-full pointer-events-none z-0"></canvas>
+
+    <div class="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+        <div class="ambient-light-1 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120vw] h-[120vw] max-w-[800px] max-h-[800px] bg-purple-900/30 blur-[100px] md:blur-[140px] rounded-full"></div>
+        <div class="ambient-light-2 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vw] max-w-[500px] max-h-[500px] bg-pink-600/15 blur-[80px] md:blur-[120px] rounded-full"></div>
+    </div>
+
+    <!-- UI Topo Minimalista -->
+    <div class="absolute top-0 left-0 w-full p-5 md:p-8 z-20 flex justify-between items-start pointer-events-none h-32">
+        <div class="pl-1">
+            <h1 class="text-lg md:text-xl font-bold tracking-tight drop-shadow-md text-white">
+                Nossa Linha do Tempo
+            </h1>
+            <p class="text-[11px] md:text-xs text-[#b4b4c4] font-medium mt-0.5">Toque e arraste para girar</p>
+        </div>
+        <button class="pointer-events-auto bg-white hover:bg-[#f8f5ff] active:translate-y-1 active:shadow-none p-2.5 rounded-full transition-all border-2 border-[#dcc3f5] shadow-[0_4px_0_0_#dcc3f5] text-[#a874e4]" id="closeBtn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+        </button>
+    </div>
+
+    <!-- Cena 3D -->
+    <div id="scene" class="z-10 absolute inset-0 cursor-grab active:cursor-grabbing">
+        <div id="universe">
+            <!-- Cartas inseridas dinamicamente -->
+        </div>
+    </div>
+
+    <!-- Rodapé Fixo Criado com Lontra -->
+    <div class="fixed bottom-6 left-0 w-full flex justify-center z-20 pointer-events-none">
+        <a href="index.html" class="pointer-events-auto text-[11px] font-semibold text-[#b4b4c4] bg-black/40 px-4 py-1.5 rounded-full backdrop-blur-md border border-white/10 shadow-lg hover:text-white transition-colors">
+            Criado com <span class="text-[#a874e4] font-bold">Lontra</span>
+        </a>
+    </div>
+
+    <!-- Modal Responsivo com estilo Lontra -->
+    <div id="modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/85 px-5">
+        <button id="closeModalBtn" class="absolute top-6 right-5 pointer-events-auto bg-white hover:bg-[#f8f5ff] active:translate-y-1 active:shadow-none p-3 rounded-full transition-all border-2 border-[#dcc3f5] shadow-[0_4px_0_0_#dcc3f5] text-[#a874e4] z-50">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+        </button>
+        
+        <div class="modal-card w-full max-w-sm mx-auto flex flex-col items-center bg-white border-2 border-[#dcc3f5] rounded-[32px] shadow-[0_8px_0_0_#dcc3f5] p-3 md:p-4">
+            <div class="relative w-full aspect-[4/5] md:aspect-[3/4] rounded-[20px] overflow-hidden bg-[#f8f5ff] shadow-inner flex items-center justify-center border border-gray-100">
+                <img id="modalImg" src="" alt="Memory" class="h-full w-auto max-w-full object-contain drop-shadow-xl">
+            </div>
+            <div class="w-full bg-white p-4 rounded-b-[20px] text-center flex flex-col gap-1 mt-1">
+                <h2 id="modalTitle" class="text-[#4a4a5f] font-black text-lg md:text-xl leading-tight"></h2>
+                <p id="modalDate" class="text-[#a874e4] text-[10px] md:text-xs font-bold tracking-wide uppercase"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const memories = [
+            { img: "https://storage.googleapis.com/amore-pages1-62585403-acd4b.firebasestorage.app/lovepages/FmpSee8q4pO4mEzmXo45/timeline/1776000583445-tnir4b-download__34_.jfif", text: "Um dos nossos primeiros encontros!", date: "11 de outubro de 2018" },
+            { img: "https://storage.googleapis.com/amore-pages1-62585403-acd4b.firebasestorage.app/lovepages/FmpSee8q4pO4mEzmXo45/timeline/1776000583451-rzksfl-download__33_.jfif", text: "Te amo🥰", date: "07 de fevereiro de 2019" },
+            { img: "https://storage.googleapis.com/amore-pages1-62585403-acd4b.firebasestorage.app/lovepages/FmpSee8q4pO4mEzmXo45/timeline/1776000583458-cjzrvh-cycling_date.jfif", text: "Role de bike", date: "14 de maio de 2021" },
+            { img: "https://storage.googleapis.com/amore-pages1-62585403-acd4b.firebasestorage.app/lovepages/FmpSee8q4pO4mEzmXo45/timeline/1776000583467-p6oyjl-download__32_.jfif", text: "Minha moto nova🥺", date: "13 de junho de 2023" },
+            { img: "https://storage.googleapis.com/amore-pages1-62585403-acd4b.firebasestorage.app/lovepages/FmpSee8q4pO4mEzmXo45/timeline/1776000583470-uzny7k-download__31_.jfif", text: "Minha mochilinha", date: "17 de março de 2023" },
+            { img: "https://storage.googleapis.com/amore-pages1-62585403-acd4b.firebasestorage.app/lovepages/FmpSee8q4pO4mEzmXo45/timeline/1776000583498-k5xpnr-download__29_.jfif", text: "Clubzao", date: "25 de outubro de 2024" },
+            { img: "https://storage.googleapis.com/amore-pages1-62585403-acd4b.firebasestorage.app/lovepages/FmpSee8q4pO4mEzmXo45/timeline/1776000583503-l38n2v-sou_muito_feliz_em_ter_voc____obrigada_por_ser_t_o_incr_vel__voc____tudo_p_mim.jfif", text: "fingindo q sabe jogar🤣", date: "26 de setembro de 2024" },
+            { img: "https://storage.googleapis.com/amore-pages1-62585403-acd4b.firebasestorage.app/lovepages/FmpSee8q4pO4mEzmXo45/timeline/1776000583535-i0fttl-download__28_.jfif", text: "ME vendo passar raiva", date: "20 de novembro de 2024" },
+            { img: "https://storage.googleapis.com/amore-pages1-62585403-acd4b.firebasestorage.app/lovepages/FmpSee8q4pO4mEzmXo45/timeline/1776000583527-vuj98n-download__26_.jfif", text: "Esse fim de ano foi mt bom", date: "31 de dezembro de 2024" },
+            { img: "https://storage.googleapis.com/amore-pages1-62585403-acd4b.firebasestorage.app/lovepages/FmpSee8q4pO4mEzmXo45/timeline/1776000583414-62mnku-J____MEU.jfif", text: "fingindo q treina né", date: "19 de fevereiro de 2025" },
+            { img: "https://storage.googleapis.com/amore-pages1-62585403-acd4b.firebasestorage.app/lovepages/FmpSee8q4pO4mEzmXo45/timeline/1776000598130-eychya-download__42_.jfif", text: "Primeiro grau com vc rs", date: "26 de maio de 2025" },
+            { img: "https://storage.googleapis.com/amore-pages1-62585403-acd4b.firebasestorage.app/lovepages/FmpSee8q4pO4mEzmXo45/timeline/1776000598141-sg41ty-download__41_.jfif", text: "Praia denovo né", date: "26 de dezembro de 2025" },
+            { img: "https://storage.googleapis.com/amore-pages1-62585403-acd4b.firebasestorage.app/lovepages/FmpSee8q4pO4mEzmXo45/timeline/1776000583487-f1g4ml-download__30_.jfif", text: "Nossos momentos", date: "21 de agosto de 2024" },
+            { img: "https://storage.googleapis.com/amore-pages1-62585403-acd4b.firebasestorage.app/lovepages/FmpSee8q4pO4mEzmXo45/gallery/1776000471633-mnfi6m-__.jfif", text: "Paz 💜", date: "Sempre" }
+        ];
+
+        const universe = document.getElementById('universe');
+        // Raio perfeitamente ajustado para mobile e desktop
+        const R = window.innerWidth < 768 ? 180 : 300; 
+        const n = memories.length;
+        const phi = Math.PI * (3 - Math.sqrt(5)); 
+
+        let rotX = 0;
+        let rotY = 0;
+        let velX = -0.01; 
+        let velY = 0.05;  
+        const friction = 0.96; 
+        const sensitivity = 0.2; 
+        
+        let isMouseDown = false;
+        let isDragging = false;
+        let startX = 0;
+        let startY = 0;
+        let prevMouseX = 0;
+        let prevMouseY = 0;
+
+        const billboards = [];
+
+        memories.forEach((memory, i) => {
+            let x, y, z;
+            if (i === 4) {
+                // Central
+                x = 0; y = 0; z = 0;
+            } else {
+                // Distribuição esférica
+                const y_norm = 1 - (i / (n - 1)) * 2; 
+                const radiusAtY = Math.sqrt(1 - y_norm * y_norm); 
+                const theta = phi * i;
+
+                x = Math.cos(theta) * radiusAtY * R;
+                y = y_norm * R;
+                z = Math.sin(theta) * radiusAtY * R;
+                
+                // Jitter (variação) para quebrar o padrão "esfera perfeita"
+                const jitter = window.innerWidth < 768 ? 60 : 100;
+                x += (Math.random() - 0.5) * jitter;
+                y += (Math.random() - 0.5) * jitter;
+                z += (Math.random() - 0.5) * jitter;
+            }
+
+            const fallbackImg = `https://picsum.photos/seed/${i+500}/300/400`;
+            
+            const container = document.createElement('div');
+            container.className = 'card-container';
+            container.style.transform = `translate3d(${x}px, ${y}px, ${z}px)`;
+
+            const billboard = document.createElement('div');
+            billboard.className = 'card-billboard';
+            
+            const contentHTML = `
+                <div class="card-content">
+                    <img src="${memory.img}" onerror="this.src='${fallbackImg}'" alt="Memory" draggable="false" />
+                    ${memory.text ? `
+                        <div class="card-overlay">
+                            <h3 class="card-title">${memory.text}</h3>
+                            ${memory.date ? `<p class="card-date">${memory.date}</p>` : ''}
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+            billboard.innerHTML = contentHTML;
+
+            // Tratamento Perfeito de Clique vs Drag
+            const cardContent = billboard.querySelector('.card-content');
+            
+            cardContent.addEventListener('mouseup', (e) => {
+                const diffX = Math.abs(e.clientX - startX);
+                const diffY = Math.abs(e.clientY - startY);
+                if (diffX < 5 && diffY < 5) { // É um clique, não um arraste longo
+                    openModal(memory.img, memory.text, memory.date);
+                }
+            });
+
+            cardContent.addEventListener('touchend', (e) => {
+                const diffX = Math.abs(e.changedTouches[0]?.clientX || prevMouseX - startX);
+                const diffY = Math.abs(e.changedTouches[0]?.clientY || prevMouseY - startY);
+                if (diffX < 5 && diffY < 5 && !isDragging) {
+                    openModal(memory.img, memory.text, memory.date);
+                }
+            });
+
+            container.appendChild(billboard);
+            universe.appendChild(container);
+            
+            // Salva as coordenadas espaciais na própria div para o cálculo dinâmico de profundidade
+            billboard._x = x;
+            billboard._y = y;
+            billboard._z = z;
+
+            billboards.push(billboard);
+        });
+
+        // --- SISTEMA DE ARRASTE 3D ---
+        const scene = document.getElementById('scene');
+        
+        const dragStart = (x, y) => {
+            isMouseDown = true;
+            isDragging = false; 
+            startX = x;
+            startY = y;
+            prevMouseX = x;
+            prevMouseY = y;
+            velX = 0;
+            velY = 0;
+        };
+
+        const dragMove = (x, y) => {
+            // Trava para o Desktop: só gira se estiver com o botão pressionado
+            if (!isMouseDown) return;
+
+            // Se mover mais de 5px da origem, consideramos Arraste.
+            if (Math.abs(x - startX) > 5 || Math.abs(y - startY) > 5) {
+                isDragging = true;
+            }
+            if (!isDragging) return;
+
+            const deltaX = x - prevMouseX;
+            const deltaY = y - prevMouseY;
+
+            prevMouseX = x;
+            prevMouseY = y;
+            velY = deltaX * sensitivity;
+            velX = -deltaY * sensitivity;
+        };
+
+        const dragEnd = () => {
+            isMouseDown = false;
+            setTimeout(() => isDragging = false, 50); // Delay para evitar clique falso ao soltar
+        };
+
+        // Desktop Events
+        document.addEventListener('mousedown', (e) => {
+            if (e.target.closest('button') || e.target.closest('#modal')) return;
+            dragStart(e.clientX, e.clientY);
+        });
+        document.addEventListener('mousemove', (e) => dragMove(e.clientX, e.clientY));
+        document.addEventListener('mouseup', dragEnd);
+
+        // Mobile Events (touch-action:none no CSS já previne o scroll da página)
+        document.addEventListener('touchstart', (e) => {
+            if (e.target.closest('button') || e.target.closest('#modal')) return;
+            dragStart(e.touches[0].clientX, e.touches[0].clientY);
+        }, { passive: false });
+        document.addEventListener('touchmove', (e) => dragMove(e.touches[0].clientX, e.touches[0].clientY), { passive: false });
+        document.addEventListener('touchend', dragEnd);
+
+        // --- MOTOR DE ANIMAÇÃO ---
+        function animate() {
+            // Autoplay Suave
+            if (!isDragging && Math.abs(velY) < 0.04 && Math.abs(velX) < 0.04) {
+                velY = 0.06;
+                velX *= 0.98; // Vai reduzindo a rotação X até zerar, para girar só de lado
+            } else if (!isDragging) {
+                velX *= friction;
+                velY *= friction;
+            }
+
+            rotX += velX;
+            rotY += velY;
+
+            // Roda o Universo todo
+            universe.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+
+            // Pré-calcula trigonometria da câmera 3D para saber quem está no fundo e na frente
+            const radX = rotX * Math.PI / 180;
+            const radY = rotY * Math.PI / 180;
+            const cosX = Math.cos(radX);
+            const sinX = Math.sin(radX);
+            const cosY = Math.cos(radY);
+            const sinY = Math.sin(radY);
+
+            // Efeito Billboard + Escala + Desfoque baseado na profundidade (Z)
+            for (let i = 0; i < billboards.length; i++) {
+                const bb = billboards[i];
+                
+                // Calcula a profundidade global Z da carta após as rotações do universo
+                const z1 = -bb._x * sinY + bb._z * cosY;
+                const y1 = bb._y;
+                const z2 = y1 * sinX + z1 * cosX;
+                
+                // Normaliza a posição Z (vai de aprox -1 lá no fundo, até 1 aqui na frente da tela)
+                const zNorm = z2 / R;
+
+                // Fundo = desfocado | Frente = totalmente nítido
+                let blurVal = 0;
+                if (zNorm < 0) {
+                    blurVal = Math.abs(zNorm) * 4.5; // Até 4.5px de desfoque suave no fundo
+                }
+                
+                // Aplica tudo na carta: Mantém de frente pra tela e aplica o blur
+                // Removido o 'scale()' forçado do JS para que a Perspectiva 3D original do CSS faça o redimensionamento perfeito
+                const inverseTransform = `rotateY(${-rotY}deg) rotateX(${-rotX}deg)`;
+                bb.style.transform = inverseTransform;
+                bb.style.filter = `blur(${blurVal}px)`;
+                
+                // Ajusta o z-index dinamicamente para garantir que a foto focada da frente cubra a do fundo
+                bb.style.zIndex = Math.round(zNorm * 100);
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        // --- SISTEMA DE ESTRELAS ---
+        const canvas = document.getElementById('stars');
+        const ctx = canvas.getContext('2d');
+        let width, height, starsArray = [];
+
+        function initStars() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            starsArray = [];
+            const numStars = window.innerWidth < 768 ? 120 : 300; 
+            
+            for (let i = 0; i < numStars; i++) {
+                starsArray.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    r: Math.random() * 1.2 + 0.3,
+                    opacity: Math.random() * 0.7 + 0.1,
+                    speed: (Math.random() * 0.01) + 0.005
+                });
+            }
+        }
+
+        function drawStars() {
+            ctx.clearRect(0, 0, width, height);
+            starsArray.forEach(star => {
+                star.opacity += star.speed;
+                if (star.opacity > 1 || star.opacity < 0.1) star.speed = -star.speed;
+
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
+                ctx.fill();
+            });
+            requestAnimationFrame(drawStars);
+        }
+
+        window.addEventListener('resize', initStars);
+
+        // --- CONTROLES DO MODAL ---
+        const modal = document.getElementById('modal');
+        const modalImg = document.getElementById('modalImg');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalDate = document.getElementById('modalDate');
+
+        window.openModal = function(imgSrc, title, date) {
+            modalImg.src = imgSrc;
+            modalTitle.textContent = title || "";
+            modalDate.textContent = date || "";
+            modal.classList.add('active');
+        };
+
+        const closeModal = () => {
+            modal.classList.remove('active');
+            setTimeout(() => {
+                modalImg.src = ""; // Limpa depois da animação para não piscar
+            }, 300);
+        };
+
+        document.getElementById('closeModalBtn').addEventListener('click', closeModal);
+        modal.addEventListener('click', (e) => {
+            if(e.target === modal) closeModal();
+        });
+
+        document.getElementById('closeBtn').addEventListener('click', () => {
+            document.body.style.opacity = 0;
+            document.body.style.transition = 'opacity 0.4s ease';
+            setTimeout(() => {
+                // Volta para a página que abriu a linha do tempo (ex: a página do presente)
+                if (window.history.length > 1) {
+                    window.history.back();
+                } else {
+                    window.location.href = 'demo.html';
+                }
+            }, 380);
+        });
+
+        window.onload = function() {
+            initStars();
+            drawStars();
+            animate();
+        };
+    </script>
+</body>
+</html>

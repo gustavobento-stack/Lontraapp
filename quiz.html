@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presente Especial</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+        
+        body { font-family: 'Poppins', sans-serif; }
+        .font-poppins { font-family: 'Poppins', sans-serif; }
+        
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        input[type="date"]::-webkit-calendar-picker-indicator,
+        input[type="time"]::-webkit-calendar-picker-indicator {
+            opacity: 0; width: 100%; height: 100%; position: absolute; top: 0; left: 0; cursor: pointer;
+        }
+
+        /* Animações nativas para substituir o tailwindcss-animate do React */
+        @keyframes slideInBottom {
+            from { opacity: 0; transform: translateY(1rem); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-step {
+            animation: slideInBottom 0.5s both ease-out;
+        }
+    </style>
+</head>
+<body class="bg-[#faf9fc] text-[#4a4a5f] font-poppins min-h-screen overflow-x-hidden relative">
+
+    <div class="flex justify-center pb-32 w-full">
+        
+        <!-- Banner Promo Topo -->
+        <div class="fixed top-0 left-0 w-full bg-[#a874e4] text-white text-[10.5px] font-medium tracking-wide text-center py-2 z-[60] shadow-sm">
+            Apenas hoje, <span id="todayFormatted"></span> <span class="font-bold ml-1 text-white">TODOS OS PLANOS COM 50% OFF</span>
+        </div>
+
+        <div class="w-full max-w-[420px] px-5 pt-[110px] flex flex-col relative">
+            
+            <!-- Header com Barra de Progresso Fixo -->
+            <div class="fixed top-[32px] left-1/2 -translate-x-1/2 w-full max-w-[420px] bg-[#faf9fc] z-50 px-5 pt-6 pb-4">
+                <header class="flex items-center">
+                    <button 
+                        id="btnBack"
+                        class="p-2 -ml-2 rounded-full transition-colors text-gray-200 cursor-not-allowed"
+                        disabled
+                    >
+                        <i data-lucide="arrow-left" class="w-6 h-6"></i>
+                    </button>
+                    <div class="flex-1 ml-4 h-3 bg-gray-100/80 rounded-full overflow-hidden relative">
+                        <div 
+                            id="progressBar"
+                            class="absolute top-0 left-0 h-full bg-[#a874e4] rounded-full transition-all duration-500 ease-out"
+                            style="width: 0%"
+                        ></div>
+                    </div>
+                </header>
+            </div>
+
+            <!-- Avatar e Balão de Fala -->
+            <div class="flex flex-col items-center mb-8 transition-all duration-300 mt-2">
+                <div class="w-28 h-28 bg-white rounded-full flex items-center justify-center shadow-sm border border-gray-50 mb-3 relative z-10 transition-transform duration-500">
+                    <div class="w-24 h-24 bg-gradient-to-tr from-purple-100 to-[#f3e8ff] rounded-full flex items-center justify-center relative overflow-hidden">
+                        <img 
+                            src="https://em-content.zobj.net/source/animated-noto-color-emoji/461/otter_1f9a6.gif" 
+                            alt="Lontra Animada" 
+                            class="w-16 h-16 object-contain"
+                        />
+                    </div>
+                </div>
+
+                <div class="relative w-full max-w-[320px]">
+                    <div class="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white rotate-45 border-t border-l border-gray-100 shadow-sm z-0"></div>
+                    <div class="bg-white px-6 py-5 rounded-[20px] shadow-[0_4px_24px_-8px_rgba(0,0,0,0.06)] border border-gray-100 relative z-10 text-center min-h-[82px] flex items-center justify-center">
+                        <h2 class="text-[#4a4a5f] text-[15px] font-medium leading-snug">
+                            <span id="displayedText"></span>
+                            <span id="typingCursor" class="animate-pulse ml-0.5 text-[#a874e4]">|</span>
+                        </h2>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONTEÚDO DINÂMICO BASEADO NO PASSO -->
+            <div id="stepContainer" class="flex flex-col gap-5 w-full animate-step">
+                
+                <!-- --- PASSO 1: Destinatário --- -->
+                <div id="step-1" class="flex flex-col gap-5">
+                    <div class="relative pt-3">
+                        <div class="absolute top-0 left-1/2 -translate-x-1/2 bg-[#a874e4] text-white text-[10px] font-bold px-4 py-1.5 rounded-full shadow-sm tracking-widest uppercase z-10">Mais Popular</div>
+                        <button onclick="handleNext('recipientType', 'amor')" class="w-full rounded-[24px] p-5 flex items-center text-left transition-all duration-150 active:translate-y-[4px] active:shadow-none border-2 border-gray-100 bg-white shadow-[0_4px_0_0_#f1f1f5] hover:border-[#a874e4] hover:bg-[#fdfaff] hover:shadow-[0_4px_0_0_#dcc3f5] group">
+                            <div class="w-[52px] h-[52px] rounded-full bg-[#f8f5ff] group-hover:bg-[#f3e8ff] flex items-center justify-center mr-4 shrink-0 transition-colors">
+                                <i data-lucide="heart" class="w-6 h-6 text-[#cba4f1] group-hover:text-[#a874e4]" style="fill: none;"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="font-bold text-lg mb-0.5 text-[#4a4a5f] group-hover:text-[#5b4a78] transition-colors">Presente de Amor</h3>
+                                <p class="text-[#8a8a9e] text-[13px] mb-2 font-medium">Para namorado(a) ou cônjuge</p>
+                                <p class="text-[#a874e4] text-[10px] font-bold tracking-widest uppercase">+ Retrospectiva Wrapped</p>
+                            </div>
+                        </button>
+                    </div>
+                    
+                    <button onclick="handleNext('recipientType', 'amiga')" class="w-full rounded-[24px] p-5 flex items-center text-left transition-all duration-150 active:translate-y-[4px] active:shadow-none border-2 border-gray-100 bg-white shadow-[0_4px_0_0_#f1f1f5] hover:border-[#a874e4] hover:bg-[#fdfaff] hover:shadow-[0_4px_0_0_#dcc3f5] group">
+                        <div class="w-[52px] h-[52px] rounded-full bg-[#f8f5ff] group-hover:bg-[#f3e8ff] flex items-center justify-center mr-4 shrink-0 transition-colors">
+                            <i data-lucide="message-circle-heart" class="w-6 h-6 text-[#cba4f1] group-hover:text-[#a874e4]"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-bold text-lg mb-0.5 text-[#4a4a5f] group-hover:text-[#5b4a78] transition-colors">Presente para Amiga</h3>
+                            <p class="text-[#8a8a9e] text-[13px] mb-2 font-medium">Surpreenda sua melhor amiga</p>
+                            <p class="text-[#a874e4] text-[10px] font-bold tracking-widest uppercase">+ Retrospectiva Wrapped</p>
+                        </div>
+                    </button>
+                    
+                    <div class="flex items-center gap-4 my-2">
+                        <div class="flex-1 h-[2px] bg-gray-100"></div>
+                        <span class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Ou homenageie diretamente:</span>
+                        <div class="flex-1 h-[2px] bg-gray-100"></div>
+                    </div>
+                    
+                    <div id="directTributesContainer" class="flex flex-wrap justify-center gap-3">
+                        <!-- Renderizado via JS -->
+                    </div>
+
+                    <!-- FOOTER (Apenas na página 1) -->
+                    <div class="mt-8 mb-4 text-center text-[11px] text-[#b4b4c4] flex flex-col items-center gap-1">
+                        <span>Feito com 🦦 no Brasil</span>
+                        <span id="footerYear"></span>
+                    </div>
+                </div>
+
+                <!-- --- PASSO 2: Nomes --- -->
+                <div id="step-2" class="hidden flex flex-col gap-4">
+                    <div class="space-y-1.5">
+                        <label class="text-[13px] font-semibold text-[#8a8a9e] ml-2">Seu nome</label>
+                        <input id="inputSenderName" type="text" placeholder="Ex: João" class="w-full text-lg font-semibold text-[#5b4a78] bg-white border-2 border-gray-100 rounded-[20px] p-4 shadow-sm focus:outline-none focus:border-[#a874e4] focus:ring-4 focus:ring-[#f3e8ff] transition-all placeholder:text-gray-300 placeholder:font-normal" />
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-[13px] font-semibold text-[#8a8a9e] ml-2">Nome da pessoa especial</label>
+                        <input id="inputRecipientName" type="text" placeholder="Ex: Amanda" class="w-full text-lg font-semibold text-[#5b4a78] bg-white border-2 border-gray-100 rounded-[20px] p-4 shadow-sm focus:outline-none focus:border-[#a874e4] focus:ring-4 focus:ring-[#f3e8ff] transition-all placeholder:text-gray-300 placeholder:font-normal" />
+                    </div>
+                    <div class="mt-2 text-center text-[12px] font-medium text-[#8a8a9e] bg-[#f8f5ff] py-3 px-4 rounded-[16px] border border-[#f3e8ff]">
+                        Você poderá editar todas as informações depois.
+                    </div>
+                </div>
+
+                <!-- --- PASSO 3: Quando se conheceram + Contador --- -->
+                <div id="step-3" class="hidden flex flex-col gap-4">
+                    <div class="space-y-1.5">
+                        <label class="flex justify-between items-center text-[13px] font-semibold text-[#8a8a9e] ml-2 mr-2">
+                            <span>Data que se conheceram</span>
+                            <span class="text-red-400 text-[10px] uppercase tracking-wider">Obrigatório</span>
+                        </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none"><i data-lucide="calendar" class="h-5 w-5 text-[#cba4f1]"></i></div>
+                            <input id="inputMeetDate" type="date" class="w-full text-[16px] font-medium text-[#5b4a78] bg-white border-2 border-gray-100 rounded-[20px] py-4 pl-12 pr-4 shadow-sm focus:outline-none focus:border-[#a874e4] focus:ring-4 focus:ring-[#f3e8ff] transition-all relative" />
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-1.5">
+                        <label class="flex justify-between items-center text-[13px] font-semibold text-[#8a8a9e] ml-2 mr-1">
+                            <span>Hora</span>
+                            <span class="text-gray-300 text-[10px] uppercase tracking-wider">Opcional</span>
+                        </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none"><i data-lucide="clock" class="h-5 w-5 text-[#cba4f1]"></i></div>
+                            <input id="inputMeetTime" type="time" class="w-full text-[16px] font-medium text-[#5b4a78] bg-white border-2 border-gray-100 rounded-[20px] py-4 pl-12 pr-3 shadow-sm focus:outline-none focus:border-[#a874e4] focus:ring-4 focus:ring-[#f3e8ff] transition-all relative" />
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-1.5">
+                        <label class="flex justify-between items-center text-[13px] font-semibold text-[#8a8a9e] ml-2 mr-1">
+                            <span>Cidade</span>
+                            <span class="text-gray-300 text-[10px] uppercase tracking-wider">Opcional</span>
+                        </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><i data-lucide="map-pin" class="h-5 w-5 text-[#cba4f1]"></i></div>
+                            <input id="inputMeetCity" type="text" placeholder="Ex: Curitiba" class="w-full text-[16px] font-medium text-[#5b4a78] bg-white border-2 border-gray-100 rounded-[20px] py-4 pl-10 pr-3 shadow-sm focus:outline-none focus:border-[#a874e4] focus:ring-4 focus:ring-[#f3e8ff] transition-all placeholder:text-gray-300" />
+                        </div>
+                    </div>
+
+                    <!-- Relógio em Tempo Real -->
+                    <div id="timeContainer" class="hidden mt-4 bg-gradient-to-br from-[#f8f5ff] to-[#f3e8ff] rounded-[20px] p-5 border border-[#dcc3f5] shadow-sm animate-step">
+                        <p class="text-center text-[13px] font-bold text-[#a874e4] uppercase tracking-widest mb-3">
+                            Uau, vocês estão juntos há:
+                        </p>
+                        <div class="grid grid-cols-3 gap-2">
+                            <div class="bg-white rounded-xl p-2 text-center shadow-sm">
+                                <span id="timeY" class="block text-xl font-bold text-[#5b4a78]">0</span>
+                                <span class="text-[10px] text-[#8a8a9e] font-semibold uppercase">Anos</span>
+                            </div>
+                            <div class="bg-white rounded-xl p-2 text-center shadow-sm">
+                                <span id="timeM" class="block text-xl font-bold text-[#5b4a78]">0</span>
+                                <span class="text-[10px] text-[#8a8a9e] font-semibold uppercase">Meses</span>
+                            </div>
+                            <div class="bg-white rounded-xl p-2 text-center shadow-sm">
+                                <span id="timeD" class="block text-xl font-bold text-[#5b4a78]">0</span>
+                                <span class="text-[10px] text-[#8a8a9e] font-semibold uppercase">Dias</span>
+                            </div>
+                            <div class="bg-white rounded-xl p-2 text-center shadow-sm">
+                                <span id="timeH" class="block text-xl font-bold text-[#a874e4]">0</span>
+                                <span class="text-[10px] text-[#8a8a9e] font-semibold uppercase">Horas</span>
+                            </div>
+                            <div class="bg-white rounded-xl p-2 text-center shadow-sm">
+                                <span id="timeMin" class="block text-xl font-bold text-[#a874e4]">0</span>
+                                <span class="text-[10px] text-[#8a8a9e] font-semibold uppercase">Min</span>
+                            </div>
+                            <div class="bg-white rounded-xl p-2 text-center shadow-sm">
+                                <span id="timeS" class="block text-xl font-bold text-[#a874e4]">0</span>
+                                <span class="text-[10px] text-[#8a8a9e] font-semibold uppercase">Seg</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- --- PASSO 4: Título do Presente --- -->
+                <div id="step-4" class="hidden flex flex-col gap-4">
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center ml-2 mr-2">
+                            <label class="text-[13px] font-semibold text-[#8a8a9e]">Título Especial</label>
+                            <button onclick="generateAI('title')" class="text-[11px] font-bold text-[#a874e4] bg-[#f8f5ff] px-2 py-1 rounded-md flex items-center gap-1 hover:bg-[#f3e8ff] transition-colors">
+                                <i data-lucide="sparkles" class="w-3 h-3"></i> Gerar com IA
+                            </button>
+                        </div>
+                        
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                <i data-lucide="type" class="h-5 w-5 text-[#cba4f1]"></i>
+                            </div>
+                            <input 
+                                id="inputTitle"
+                                type="text" 
+                                maxlength="50"
+                                placeholder="Ex: Nosso Primeiro Ano Juntos"
+                                class="w-full text-lg font-semibold text-[#5b4a78] bg-white border-2 border-gray-100 rounded-[20px] py-4 pl-12 pr-4 shadow-sm focus:outline-none focus:border-[#a874e4] focus:ring-4 focus:ring-[#f3e8ff] transition-all placeholder:text-gray-300 placeholder:font-normal"
+                            />
+                        </div>
+                        <div class="flex justify-between items-center px-2">
+                            <p class="text-[11px] text-gray-400">Este será o destaque principal.</p>
+                            <span id="titleLength" class="text-[11px] font-semibold text-gray-400">0/50</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- --- PASSO 5: Mensagem --- -->
+                <div id="step-5" class="hidden flex flex-col gap-4">
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center ml-2 mr-2">
+                            <label class="text-[13px] font-semibold text-[#8a8a9e] flex items-center gap-1.5">
+                                <i data-lucide="align-left" class="w-4 h-4"></i> Sua Mensagem
+                            </label>
+                            <button onclick="generateAI('message')" class="text-[11px] font-bold text-[#a874e4] bg-[#f8f5ff] px-2 py-1 rounded-md flex items-center gap-1 hover:bg-[#f3e8ff] transition-colors">
+                                <i data-lucide="sparkles" class="w-3 h-3"></i> Gerar com IA
+                            </button>
+                        </div>
+                        
+                        <textarea 
+                            id="inputMessage"
+                            rows="6"
+                            maxlength="1000"
+                            placeholder="Escreva algo especial..."
+                            class="w-full text-[15px] leading-relaxed font-medium text-[#5b4a78] bg-white border-2 border-gray-100 rounded-[20px] p-4 shadow-sm focus:outline-none focus:border-[#a874e4] focus:ring-4 focus:ring-[#f3e8ff] transition-all placeholder:text-gray-300 placeholder:font-normal resize-none"
+                        ></textarea>
+                        <div class="flex justify-end px-2">
+                            <span id="messageLength" class="text-[11px] font-semibold text-gray-400">0/1000</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- --- PASSO 6: Fotos --- -->
+                <div id="step-6" class="hidden flex flex-col gap-4">
+                    <div 
+                        id="photoUploadArea"
+                        onclick="triggerPhotoUpload()"
+                        class="w-full border-2 border-dashed rounded-[24px] p-6 flex flex-col items-center justify-center gap-3 transition-all bg-[#fdfaff] border-[#cba4f1] hover:bg-[#f8f5ff] hover:border-[#a874e4] cursor-pointer"
+                    >
+                        <div class="w-12 h-12 bg-[#f3e8ff] rounded-full flex items-center justify-center">
+                            <i data-lucide="image-plus" class="w-6 h-6 text-[#a874e4]"></i>
+                        </div>
+                        <div class="text-center">
+                            <p id="photoUploadTitle" class="text-[#5b4a78] font-semibold text-[14px]">Toque para enviar fotos</p>
+                            <p id="photoUploadSubtitle" class="text-[#8a8a9e] text-[12px] mt-0.5">0/8 fotos selecionadas</p>
+                        </div>
+                    </div>
+                    <input type="file" multiple accept="image/*" class="hidden" id="fileInput" onchange="handlePhotoUpload(event)" />
+
+                    <div id="photoGrid" class="grid grid-cols-3 gap-3 mt-2 hidden">
+                        <!-- Fotos Renderizadas Aqui -->
+                    </div>
+                </div>
+
+                <!-- --- PASSO 7: Trilha Sonora --- -->
+                <div id="step-7" class="hidden flex flex-col gap-4">
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none"><i data-lucide="search" class="h-5 w-5 text-gray-400"></i></div>
+                        <input id="inputSearchSong" type="search" placeholder="Pesquisar música ou artista..." class="w-full text-[15px] font-medium text-[#5b4a78] bg-white border-2 border-gray-100 rounded-[20px] py-4 pl-12 pr-4 shadow-sm focus:outline-none focus:border-[#a874e4] focus:ring-4 focus:ring-[#f3e8ff] transition-all placeholder:text-gray-300" />
+                    </div>
+                    
+                    <div id="songCategoriesContainer" class="flex gap-2 overflow-x-auto no-scrollbar pb-2 -mx-2 px-2">
+                        <!-- Renderizado via JS -->
+                    </div>
+                    
+                    <div id="songsListContainer" class="flex flex-col gap-2 mt-2">
+                        <!-- Renderizado via JS -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- --- BOTÃO "CONTINUAR" FIXO NO BOTTOM --- -->
+        <div id="bottomBar" class="hidden fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[420px] bg-gradient-to-t from-[#faf9fc] via-[#faf9fc] to-transparent pt-12 pb-6 px-5 z-50">
+            <button 
+                id="btnNext"
+                onclick="handleNextStep()"
+                disabled
+                class="w-full bg-[#a874e4] text-white font-bold text-lg rounded-[20px] p-5 flex justify-center items-center gap-2 transition-all duration-150 active:translate-y-[4px] active:shadow-none shadow-[0_4px_0_0_#8b5bc4] disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+                <span id="btnNextText">Continuar</span> <i data-lucide="chevron-right" class="w-5 h-5"></i>
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        // Inicializa ícones na primeira carga
+        lucide.createIcons();
+
+        // Estados Globais
+        let currentStep = 1;
+        let answers = {
+            recipientType: '',
+            senderName: '',
+            recipientName: '',
+            meetDate: '',
+            meetTime: '',
+            meetCity: '',
+            title: '',
+            message: '',
+            photos: [],
+            photoFiles: [],
+            song: null
+        };
+        let isTyping = false;
+        let searchQuery = '';
+        let selectedCategory = '';
+        let typewriterTimer = null;
+        let clockTimerId = null;
+
+        const questions = {
+            1: "Que tipo de presente vamos criar?",
+            2: "Que legal! Conta pra mim, quem está dando e quem vai receber?",
+            3: "Quando a história de vocês começou?",
+            4: "Escreva o título que vai marcar esse momento especial.",
+            5: "Escreva uma mensagem inesquecível (para emocionar)!",
+            6: "Envie de 1 a 8 fotos que contam a história de vocês.",
+            7: "Pesquise qualquer música ou escolha por categoria."
+        };
+
+        const directTributes = [
+            { id: 'mae', label: 'Mãe', icon: 'flower-2' },
+            { id: 'pai', label: 'Pai', icon: 'shield' },
+            { id: 'avo', label: 'Avó', icon: 'infinity' },
+            { id: 'irma', label: 'Irmã', icon: 'ribbon' },
+            { id: 'tia', label: 'Tia', icon: 'flower-2' },
+            { id: 'filha', label: 'Filha', icon: 'baby' },
+            { id: 'madrinha', label: 'Madrinha', icon: 'wand-2' },
+        ];
+
+        const songCategories = ['Romântica', 'Sertanejo', 'Pop', 'K-Pop', 'Internacional', 'Rock'];
+        
+        const mockSongs = [
+            { id: 1, title: 'Perfect', artist: 'Ed Sheeran', cover: 'https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=100&h=100&fit=crop&auto=format' },
+            { id: 2, title: 'Yellow', artist: 'Coldplay', cover: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=100&h=100&fit=crop&auto=format' },
+            { id: 3, title: 'A Thousand Years', artist: 'Christina Perri', cover: 'https://images.unsplash.com/photo-1493225457124-a1a2a5f5f9af?w=100&h=100&fit=crop&auto=format' },
+            { id: 4, title: 'Evidências', artist: 'Chitãozinho & Xororó', cover: 'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=100&h=100&fit=crop&auto=format' },
+        ];
+
+        // Setup Inicial
+        document.addEventListener('DOMContentLoaded', () => {
+            const today = new Date().toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' });
+            document.getElementById('todayFormatted').innerText = today;
+            document.getElementById('footerYear').innerText = `© ${new Date().getFullYear()} Lontra. Todos os direitos reservados.`;
+            
+            renderTributes();
+            renderSongCategories();
+            renderSongs();
+            startTypewriter();
+            setupInputListeners();
+            updateStepVisibility();
+        });
+
+        // Efeito Máquina de Escrever
+        function startTypewriter() {
+            clearInterval(typewriterTimer);
+            const text = questions[currentStep];
+            const displayEl = document.getElementById('displayedText');
+            const cursorEl = document.getElementById('typingCursor');
+            
+            displayEl.innerText = '';
+            cursorEl.classList.remove('hidden');
+            isTyping = true;
+            let i = 0;
+
+            typewriterTimer = setInterval(() => {
+                if (i < text.length) {
+                    displayEl.innerText += text.charAt(i);
+                    i++;
+                } else {
+                    isTyping = false;
+                    cursorEl.classList.add('hidden');
+                    clearInterval(typewriterTimer);
+                }
+            }, 40);
+        }
+
+        // Navegação de Passos
+        function handleNext(field, value) {
+            if (field) {
+                answers[field] = value;
+            }
+            if (currentStep < 7) {
+                currentStep++;
+                updateStepVisibility();
+                startTypewriter();
+                validateStep();
+            }
+        }
+
+        function handleNextStep() {
+            if (currentStep === 7) {
+                finishQuizAndGoToGift();
+            } else {
+                handleNext();
+            }
+        }
+
+        document.getElementById('btnBack').addEventListener('click', () => {
+            if (currentStep > 1) {
+                currentStep--;
+                updateStepVisibility();
+                startTypewriter();
+                validateStep();
+            }
+        });
+
+        // Validação
+        function validateStep() {
+            let isValid = false;
+            switch(currentStep) {
+                case 1: isValid = true; break;
+                case 2: isValid = answers.senderName.trim() !== '' && answers.recipientName.trim() !== ''; break;
+                case 3: isValid = answers.meetDate !== ''; break;
+                case 4: isValid = answers.title.trim() !== ''; break;
+                case 5: isValid = answers.message.trim() !== ''; break;
+                case 6: isValid = answers.photos.length > 0; break;
+                case 7: isValid = answers.song !== null; break;
+            }
+            
+            document.getElementById('btnNext').disabled = !isValid;
+        }
+
+        // Atualização da UI para Passos
+        function updateStepVisibility() {
+            // Progresso
+            const progressPercentage = ((currentStep - 1) / 6) * 100;
+            document.getElementById('progressBar').style.width = `${progressPercentage}%`;
+
+            // Botão Voltar
+            const btnBack = document.getElementById('btnBack');
+            if (currentStep === 1) {
+                btnBack.classList.add('text-gray-200', 'cursor-not-allowed');
+                btnBack.classList.remove('hover:bg-gray-100', 'cursor-pointer', 'text-gray-400');
+                btnBack.disabled = true;
+            } else {
+                btnBack.classList.remove('text-gray-200', 'cursor-not-allowed');
+                btnBack.classList.add('hover:bg-gray-100', 'cursor-pointer', 'text-gray-400');
+                btnBack.disabled = false;
+            }
+
+            // Barra inferior e Botão Continuar
+            const bottomBar = document.getElementById('bottomBar');
+            if (currentStep > 1 && currentStep <= 7) {
+                bottomBar.classList.remove('hidden');
+                document.getElementById('btnNextText').innerText = currentStep === 7 ? 'Finalizar' : 'Continuar';
+            } else {
+                bottomBar.classList.add('hidden');
+            }
+
+            // Ocultar todos os passos e mostrar o atual com animação
+            for (let i = 1; i <= 7; i++) {
+                const stepEl = document.getElementById(`step-${i}`);
+                if (i === currentStep) {
+                    stepEl.classList.remove('hidden');
+                    // Reiniciar animação
+                    const container = document.getElementById('stepContainer');
+                    container.classList.remove('animate-step');
+                    void container.offsetWidth; // trigger reflow
+                    container.classList.add('animate-step');
+                } else {
+                    stepEl.classList.add('hidden');
+                }
+            }
+
+            // Foco nos inputs dinâmicos
+            if (currentStep === 2) document.getElementById('inputSenderName').focus();
+            if (currentStep === 4) document.getElementById('inputTitle').focus();
+            if (currentStep === 5) document.getElementById('inputMessage').focus();
+        }
+
+        // Lógica dos Inputs
+        function setupInputListeners() {
+            // Step 2
+            document.getElementById('inputSenderName').addEventListener('input', (e) => { answers.senderName = e.target.value; validateStep(); });
+            document.getElementById('inputRecipientName').addEventListener('input', (e) => { 
+                answers.recipientName = e.target.value; 
+                document.getElementById('inputMessage').placeholder = `Escreva algo especial para ${answers.recipientName || 'quem vai receber'}...`;
+                validateStep(); 
+            });
+
+            // Step 3
+            document.getElementById('inputMeetDate').addEventListener('change', (e) => { answers.meetDate = e.target.value; validateStep(); calculateTime(); });
+            document.getElementById('inputMeetTime').addEventListener('change', (e) => { answers.meetTime = e.target.value; calculateTime(); });
+            document.getElementById('inputMeetCity').addEventListener('input', (e) => { answers.meetCity = e.target.value; });
+
+            // Step 4
+            const inputTitle = document.getElementById('inputTitle');
+            const titleLength = document.getElementById('titleLength');
+            inputTitle.addEventListener('input', (e) => { 
+                answers.title = e.target.value; 
+                titleLength.innerText = `${answers.title.length}/50`;
+                titleLength.className = `text-[11px] font-semibold ${answers.title.length === 50 ? 'text-red-400' : 'text-gray-400'}`;
+                validateStep(); 
+            });
+
+            // Step 5
+            const inputMessage = document.getElementById('inputMessage');
+            const messageLength = document.getElementById('messageLength');
+            inputMessage.addEventListener('input', (e) => { 
+                answers.message = e.target.value; 
+                messageLength.innerText = `${answers.message.length}/1000`;
+                messageLength.className = `text-[11px] font-semibold ${answers.message.length === 1000 ? 'text-red-400' : 'text-gray-400'}`;
+                validateStep(); 
+            });
+
+            // Step 7
+            document.getElementById('inputSearchSong').addEventListener('input', (e) => { searchQuery = e.target.value; }); // Somente salva estado, numa lib real faria filtro
+
+            // Inicializa contador
+            clockTimerId = setInterval(calculateTime, 1000);
+        }
+
+        // IA Generator
+        function generateAI(field) {
+            if (field === 'title') {
+                answers.title = "Nosso amor escrito nas estrelas ✨";
+                const el = document.getElementById('inputTitle');
+                el.value = answers.title;
+                // Dispara o evento de input para atualizar contadores
+                el.dispatchEvent(new Event('input'));
+            } else if (field === 'message') {
+                answers.message = "Desde o dia em que nossos caminhos se cruzaram, cada segundo ao seu lado se tornou a minha memória favorita. Você é a minha paz, minha maior aventura e o meu lugar seguro. Te amo mais a cada novo amanhecer! 💜";
+                const el = document.getElementById('inputMessage');
+                el.value = answers.message;
+                el.dispatchEvent(new Event('input'));
+            }
+        }
+
+        // Contador de Tempo Juntos
+        function calculateTime() {
+            const timeContainer = document.getElementById('timeContainer');
+            if (!answers.meetDate) {
+                timeContainer.classList.add('hidden');
+                return;
+            }
+
+            const start = new Date(`${answers.meetDate}T${answers.meetTime || '00:00'}:00`);
+            const now = new Date();
+            
+            if (now < start) {
+                timeContainer.classList.add('hidden');
+                return;
+            }
+
+            let y = now.getFullYear() - start.getFullYear();
+            let m = now.getMonth() - start.getMonth();
+            let d = now.getDate() - start.getDate();
+            let h = now.getHours() - start.getHours();
+            let min = now.getMinutes() - start.getMinutes();
+            let s = now.getSeconds() - start.getSeconds();
+
+            if (s < 0) { s += 60; min--; }
+            if (min < 0) { min += 60; h--; }
+            if (h < 0) { h += 24; d--; }
+            if (d < 0) {
+                m--;
+                const prevMonth = new Date(now.getFullYear(), now.getMonth(), 0).getDate();
+                d += prevMonth;
+            }
+            if (m < 0) {
+                m += 12;
+                y--;
+            }
+
+            document.getElementById('timeY').innerText = y;
+            document.getElementById('timeM').innerText = m;
+            document.getElementById('timeD').innerText = d;
+            document.getElementById('timeH').innerText = h;
+            document.getElementById('timeMin').innerText = min;
+            document.getElementById('timeS').innerText = s;
+            
+            timeContainer.classList.remove('hidden');
+        }
+
+        // Upload de Fotos
+        function triggerPhotoUpload() {
+            if (answers.photos.length < 8) {
+                document.getElementById('fileInput').click();
+            }
+        }
+
+        function handlePhotoUpload(e) {
+            const files = Array.from(e.target.files);
+            if (files.length === 0) return;
+
+            const newPhotos = files.map(file => URL.createObjectURL(file));
+            const combinedPhotos = [...answers.photos, ...newPhotos];
+            const combinedFiles = [...answers.photoFiles, ...files];
+
+            answers.photos = combinedPhotos.slice(0, 8);
+            answers.photoFiles = combinedFiles.slice(0, 8);
+            
+            e.target.value = ''; // Reset
+            renderPhotos();
+            validateStep();
+        }
+
+        function removePhoto(indexToRemove) {
+            answers.photos = answers.photos.filter((_, index) => index !== indexToRemove);
+            answers.photoFiles = answers.photoFiles.filter((_, index) => index !== indexToRemove);
+            renderPhotos();
+            validateStep();
+        }
+
+        function renderPhotos() {
+            const area = document.getElementById('photoUploadArea');
+            const title = document.getElementById('photoUploadTitle');
+            const subtitle = document.getElementById('photoUploadSubtitle');
+            const grid = document.getElementById('photoGrid');
+
+            // Atualiza Botão Área
+            if (answers.photos.length >= 8) {
+                area.className = "w-full border-2 border-dashed rounded-[24px] p-6 flex flex-col items-center justify-center gap-3 transition-all bg-gray-50 border-gray-200 cursor-not-allowed opacity-60";
+                title.innerText = 'Limite atingido';
+            } else {
+                area.className = "w-full border-2 border-dashed rounded-[24px] p-6 flex flex-col items-center justify-center gap-3 transition-all bg-[#fdfaff] border-[#cba4f1] hover:bg-[#f8f5ff] hover:border-[#a874e4] cursor-pointer";
+                title.innerText = 'Toque para enviar fotos';
+            }
+            subtitle.innerText = `${answers.photos.length}/8 fotos selecionadas`;
+
+            // Atualiza Grid
+            if (answers.photos.length > 0) {
+                grid.classList.remove('hidden');
+                grid.innerHTML = answers.photos.map((url, index) => `
+                    <div class="relative aspect-square rounded-[16px] overflow-hidden group border-2 border-gray-100 shadow-sm">
+                        <img src="${url}" alt="Foto ${index + 1}" class="w-full h-full object-cover" />
+                        <button onclick="removePhoto(${index})" class="absolute top-1.5 right-1.5 w-6 h-6 bg-white/90 backdrop-blur-sm text-gray-600 rounded-full flex items-center justify-center shadow-sm hover:bg-red-50 hover:text-red-500 transition-colors">
+                            <i data-lucide="x" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                `).join('');
+                lucide.createIcons();
+            } else {
+                grid.classList.add('hidden');
+                grid.innerHTML = '';
+            }
+        }
+
+        // Renderizadores de Listas
+        function renderTributes() {
+            const container = document.getElementById('directTributesContainer');
+            container.innerHTML = directTributes.map(tribute => `
+                <button onclick="handleNext('recipientType', '${tribute.id}')" class="rounded-[16px] py-2.5 px-4 flex items-center gap-2.5 transition-all duration-150 active:translate-y-[3px] active:shadow-none border-2 border-gray-100 bg-white shadow-[0_3px_0_0_#f1f1f5] hover:border-[#a874e4] hover:bg-[#fdfaff] hover:shadow-[0_3px_0_0_#dcc3f5] group">
+                    <div class="p-1.5 rounded-lg bg-[#f8f5ff] group-hover:bg-[#f3e8ff] transition-colors">
+                        <i data-lucide="${tribute.icon}" class="w-4 h-4 text-[#cba4f1] group-hover:text-[#a874e4]"></i>
+                    </div>
+                    <span class="text-[14.5px] font-medium tracking-tight text-[#4a4a5f] group-hover:text-[#5b4a78] transition-colors">${tribute.label}</span>
+                </button>
+            `).join('');
+        }
+
+        function renderSongCategories() {
+            const container = document.getElementById('songCategoriesContainer');
+            container.innerHTML = songCategories.map(cat => {
+                const isSelected = selectedCategory === cat;
+                const baseClass = isSelected 
+                    ? 'bg-[#a874e4] text-white shadow-sm' 
+                    : 'bg-white text-[#8a8a9e] border border-gray-200 hover:border-[#a874e4] hover:text-[#a874e4]';
+                
+                return `
+                    <button onclick="selectCategory('${cat}')" class="whitespace-nowrap px-4 py-2 rounded-full text-[13px] font-semibold transition-all border ${baseClass}">
+                        ${cat}
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function selectCategory(cat) {
+            selectedCategory = selectedCategory === cat ? '' : cat;
+            renderSongCategories();
+        }
+
+        function selectSong(id) {
+            answers.song = mockSongs.find(s => s.id === id);
+            renderSongs();
+            validateStep();
+        }
+
+        // Reduz o tamanho da foto (redimensiona + comprime) antes de salvar,
+        // para a imagem caber no armazenamento local do navegador.
+        function compressImageFile(file, maxDim, quality) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        let { width, height } = img;
+                        if (width > height && width > maxDim) {
+                            height = Math.round(height * (maxDim / width));
+                            width = maxDim;
+                        } else if (height >= width && height > maxDim) {
+                            width = Math.round(width * (maxDim / height));
+                            height = maxDim;
+                        }
+                        const canvas = document.createElement('canvas');
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        resolve(canvas.toDataURL('image/jpeg', quality));
+                    };
+                    img.onerror = reject;
+                    img.src = e.target.result;
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // Monta o "presente" final com as respostas do quiz e guarda no navegador
+        // para a página do presente (demo.html) ler e exibir.
+        async function finishQuizAndGoToGift() {
+            const btn = document.getElementById('btnNext');
+            const btnText = document.getElementById('btnNextText');
+            btn.disabled = true;
+            btnText.innerText = 'Preparando seu presente...';
+
+            const giftData = {
+                recipientType: answers.recipientType,
+                senderName: answers.senderName,
+                recipientName: answers.recipientName,
+                meetDate: answers.meetDate,
+                meetTime: answers.meetTime,
+                meetCity: answers.meetCity,
+                title: answers.title,
+                message: answers.message,
+                song: answers.song,
+                photos: [],
+                createdAt: Date.now()
+            };
+
+            // Tenta salvar em qualidade boa; se o navegador recusar por falta de espaço,
+            // tenta de novo com fotos menores, até conseguir salvar algo.
+            const attempts = [
+                { maxDim: 1280, quality: 0.82 },
+                { maxDim: 900, quality: 0.72 },
+                { maxDim: 600, quality: 0.6 }
+            ];
+
+            let saved = false;
+            for (let i = 0; i < attempts.length && !saved; i++) {
+                try {
+                    giftData.photos = await Promise.all(
+                        answers.photoFiles.map(file => compressImageFile(file, attempts[i].maxDim, attempts[i].quality))
+                    );
+                    localStorage.setItem('lontra_gift_data', JSON.stringify(giftData));
+                    saved = true;
+                } catch (err) {
+                    saved = false;
+                }
+            }
+
+            if (!saved) {
+                // Último recurso: salva sem fotos, para o resto do presente não se perder.
+                try {
+                    giftData.photos = [];
+                    localStorage.setItem('lontra_gift_data', JSON.stringify(giftData));
+                } catch (err) {
+                    console.error('Não foi possível salvar os dados do presente:', err);
+                }
+            }
+
+            window.location.href = 'demo.html';
+        }
+
+        function renderSongs() {
+            const container = document.getElementById('songsListContainer');
+            container.innerHTML = mockSongs.map(song => {
+                const isSelected = answers.song?.id === song.id;
+                const baseClass = isSelected 
+                    ? 'bg-[#f8f5ff] border-[#a874e4] shadow-[0_3px_0_0_#dcc3f5]' 
+                    : 'bg-white border-gray-100 hover:border-gray-200 shadow-[0_2px_0_0_#f1f1f5]';
+                const titleColor = isSelected ? 'text-[#a874e4]' : 'text-[#4a4a5f]';
+                const iconColor = isSelected ? 'text-[#a874e4]' : 'text-gray-300';
+                
+                return `
+                    <button onclick="selectSong(${song.id})" class="flex items-center gap-4 p-3 rounded-[20px] transition-all border-2 text-left ${baseClass}">
+                        <div class="relative w-12 h-12 rounded-xl overflow-hidden shrink-0 bg-gray-100">
+                            <img src="${song.cover}" alt="Capa" class="w-full h-full object-cover" />
+                            <div class="absolute inset-0 flex items-center justify-center bg-black/20 transition-opacity ${isSelected ? 'opacity-100' : 'opacity-0'}">
+                                ${isSelected ? '<i data-lucide="check-circle-2" class="w-6 h-6 text-white"></i>' : '<i data-lucide="play-circle" class="w-6 h-6 text-white"></i>'}
+                            </div>
+                        </div>
+                        <div class="flex-1 overflow-hidden">
+                            <h4 class="font-semibold text-[15px] truncate ${titleColor}">${song.title}</h4>
+                            <p class="text-[12px] text-[#8a8a9e] truncate">${song.artist}</p>
+                        </div>
+                        <div class="mr-2"><i data-lucide="music" class="w-5 h-5 ${iconColor}"></i></div>
+                    </button>
+                `;
+            }).join('');
+            lucide.createIcons(); // Atualiza ícones gerados dinamicamente
+        }
+    </script>
+</body>
+</html>
