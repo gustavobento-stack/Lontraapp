@@ -33,7 +33,7 @@
             animation: blink 1s step-end infinite;
         }
 
-        /* Animação do Carrossel Infinito para a Esquerda */
+        /* Animação do Carrossel Infinito para a Esquerda (Mais rápido) */
         @keyframes marquee {
             0% { transform: translateX(0); }
             100% { transform: translateX(-50%); }
@@ -51,25 +51,24 @@
             animation: marquee-reverse 50s linear infinite;
         }
         
-        /* Efeito de fade nas laterais da lista de depoimentos */
+        /* Efeito de fade (esbatimento) nas laterais da lista de depoimentos */
         .fade-edges {
             -webkit-mask-image: linear-gradient(to right, transparent, black 20%, black 80%, transparent);
             mask-image: linear-gradient(to right, transparent, black 20%, black 80%, transparent);
         }
         
-        /* Pausar animação ao passar o rato */
         .pause-on-hover:hover {
             animation-play-state: paused;
         }
 
-        /* Transição suave do Acordeão */
+        /* Estilo para a transição suave do Acordeão */
         .accordion-content {
             transition: max-height 0.3s ease-out, padding 0.3s ease;
             max-height: 0;
             overflow: hidden;
         }
 
-        /* Micro Animações de Scroll (Reveal) */
+        /* Classes para Micro Animações de Scroll (Reveal) */
         .reveal {
             opacity: 0;
             transform: translateY(30px);
@@ -84,7 +83,7 @@
         .delay-200 { transition-delay: 200ms; }
         .delay-300 { transition-delay: 300ms; }
 
-        /* Animação de flutuação para os corações ao fundo e notas */
+        /* Animação de flutuação para os corações ao fundo */
         @keyframes float {
             0%, 100% { transform: translateY(0) rotate(0deg); }
             50% { transform: translateY(-15px) rotate(5deg); }
@@ -97,6 +96,32 @@
             animation-delay: 2s;
         }
 
+        /* Animações Exclusivas da Vitrola e Player */
+        @keyframes spinVinyl {
+            100% { transform: rotate(360deg); }
+        }
+        .group:hover .group-hover\:animate-spin-vinyl {
+            animation: spinVinyl 3s linear infinite;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(0.8) rotate(0deg); opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { transform: translateY(-40px) scale(1.2) rotate(15deg); opacity: 0; }
+        }
+        .animate-float-up-1 { animation: floatUp 2s ease-in-out infinite; }
+        .animate-float-up-2 { animation: floatUp 2.5s ease-in-out infinite 0.5s; }
+        .animate-float-up-3 { animation: floatUp 2.2s ease-in-out infinite 1s; }
+
+        @keyframes eq {
+            0%, 100% { height: 4px; }
+            50% { height: 12px; }
+        }
+        .animate-eq-1 { animation: eq 0.8s ease-in-out infinite; }
+        .animate-eq-2 { animation: eq 0.8s ease-in-out infinite 0.2s; }
+        .animate-eq-3 { animation: eq 0.8s ease-in-out infinite 0.4s; }
+
         #toast {
             position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-20px);
             background-color: #fff; color: #4a4a5f; padding: 12px 22px; border-radius: 16px;
@@ -105,40 +130,6 @@
             z-index: 200; max-width: 88vw; text-align: center;
         }
         #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
-
-        /* Animações da Vitrola e Notas Musicais */
-        @keyframes spin-vinyl {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        .animate-spin-vinyl {
-            animation: spin-vinyl 3s linear infinite;
-        }
-        
-        @keyframes float-note-1 {
-            0% { opacity: 0; transform: translate(0px, 0px) scale(0.5); }
-            20% { opacity: 1; transform: translate(-15px, -20px) scale(1); }
-            80% { opacity: 0.8; transform: translate(-30px, -60px) scale(1.1); }
-            100% { opacity: 0; transform: translate(-40px, -80px) scale(0.9); }
-        }
-        @keyframes float-note-2 {
-            0% { opacity: 0; transform: translate(0px, 0px) scale(0.5); }
-            20% { opacity: 1; transform: translate(15px, -15px) scale(1); }
-            80% { opacity: 0.8; transform: translate(30px, -50px) scale(0.9); }
-            100% { opacity: 0; transform: translate(40px, -70px) scale(0.8); }
-        }
-        .group:hover .animate-note-1 { animation: float-note-1 2s ease-in-out infinite; }
-        .group:hover .animate-note-2 { animation: float-note-2 2.5s ease-in-out infinite; animation-delay: 0.8s; }
-
-        /* Equalizador do Spotify Player */
-        @keyframes eq-bar {
-            0% { height: 4px; }
-            50% { height: 12px; }
-            100% { height: 4px; }
-        }
-        .eq-1 { animation: eq-bar 0.8s ease-in-out infinite; }
-        .eq-2 { animation: eq-bar 1.2s ease-in-out infinite; }
-        .eq-3 { animation: eq-bar 0.9s ease-in-out infinite; }
     </style>
 </head>
 <body class="antialiased">
@@ -156,55 +147,57 @@
         <nav class="bg-[#faf9fc]/90 backdrop-blur-md w-full border-b-2 border-gray-100 relative z-50">
             <div class="max-w-7xl mx-auto px-4 md:px-8 h-[76px] flex items-center justify-between">
                 
-                <!-- Esquerda: Logo -->
-                <a href="index.html" class="flex items-center group">
-                    <span class="text-[#4a4a5f] text-xl font-bold tracking-tight group-hover:text-[#a874e4] transition-colors">Lontra</span>
+                <!-- Esquerda: Logo (Ajustado) -->
+                <a href="index.html" class="flex items-center gap-2.5 group">
+                    <img src="https://i.imgur.com/sTgAwVX.png" alt="Lontra Logo" class="w-9 h-9 object-contain group-hover:scale-105 transition-transform">
+                    <span class="text-[#4a4a5f] text-2xl font-black tracking-tight group-hover:text-[#a874e4] transition-colors">Lontra</span>
                 </a>
 
                 <!-- Centro: Links de Navegação -->
                 <div class="hidden md:flex items-center gap-8 text-[#8a8a9e] font-semibold text-[14.5px]">
                     <a href="quiz.html" class="hover:text-[#a874e4] hover:-translate-y-[2px] transition-all">Criar</a>
-                    <a href="#demonstracao" class="hover:text-[#a874e4] hover:-translate-y-[2px] transition-all">Demonstração</a>
+                    <a href="#demo" class="hover:text-[#a874e4] hover:-translate-y-[2px] transition-all">Demonstração</a>
                     <a href="#faq" class="hover:text-[#a874e4] hover:-translate-y-[2px] transition-all">FAQ</a>
                     <a href="#como-funciona" class="hover:text-[#a874e4] hover:-translate-y-[2px] transition-all">Sobre Nós</a>
                 </div>
 
-                <!-- Direita: Ações (Ícones / Login) -->
-                <div class="flex items-center gap-3">
-                    <button id="langBtn" class="hidden md:flex w-10 h-10 rounded-full border-2 border-transparent bg-transparent items-center justify-center text-[#8a8a9e] hover:text-[#a874e4] transition-all" aria-label="Alterar Idioma">
+                <!-- Direita: Ações (Ícones & Login) -->
+                <div class="flex items-center gap-2 md:gap-4">
+                    <button id="langBtn" class="hidden md:flex w-11 h-11 rounded-full border-2 border-gray-100 bg-white shadow-[0_2px_0_0_#f1f1f5] items-center justify-center text-[#8a8a9e] hover:border-[#a874e4] hover:text-[#a874e4] hover:bg-[#fdfaff] active:translate-y-[2px] active:shadow-none transition-all" aria-label="Alterar Idioma">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                             <path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/>
                         </svg>
                     </button>
                     
-                    <!-- Botão Fazer Login (Desktop) -->
-                    <button id="accountBtn" class="hidden md:flex items-center gap-2 px-4 py-2 bg-[#f4f2f7] hover:bg-[#e9e4f0] text-[#4a4a5f] font-bold text-[14.5px] rounded-[12px] transition-colors shadow-sm border border-[#ede9f5]">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/>
+                    <!-- Novo Botão de Login Desktop -->
+                    <a href="#" class="hidden md:flex bg-[#f6f5f8] text-[#323240] font-bold text-[14.5px] px-4 py-2.5 rounded-xl items-center gap-2.5 hover:bg-[#ebe8f0] transition-colors border border-transparent">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5 12h10"></path>
+                            <path d="M11 8l4 4-4 4"></path>
+                            <path d="M19 7v10"></path>
+                            <path d="M16 7h3"></path>
+                            <path d="M16 17h3"></path>
                         </svg>
                         Fazer Login
-                    </button>
+                    </a>
                     
-                    <!-- Botão Menu Hamburguer (Mobile Melhorado) -->
-                    <button id="mobile-menu-btn" class="md:hidden relative w-11 h-11 rounded-[12px] bg-[#f4f2f7] text-[#4a4a5f] flex items-center justify-center transition-colors">
-                        <svg id="hamburger-icon" class="w-6 h-6 transition-transform duration-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-                        </svg>
-                        <svg id="close-icon" class="hidden absolute w-6 h-6 transition-transform duration-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    <!-- Botão Menu Hamburguer (Apenas Mobile) -->
+                    <button id="mobile-menu-btn" class="md:hidden w-10 h-10 rounded-[12px] border-2 border-[#dcc3f5] bg-[#f8f5ff] shadow-[0_2px_0_0_#dcc3f5] flex items-center justify-center text-[#a874e4] active:translate-y-[2px] active:shadow-none transition-all" aria-label="Abrir Menu">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/>
                         </svg>
                     </button>
                 </div>
             </div>
         </nav>
 
-        <!-- Menu Dropdown Mobile Melhorado -->
-        <div id="mobile-menu" class="md:hidden absolute top-[100%] left-0 w-full bg-white border-b-2 border-gray-100 shadow-[0_15px_30px_rgba(0,0,0,0.08)] z-40 origin-top opacity-0 invisible -translate-y-4 transition-all duration-300 ease-out">
+        <!-- Menu Dropdown Mobile com Transição Suave -->
+        <div id="mobile-menu" class="md:hidden fixed top-[114px] left-0 w-full bg-white border-b-2 border-gray-100 shadow-2xl z-40 transform -translate-y-[150%] opacity-0 pointer-events-none transition-all duration-300 ease-in-out flex flex-col">
             <div class="flex flex-col py-6 px-6 gap-2">
                 <a href="quiz.html" class="text-[#4a4a5f] font-black text-[22px] hover:text-[#a874e4] transition-colors py-3 border-b-2 border-gray-50 flex items-center justify-between">
                     Criar <span class="text-[#a874e4]">→</span>
                 </a>
-                <a href="#demonstracao" class="text-[#4a4a5f] font-black text-[22px] hover:text-[#a874e4] transition-colors py-3 border-b-2 border-gray-50 flex items-center justify-between">
+                <a href="#demo" class="text-[#4a4a5f] font-black text-[22px] hover:text-[#a874e4] transition-colors py-3 border-b-2 border-gray-50 flex items-center justify-between">
                     Demonstração <span class="text-[#a874e4]">→</span>
                 </a>
                 <a href="#faq" class="text-[#4a4a5f] font-black text-[22px] hover:text-[#a874e4] transition-colors py-3 border-b-2 border-gray-50 flex items-center justify-between">
@@ -213,13 +206,18 @@
                 <a href="#como-funciona" class="text-[#4a4a5f] font-black text-[22px] hover:text-[#a874e4] transition-colors py-3 border-b-2 border-gray-50 flex items-center justify-between">
                     Sobre Nós <span class="text-[#a874e4]">→</span>
                 </a>
-                <!-- Login no Mobile -->
-                <button class="mt-4 w-full flex justify-center items-center gap-2 px-4 py-3.5 bg-[#f4f2f7] active:bg-[#e9e4f0] text-[#4a4a5f] font-bold text-[16px] rounded-[14px] transition-colors border border-[#ede9f5]" onclick="showToast('Área de conta chegando em breve! 💜')">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/>
+
+                <!-- Novo Botão de Login Mobile -->
+                <a href="#" class="mt-4 bg-[#f6f5f8] text-[#323240] font-bold text-[18px] px-4 py-4 rounded-xl flex items-center justify-center gap-2.5 hover:bg-[#ebe8f0] transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 12h10"></path>
+                        <path d="M11 8l4 4-4 4"></path>
+                        <path d="M19 7v10"></path>
+                        <path d="M16 7h3"></path>
+                        <path d="M16 17h3"></path>
                     </svg>
                     Fazer Login
-                </button>
+                </a>
             </div>
         </div>
     </header>
@@ -259,13 +257,13 @@
                 </a>
 
                 <!-- Prova Social -->
-                <div id="hero-review-container" class="flex items-center gap-4 reveal delay-300 bg-white border-2 border-gray-100 p-4 rounded-[20px] shadow-[0_4px_0_0_#f1f1f5] cursor-default" style="transition: opacity 0.3s ease, transform 0.3s ease;">
+                <div id="hero-review-container" class="flex items-center gap-4 reveal delay-300 group hover:-translate-y-1 transition-all duration-500 cursor-default bg-white border-2 border-gray-100 p-4 rounded-[20px] shadow-[0_4px_0_0_#f1f1f5]" style="transition: opacity 0.3s ease, transform 0.3s ease;">
                     <div class="w-12 h-12 rounded-full bg-[#f8f5ff] border-2 border-[#dcc3f5] flex items-center justify-center overflow-hidden shrink-0">
-                        <img src="https://em-content.zobj.net/source/animated-noto-color-emoji/461/otter_1f9a6.gif" alt="Avatar" class="w-8 h-8 object-contain">
+                        <img id="hero-review-img" src="https://media.lovepanda.com.br/static/br/images/social-proof/couples/1.webp" alt="Avatar" class="w-full h-full object-cover">
                     </div>
                     <div class="flex flex-col">
                         <div class="flex items-center gap-2 mb-0.5">
-                            <span id="hero-review-name" class="font-bold text-[#5b4a78] text-sm">Carla</span>
+                            <span id="hero-review-name" class="font-bold text-[#5b4a78] text-sm">Carla & João</span>
                             <div class="flex text-[#a874e4] gap-0.5">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
@@ -281,15 +279,17 @@
                 </div>
             </div>
 
-            <!-- Coluna da Direita: Composição de Mockups (Não clicáveis, apenas hover visual) -->
+            <!-- Coluna da Direita: Composição de Mockups -->
             <div class="relative h-[650px] w-full hidden lg:flex items-center justify-center reveal delay-200">
-                <!-- Estrelas Flutuantes -->
-                <svg class="absolute top-[10%] left-[5%] w-16 h-16 text-[#dcc3f5] fill-current transform -rotate-12 opacity-70 animate-pulse transition-transform" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                <svg class="absolute bottom-[20%] left-0 w-12 h-12 text-[#a874e4] fill-current transform rotate-45 transition-transform" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                <svg class="absolute top-[5%] -right-[5%] w-20 h-20 text-[#a874e4] fill-current transform rotate-12 transition-transform" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                <!-- Estrelas Flutuantes (Decoração) -->
+                <svg class="absolute top-[10%] left-[5%] w-16 h-16 text-[#dcc3f5] fill-current transform -rotate-12 opacity-70 animate-pulse hover:scale-110 transition-transform" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                <svg class="absolute bottom-[20%] left-0 w-12 h-12 text-[#a874e4] fill-current transform rotate-45 hover:scale-110 transition-transform" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                <svg class="absolute top-[5%] -right-[5%] w-20 h-20 text-[#a874e4] fill-current transform rotate-12 hover:scale-110 transition-transform" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
 
+                <!-- GRUPO DE MOCKUPS DE TELEMÓVEIS -->
+                
                 <!-- Celular Esquerdo -->
-                <div class="absolute w-[260px] h-[540px] bg-white rounded-[2.5rem] transform -rotate-[15deg] -translate-x-[160px] translate-y-10 border-4 border-gray-100 shadow-[0_12px_24px_-8px_rgba(168,116,228,0.2)] z-10 overflow-hidden flex flex-col hover:z-40 hover:-translate-y-2 hover:-rotate-[10deg] hover:shadow-[0_20px_30px_-8px_rgba(168,116,228,0.3)] transition-all duration-700 ease-out cursor-default">
+                <div class="absolute w-[260px] h-[540px] bg-white rounded-[2.5rem] transform -rotate-[15deg] -translate-x-[160px] translate-y-10 border-4 border-gray-100 shadow-[0_12px_24px_-8px_rgba(168,116,228,0.2)] z-10 overflow-hidden flex flex-col hover:z-40 hover:-translate-y-2 hover:-rotate-6 transition-all duration-700 ease-out cursor-default pointer-events-auto group">
                     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-6 bg-gray-100 rounded-b-xl z-20"></div>
                     <div class="w-full h-full bg-[#fdfaff] p-5 pt-12 flex flex-col pointer-events-none">
                         <div class="w-full aspect-square bg-[#f3e8ff] rounded-2xl mb-4 border-2 border-[#dcc3f5] flex items-center justify-center">
@@ -302,7 +302,7 @@
                 </div>
 
                 <!-- Celular Direito -->
-                <div class="absolute w-[260px] h-[540px] bg-white rounded-[2.5rem] transform rotate-[15deg] translate-x-[160px] translate-y-10 border-4 border-gray-100 shadow-[0_12px_24px_-8px_rgba(168,116,228,0.2)] z-10 overflow-hidden flex flex-col hover:z-40 hover:-translate-y-2 hover:rotate-6 transition-all duration-700 ease-out cursor-default">
+                <div class="absolute w-[260px] h-[540px] bg-white rounded-[2.5rem] transform rotate-[15deg] translate-x-[160px] translate-y-10 border-4 border-gray-100 shadow-[0_12px_24px_-8px_rgba(168,116,228,0.2)] z-10 overflow-hidden flex flex-col hover:z-40 hover:-translate-y-2 hover:rotate-6 transition-all duration-700 ease-out cursor-default pointer-events-auto group">
                     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-6 bg-gray-100 rounded-b-xl z-20"></div>
                     <div class="w-full h-full bg-[#a874e4] p-6 pt-16 flex flex-col text-white pointer-events-none">
                         <h4 class="font-black text-2xl mt-4 leading-tight">Uma mensagem<br>especial.</h4>
@@ -318,12 +318,11 @@
                     </div>
                 </div>
 
-                <!-- Celular Central (Principal - Vídeo) -->
-                <div class="absolute w-[280px] h-[580px] bg-[#2a2a35] rounded-[2.5rem] border-[8px] border-[#1e1e26] shadow-[0_20px_50px_rgba(0,0,0,0.3)] z-30 overflow-hidden flex flex-col relative hover:scale-[1.02] hover:-translate-y-4 hover:shadow-[0_30px_60px_rgba(0,0,0,0.4)] transition-all duration-700 ease-out cursor-default">
-                    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-28 h-6 bg-[#1e1e26] rounded-b-2xl z-20"></div>
-                    
-                    <!-- Vídeo Principal -->
-                    <video src="https://i.imgur.com/Ef4TMYY.mp4" autoplay loop muted playsinline class="w-full h-full object-cover relative z-10 pointer-events-none rounded-[1.8rem]"></video>
+                <!-- Celular Central (Principal com Vídeo Autoplay) -->
+                <div class="absolute w-[280px] h-[580px] bg-[#2a2a35] rounded-[2.5rem] border-[8px] border-[#1e1e26] shadow-[0_20px_50px_rgba(0,0,0,0.4)] z-30 overflow-hidden flex flex-col relative hover:scale-[1.02] hover:-translate-y-4 hover:shadow-[0_30px_60px_rgba(0,0,0,0.5)] transition-all duration-700 ease-out cursor-default group">
+                    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-28 h-6 bg-[#1e1e26] rounded-b-2xl z-40"></div>
+                    <!-- VÍDEO DO HERO AQUI -->
+                    <video src="https://i.imgur.com/Ef4TMYY.mp4" loop muted autoplay playsinline class="w-full h-full object-cover relative z-10 pointer-events-none rounded-[1.8rem]"></video>
                 </div>
 
             </div>
@@ -441,13 +440,13 @@
     </section>
 
     <!-- Seção: Carrossel Interativo -->
-    <section id="funcionalidades-carrossel" class="w-full relative px-4 md:px-8 py-8 md:py-12 font-sans bg-[#faf9fc] overflow-hidden">
+    <section id="funcionalidades-carrossel" class="w-full relative px-4 md:px-8 py-8 md:py-12 font-sans bg-[#faf9fc] overflow-hidden border-t-2 border-gray-100">
         <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             
             <!-- COLUNA ESQUERDA: Carrossel 3D de Celulares -->
             <div class="lg:col-span-7 relative w-full h-[460px] sm:h-[520px] md:h-[650px] flex items-center justify-center reveal mt-6 lg:mt-0">
                 
-                <!-- Corações Flutuantes (Background) adaptados para mobile -->
+                <!-- Corações Flutuantes (Background) -->
                 <svg class="absolute top-[5%] left-[0%] md:left-[5%] w-16 md:w-24 h-16 md:h-24 text-[#cba4f1] fill-current animate-float opacity-80 z-0" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                 <svg class="absolute bottom-[5%] left-[5%] md:left-[15%] w-12 md:w-16 h-12 md:h-16 text-[#a874e4] fill-current animate-float-delayed opacity-70 transform -rotate-12 z-0" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                 <svg class="absolute top-[20%] right-[0%] md:right-[0%] w-14 md:w-20 h-14 md:h-20 text-[#cba4f1] fill-current animate-float opacity-90 transform rotate-12 z-0" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
@@ -462,27 +461,23 @@
             <!-- COLUNA DIREITA: Textos Dinâmicos e Controles -->
             <div class="lg:col-span-5 flex flex-col items-center lg:items-start text-center lg:text-left z-20 reveal delay-100 relative">
 
-                <!-- Wrapper com animação de Fade para os textos -->
                 <div id="text-wrapper" class="transition-all duration-300 opacity-100 transform translate-x-0 w-full min-h-[180px] md:min-h-[220px] flex flex-col items-center lg:items-start">
-                    <!-- Ícone Dinâmico -->
                     <div id="slide-icon-container" class="w-14 h-14 md:w-16 md:h-16 rounded-[16px] md:rounded-[20px] border-2 border-[#dcc3f5] bg-white flex items-center justify-center text-[#a874e4] mb-5 md:mb-6 shadow-[0_4px_0_0_#f1f1f5]">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="md:w-[28px] md:h-[28px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
                         </svg>
                     </div>
 
-                    <!-- Título Dinâmico -->
                     <h2 id="slide-title" class="text-[30px] sm:text-[36px] md:text-[46px] font-black text-[#323240] mb-3 md:mb-4 tracking-tight leading-tight">
                         Linha do Tempo
                     </h2>
                     
-                    <!-- Descrição Dinâmica -->
                     <p id="slide-desc" class="text-[15px] md:text-[18px] font-medium text-[#8a8a9e] leading-relaxed max-w-[500px]">
                         Reviva sua jornada com uma linha do tempo animada e elegante, destacando os marcos mais importantes da sua história.
                     </p>
                 </div>
 
-                <!-- Controles do Carrossel (Setas e Bolinhas) centralizados no mobile -->
+                <!-- Controles do Carrossel -->
                 <div class="flex items-center justify-center lg:justify-start w-full gap-4 mt-6 md:mt-8 mb-8 md:mb-10" id="controls-container">
                     <button id="btn-prev" class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#f3e8ff] flex items-center justify-center text-[#a874e4] hover:bg-[#dcc3f5] hover:text-white transition-all shadow-[0_2px_0_0_#e4daef] active:translate-y-[2px] active:shadow-none">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" class="md:w-[22px] md:h-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
@@ -513,6 +508,7 @@
     <section class="w-full px-4 md:px-8 py-20 font-sans bg-white border-y-2 border-gray-100">
         <div class="max-w-7xl mx-auto">
             
+            <!-- Cabeçalho Bento Grid -->
             <div class="flex flex-col items-center text-center mb-16 md:mb-20 reveal">
                 <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#f8f5ff] border-2 border-[#dcc3f5] text-[#a874e4] font-bold text-[11px] uppercase tracking-widest mb-6 cursor-default shadow-[0_2px_0_0_#f1f1f5]">
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="animate-pulse">
@@ -535,7 +531,9 @@
                 <!-- Grupo da Esquerda -->
                 <div class="lg:col-span-2 flex flex-col gap-6">
                     
+                    <!-- Linha Superior (2 cartões) -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        
                         <!-- Card 1 -->
                         <div class="reveal group bg-white border-2 border-gray-100 rounded-[24px] shadow-[0_4px_0_0_#f1f1f5] p-8 flex flex-col relative overflow-hidden hover:border-[#a874e4] hover:bg-[#fdfaff] hover:shadow-[0_4px_0_0_#dcc3f5] transition-all duration-300 cursor-default">
                             <div class="flex items-center gap-4 mb-4">
@@ -549,6 +547,7 @@
                             <p class="text-[#8a8a9e] font-medium text-[14px] leading-relaxed mb-6">
                                 Seu presente vai para a nuvem imediatamente. Para sempre online, acessível de qualquer lugar do mundo.
                             </p>
+                            <!-- Imagem -->
                             <div class="mt-auto flex justify-center pb-2">
                                 <img src="https://i.imgur.com/QzBdzGI.png" alt="Para sempre no ar" class="h-32 w-auto object-contain group-hover:scale-105 transition-transform duration-300">
                             </div>
@@ -567,13 +566,15 @@
                             <p class="text-[#8a8a9e] font-medium text-[14px] leading-relaxed mb-6">
                                 Escolha fotos, músicas, mensagens e datas importantes. Cada detalhe pensado para emocionar!
                             </p>
+                            <!-- Imagem -->
                             <div class="mt-auto flex justify-center pb-2">
                                 <img src="https://i.imgur.com/S8FOeUH.png" alt="100% personalizável" class="h-32 w-auto object-contain group-hover:scale-105 transition-transform duration-300">
                             </div>
                         </div>
+
                     </div>
 
-                    <!-- Card 3 -->
+                    <!-- Card 3: Relembre (Largo) -->
                     <div class="reveal delay-200 group bg-white border-2 border-gray-100 rounded-[24px] shadow-[0_4px_0_0_#f1f1f5] p-8 flex flex-col relative overflow-hidden flex-1 hover:border-[#a874e4] hover:bg-[#fdfaff] hover:shadow-[0_4px_0_0_#dcc3f5] transition-all duration-300 cursor-default">
                         <div class="flex items-center gap-4 mb-2 relative z-20">
                             <div class="w-12 h-12 bg-[#f8f5ff] border-2 border-gray-100 rounded-[16px] flex items-center justify-center text-[#a874e4] shrink-0 group-hover:rotate-12 group-hover:border-[#dcc3f5] transition-all">
@@ -586,6 +587,7 @@
                         <p class="text-[#8a8a9e] font-medium text-[14px] leading-relaxed mb-6 relative z-20 max-w-lg">
                             O presente digital que faz quem você ama sentir o quanto é especial. Reúna todas as melhores memórias.
                         </p>
+                        <!-- Imagem -->
                         <div class="mt-auto flex justify-center pb-2">
                             <img src="https://i.imgur.com/IlRUIKq.png" alt="Relembre seus melhores momentos" class="h-40 w-auto object-contain group-hover:scale-105 transition-transform duration-300">
                         </div>
@@ -593,7 +595,7 @@
 
                 </div>
 
-                <!-- Grupo da Direita (NOVA VITROLA E PLAYER) -->
+                <!-- Grupo da Direita (Vitrola CSS) -->
                 <div class="reveal delay-300 group bg-white border-2 border-gray-100 rounded-[24px] shadow-[0_4px_0_0_#f1f1f5] p-8 flex flex-col relative overflow-hidden lg:h-full hover:border-[#a874e4] hover:bg-[#fdfaff] hover:shadow-[0_4px_0_0_#dcc3f5] transition-all duration-300 cursor-default">
                     <div class="flex items-center gap-4 mb-4 relative z-20">
                         <div class="w-12 h-12 bg-[#f8f5ff] border-2 border-gray-100 rounded-[16px] flex items-center justify-center text-[#a874e4] shrink-0 group-hover:-translate-y-1 group-hover:border-[#dcc3f5] transition-all">
@@ -601,79 +603,60 @@
                                 <path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
                             </svg>
                         </div>
-                        <h3 class="text-[20px] font-bold text-[#4a4a5f] leading-tight">Trilha sonora especial</h3>
+                        <h3 class="text-[20px] font-bold text-[#4a4a5f] leading-tight">Retrospectiva única</h3>
                     </div>
                     <p class="text-[#8a8a9e] font-medium text-[14px] leading-relaxed mb-8 relative z-20">
-                        A música de vocês toca automaticamente assim que a página surpresa é acessada, criando o clima perfeito.
+                        Uma retrospectiva animada com a trilha sonora perfeita para relembrar os melhores momentos dessa história.
                     </p>
 
-                    <!-- Ilustração da Vitrola Vista de Cima -->
-                    <div class="mt-auto flex flex-col items-center justify-center pb-8 pt-6 relative w-full">
-                        
-                        <!-- Notificação Estilo Spotify Flutuante -->
-                        <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#181818] px-3.5 py-2.5 rounded-full flex items-center gap-3 shadow-[0_10px_25px_rgba(0,0,0,0.3)] border border-gray-700 opacity-0 group-hover:opacity-100 group-hover:-translate-y-3 transition-all duration-500 z-30 pointer-events-none w-max">
-                            <div class="w-8 h-8 bg-gradient-to-tr from-[#1db954] to-[#1ed760] rounded-full flex items-center justify-center shrink-0 shadow-inner border border-[#181818]">
-                                <!-- Ícone de Play perfeito para a Notificação -->
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="white" stroke="none" class="ml-0.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                            </div>
-                            <div class="flex flex-col">
-                                <span class="text-white text-[12px] font-bold leading-tight tracking-wide">Nossa Música</span>
-                                <span class="text-gray-400 text-[10px] leading-tight">Tocando agora</span>
-                            </div>
-                            <!-- Equalizador embutido -->
-                            <div class="flex items-end gap-[2px] h-3.5 ml-2">
-                                <div class="w-[3px] bg-[#1db954] rounded-sm eq-1"></div>
-                                <div class="w-[3px] bg-[#1db954] rounded-sm eq-2"></div>
-                                <div class="w-[3px] bg-[#1db954] rounded-sm eq-3"></div>
-                            </div>
-                        </div>
-
-                        <!-- Caixa da Vitrola -->
-                        <div class="relative w-52 h-44 bg-[#f4ebd9] rounded-[20px] shadow-[inset_0_-4px_12px_rgba(0,0,0,0.06),_0_15px_25px_-5px_rgba(168,116,228,0.25)] border-2 border-[#e8dfcc] flex items-center group-hover:scale-[1.03] transition-transform duration-500 overflow-visible z-10">
-                            
-                            <!-- Prato Giratório (Platter Metálico) -->
-                            <div class="absolute left-3.5 w-[136px] h-[136px] bg-gray-200 rounded-full border-[4px] border-[#d4d4d4] shadow-inner flex items-center justify-center">
-                                
+                    <!-- Vitrola Animada (Top Down) -->
+                    <div class="mt-auto flex justify-center pb-6 relative h-48 w-full group cursor-pointer">
+                        <!-- Base da vitrola -->
+                        <div class="absolute bottom-0 w-44 h-36 bg-[#fdfaf5] border-2 border-gray-200 rounded-xl shadow-lg flex items-center justify-center overflow-hidden transition-transform duration-500 group-hover:scale-105">
+                            <!-- Prato Prateado -->
+                            <div class="w-32 h-32 rounded-full bg-gradient-to-tr from-gray-300 via-gray-100 to-gray-300 shadow-inner flex items-center justify-center border border-gray-300">
                                 <!-- Disco de Vinil -->
-                                <div class="w-[124px] h-[124px] bg-[#1a1a1a] rounded-full shadow-lg border border-black flex items-center justify-center group-hover:animate-spin-vinyl relative overflow-hidden">
-                                    <!-- Ranhuras do Vinil -->
-                                    <div class="absolute w-[96px] h-[96px] rounded-full border border-white/10"></div>
-                                    <div class="absolute w-[68px] h-[68px] rounded-full border border-white/10"></div>
-                                    <!-- Reflexo Metálico do Disco -->
-                                    <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent rounded-full pointer-events-none"></div>
-                                    
-                                    <!-- Selo Central do Vinil (Label Roxa) -->
-                                    <div class="w-14 h-14 bg-[#a874e4] rounded-full flex items-center justify-center border-2 border-[#1a1a1a]">
-                                        <!-- Furo Central do Vinil -->
-                                        <div class="w-2.5 h-2.5 bg-[#e8dfcc] rounded-full shadow-inner"></div>
+                                <div class="w-28 h-28 rounded-full bg-[#111] shadow-[0_0_10px_rgba(0,0,0,0.5)] flex items-center justify-center border-4 border-gray-800 transition-transform duration-[4s] ease-linear group-hover:animate-spin-vinyl">
+                                    <!-- Sulcos -->
+                                    <div class="absolute w-24 h-24 rounded-full border border-gray-700/50"></div>
+                                    <div class="absolute w-20 h-20 rounded-full border border-gray-700/50"></div>
+                                    <div class="absolute w-16 h-16 rounded-full border border-gray-700/50"></div>
+                                    <!-- Label Central -->
+                                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-[#a874e4] to-[#cba4f1] flex items-center justify-center">
+                                        <div class="w-2 h-2 rounded-full bg-white shadow-inner"></div>
                                     </div>
                                 </div>
                             </div>
-
-                            <!-- Botões de Controle da Vitrola (Lado direito) -->
-                            <div class="absolute bottom-5 right-5 w-4 h-4 bg-gray-300 rounded-full border border-gray-400 shadow-sm"></div>
-                            <div class="absolute bottom-11 right-5 w-3 h-3 bg-gray-300 rounded-full border border-gray-400 shadow-sm"></div>
-
-                            <!-- Braço da Vitrola (Tonearm Animado) -->
-                            <div class="absolute right-5 top-5 origin-[16px_16px] transition-transform duration-[800ms] ease-[cubic-bezier(0.34,1.56,0.64,1)] group-hover:rotate-[32deg] z-20 shadow-2xl">
-                                <!-- Base Metálica Giratória do Braço -->
-                                <div class="w-8 h-8 bg-[#d4d4d4] rounded-full border border-gray-400 shadow-md relative z-10 flex items-center justify-center">
-                                    <div class="w-3 h-3 bg-gray-400 rounded-full shadow-inner"></div>
-                                </div>
-                                <!-- Haste do Braço -->
-                                <div class="absolute top-[16px] right-[14px] w-1.5 h-20 bg-gradient-to-r from-gray-300 to-gray-400 rounded-full shadow-[2px_2px_4px_rgba(0,0,0,0.3)] origin-top transform -rotate-[22deg]">
-                                    <!-- Cabeça com Agulha (Stylus/Cartridge) -->
-                                    <div class="absolute -bottom-2 -left-[4px] w-3.5 h-6 bg-gray-500 rounded-sm shadow-md transform rotate-[22deg]"></div>
+                            
+                            <!-- Braço da Vitrola (Tonearm) -->
+                            <div class="absolute top-4 right-4 w-2.5 h-2.5 rounded-full bg-gray-400 shadow-md z-10 origin-center transition-transform duration-700 ease-in-out group-hover:rotate-[35deg]">
+                                <div class="absolute top-1 left-1/2 -translate-x-1/2 w-1.5 h-16 bg-gradient-to-b from-gray-300 to-gray-400 rounded-full origin-top transform -rotate-12">
+                                    <div class="absolute bottom-[-4px] left-1/2 -translate-x-1/2 w-3.5 h-5 bg-gray-500 rounded-sm shadow-md transform rotate-12"></div>
                                 </div>
                             </div>
+                        </div>
 
-                            <!-- Notas Musicais Flutuantes que saltam em hover -->
-                            <svg class="absolute top-2 right-14 w-6 h-6 text-[#a874e4] opacity-0 group-hover:animate-note-1 z-10 pointer-events-none drop-shadow-md" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
-                            </svg>
-                            <svg class="absolute top-8 right-8 w-5 h-5 text-[#cba4f1] opacity-0 group-hover:animate-note-2 z-10 pointer-events-none drop-shadow-md" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
-                            </svg>
+                        <!-- Notas Musicais Flutuantes -->
+                        <div class="absolute top-1/4 right-[20%] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                            <svg class="absolute text-[#a874e4] w-5 h-5 animate-float-up-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+                            <svg class="absolute text-[#cba4f1] w-4 h-4 animate-float-up-2" style="left: 15px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+                            <svg class="absolute text-[#8b5bc4] w-6 h-6 animate-float-up-3" style="left: -10px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+                        </div>
+
+                        <!-- Player Spotify Flutuante -->
+                        <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#1e1e26] text-white px-3 py-2 rounded-[14px] shadow-xl flex items-center gap-3 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-500 z-20 pointer-events-none border border-white/10 w-max">
+                            <div class="w-8 h-8 rounded-md bg-gradient-to-br from-[#1db954] to-[#128a3c] flex items-center justify-center shrink-0 shadow-inner">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="white" stroke="none"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+                            </div>
+                            <div class="flex flex-col items-start pr-2">
+                                <span class="text-[11px] font-bold leading-tight">Nossa Música</span>
+                                <span class="text-[9px] text-gray-400">Tocando agora</span>
+                            </div>
+                            <div class="flex items-end gap-[2px] h-3 ml-1">
+                                <div class="w-[3px] bg-[#1db954] rounded-full animate-eq-1"></div>
+                                <div class="w-[3px] bg-[#1db954] rounded-full animate-eq-2"></div>
+                                <div class="w-[3px] bg-[#1db954] rounded-full animate-eq-3"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -683,13 +666,15 @@
     </section>
 
     <!-- Seção: Banner de Demo Interativa -->
-    <section id="demonstracao" class="w-full px-4 md:px-8 py-10 pb-24 font-sans reveal">
+    <section id="demo" class="w-full px-4 md:px-8 py-10 pb-24 font-sans reveal">
         <div class="max-w-7xl mx-auto relative bg-[#a874e4] rounded-[32px] overflow-hidden flex flex-col items-center justify-center min-h-[380px] shadow-[0_8px_0_0_#8b5bc4] hover:translate-y-[2px] hover:shadow-[0_6px_0_0_#8b5bc4] transition-all duration-300 group cursor-pointer border-4 border-white">
             
+            <!-- Linhas Geométricas de Fundo -->
             <svg class="absolute inset-0 w-full h-full object-cover opacity-20 pointer-events-none group-hover:scale-105 transition-transform duration-1000" viewBox="0 0 1000 400" preserveAspectRatio="none">
                 <path d="M-100,200 L1100,-100 M-100,300 L1100,0 M400,-100 L800,500" stroke="white" stroke-width="2" fill="none" />
             </svg>
 
+            <!-- Conteúdo Central -->
             <div class="relative z-20 flex flex-col items-center text-center px-6 py-12 md:py-16">
                 <div class="w-16 h-16 bg-white/20 backdrop-blur-md rounded-[20px] flex items-center justify-center mb-6 shadow-sm border border-white/30 group-hover:rotate-12 transition-transform">
                     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -699,9 +684,11 @@
                 <h2 class="text-[32px] md:text-[50px] font-black text-white mb-8 leading-tight tracking-tight group-hover:scale-[1.02] transition-transform duration-500">
                     Teste Nossa<br>Demo Interativa
                 </h2>
+                
                 <a href="demo.html" class="bg-white text-[#a874e4] font-bold text-lg px-8 py-4 rounded-[20px] flex items-center justify-center gap-3 transition-all transform hover:scale-105 active:scale-95 shadow-[0_4px_0_0_#dcc3f5] mb-4 w-full md:w-auto cursor-pointer">
                     Explorar a Demo
                 </a>
+                
                 <p class="text-white/90 text-sm font-semibold tracking-wide">Não é necessário cadastro.</p>
             </div>
         </div>
@@ -710,6 +697,7 @@
     <!-- Seção: Depoimentos de Clientes -->
     <section class="w-full py-24 overflow-hidden font-sans">
         <div class="max-w-7xl mx-auto px-4 md:px-8">
+            
             <div class="flex flex-col items-start md:items-center md:text-center mb-16 reveal">
                 <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#f8f5ff] border-2 border-[#dcc3f5] text-[#a874e4] font-bold text-[11px] uppercase tracking-widest mb-6 cursor-default shadow-[0_2px_0_0_#f1f1f5]">
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="animate-bounce">
@@ -717,13 +705,19 @@
                     </svg>
                     <span>Depoimentos</span>
                 </div>
-                <h2 class="text-[32px] md:text-[44px] font-black text-[#4a4a5f] mb-4 tracking-tight leading-tight">O que nossos <span class="text-[#a874e4]">clientes</span> dizem</h2>
-                <p class="text-[15px] md:text-[16px] font-medium text-[#8a8a9e] max-w-2xl mt-2 leading-relaxed">Histórias reais de pessoas que criaram presentes digitais para surpreender alguém especial.</p>
+                
+                <h2 class="text-[32px] md:text-[44px] font-black text-[#4a4a5f] mb-4 tracking-tight leading-tight">
+                    O que nossos <span class="text-[#a874e4]">clientes</span> dizem
+                </h2>
+                
+                <p class="text-[15px] md:text-[16px] font-medium text-[#8a8a9e] max-w-2xl mt-2 leading-relaxed">
+                    Histórias reais de pessoas que criaram presentes digitais para surpreender alguém especial.
+                </p>
             </div>
         </div>
 
         <div class="w-full relative fade-edges mt-8 reveal delay-100">
-            <!-- Linha 1 -->
+            <!-- Linha 1: Vai para a Esquerda (.animate-marquee) -->
             <div class="flex gap-6 w-max animate-marquee pause-on-hover mb-6 px-4">
                 <div class="flex gap-6">
                     <!-- Card 1 -->
@@ -743,6 +737,7 @@
                             <div><h4 class="text-[#5b4a78] font-bold text-sm">Lucas e Carol</h4><span class="text-gray-400 font-medium text-xs">3 meses atrás</span></div>
                         </div>
                     </div>
+                    
                     <!-- Card 2 -->
                     <div class="w-[300px] md:w-[380px] bg-white border-2 border-gray-100 rounded-[24px] shadow-[0_4px_0_0_#f1f1f5] p-6 md:p-8 flex flex-col justify-between shrink-0 hover:border-[#a874e4] hover:-translate-y-1 transition-all duration-300">
                         <div>
@@ -760,6 +755,7 @@
                             <div><h4 class="text-[#5b4a78] font-bold text-sm">Fernanda</h4><span class="text-gray-400 font-medium text-xs">2 semanas atrás</span></div>
                         </div>
                     </div>
+
                     <!-- Card 3 -->
                     <div class="w-[300px] md:w-[380px] bg-white border-2 border-gray-100 rounded-[24px] shadow-[0_4px_0_0_#f1f1f5] p-6 md:p-8 flex flex-col justify-between shrink-0 hover:border-[#a874e4] hover:-translate-y-1 transition-all duration-300">
                         <div>
@@ -778,7 +774,8 @@
                         </div>
                     </div>
                 </div>
-                <!-- Duplicata Linha 1 -->
+
+                <!-- Duplicata para loop infinito (Linha 1) -->
                 <div class="flex gap-6" aria-hidden="true">
                     <div class="w-[300px] md:w-[380px] bg-white border-2 border-gray-100 rounded-[24px] shadow-[0_4px_0_0_#f1f1f5] p-6 md:p-8 flex flex-col justify-between shrink-0 hover:border-[#a874e4] hover:-translate-y-1 transition-all duration-300">
                         <div>
@@ -796,6 +793,7 @@
                             <div><h4 class="text-[#5b4a78] font-bold text-sm">Lucas e Carol</h4><span class="text-gray-400 font-medium text-xs">3 meses atrás</span></div>
                         </div>
                     </div>
+                    
                     <div class="w-[300px] md:w-[380px] bg-white border-2 border-gray-100 rounded-[24px] shadow-[0_4px_0_0_#f1f1f5] p-6 md:p-8 flex flex-col justify-between shrink-0 hover:border-[#a874e4] hover:-translate-y-1 transition-all duration-300">
                         <div>
                             <div class="flex gap-1 text-[#a874e4] mb-4">
@@ -812,6 +810,7 @@
                             <div><h4 class="text-[#5b4a78] font-bold text-sm">Fernanda</h4><span class="text-gray-400 font-medium text-xs">2 semanas atrás</span></div>
                         </div>
                     </div>
+
                     <div class="w-[300px] md:w-[380px] bg-white border-2 border-gray-100 rounded-[24px] shadow-[0_4px_0_0_#f1f1f5] p-6 md:p-8 flex flex-col justify-between shrink-0 hover:border-[#a874e4] hover:-translate-y-1 transition-all duration-300">
                         <div>
                             <div class="flex gap-1 text-[#a874e4] mb-4">
@@ -851,6 +850,7 @@
                             <div><h4 class="text-[#5b4a78] font-bold text-sm">Fernanda e Rafa</h4><span class="text-gray-400 font-medium text-xs">2 semanas atrás</span></div>
                         </div>
                     </div>
+                    
                     <!-- Card 5 -->
                     <div class="w-[300px] md:w-[380px] bg-white border-2 border-gray-100 rounded-[24px] shadow-[0_4px_0_0_#f1f1f5] p-6 md:p-8 flex flex-col justify-between shrink-0 hover:border-[#a874e4] hover:-translate-y-1 transition-all duration-300">
                         <div>
@@ -868,6 +868,7 @@
                             <div><h4 class="text-[#5b4a78] font-bold text-sm">Marcos</h4><span class="text-gray-400 font-medium text-xs">5 dias atrás</span></div>
                         </div>
                     </div>
+
                     <!-- Card 6 -->
                     <div class="w-[300px] md:w-[380px] bg-white border-2 border-gray-100 rounded-[24px] shadow-[0_4px_0_0_#f1f1f5] p-6 md:p-8 flex flex-col justify-between shrink-0 hover:border-[#a874e4] hover:-translate-y-1 transition-all duration-300">
                         <div>
@@ -886,6 +887,7 @@
                         </div>
                     </div>
                 </div>
+
                 <!-- Duplicata para loop infinito (Linha 2) -->
                 <div class="flex gap-6" aria-hidden="true">
                     <!-- Card 4 -->
@@ -905,6 +907,7 @@
                             <div><h4 class="text-[#5b4a78] font-bold text-sm">Fernanda e Rafa</h4><span class="text-gray-400 font-medium text-xs">2 semanas atrás</span></div>
                         </div>
                     </div>
+                    
                     <!-- Card 5 -->
                     <div class="w-[300px] md:w-[380px] bg-white border-2 border-gray-100 rounded-[24px] shadow-[0_4px_0_0_#f1f1f5] p-6 md:p-8 flex flex-col justify-between shrink-0 hover:border-[#a874e4] hover:-translate-y-1 transition-all duration-300">
                         <div>
@@ -922,6 +925,7 @@
                             <div><h4 class="text-[#5b4a78] font-bold text-sm">Marcos</h4><span class="text-gray-400 font-medium text-xs">5 dias atrás</span></div>
                         </div>
                     </div>
+
                     <!-- Card 6 -->
                     <div class="w-[300px] md:w-[380px] bg-white border-2 border-gray-100 rounded-[24px] shadow-[0_4px_0_0_#f1f1f5] p-6 md:p-8 flex flex-col justify-between shrink-0 hover:border-[#a874e4] hover:-translate-y-1 transition-all duration-300">
                         <div>
@@ -949,7 +953,6 @@
     <section class="w-full bg-[#faf9fc] py-24 px-4 md:px-8 font-sans border-t-2 border-gray-100">
         <div class="max-w-5xl mx-auto">
             
-            <!-- Cabeçalho da Seção -->
             <div class="flex flex-col items-center text-center mb-16 reveal">
                 <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#f8f5ff] border-2 border-[#dcc3f5] text-[#a874e4] font-bold text-[11px] uppercase tracking-widest mb-6 cursor-default shadow-[0_2px_0_0_#f1f1f5]">
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
@@ -967,7 +970,6 @@
                 </p>
             </div>
 
-            <!-- Container dos Cards -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-6 lg:gap-10 max-w-4xl mx-auto relative mt-8">
                 
                 <!-- Card 1: Econômico -->
@@ -1079,7 +1081,6 @@
             <!-- Acordeão de Perguntas -->
             <div class="flex flex-col gap-5">
                 
-                <!-- Pergunta 1 -->
                 <div class="reveal delay-100 bg-white border-2 border-gray-100 rounded-[20px] shadow-[0_4px_0_0_#f1f1f5] overflow-hidden transition-all duration-300">
                     <button class="accordion-btn w-full flex justify-between items-center p-5 md:p-6 text-left focus:outline-none hover:bg-gray-50 transition-colors" aria-expanded="false">
                         <span class="text-[#5b4a78] font-bold text-[15px] md:text-[16px]">Para quem posso criar um presente?</span>
@@ -1096,7 +1097,6 @@
                     </div>
                 </div>
 
-                <!-- Pergunta 2 -->
                 <div class="reveal delay-100 bg-white border-2 border-gray-100 rounded-[20px] shadow-[0_4px_0_0_#f1f1f5] overflow-hidden transition-all duration-300">
                     <button class="accordion-btn w-full flex justify-between items-center p-5 md:p-6 text-left focus:outline-none hover:bg-gray-50 transition-colors" aria-expanded="false">
                         <span class="text-[#5b4a78] font-bold text-[15px] md:text-[16px]">Como funciona? Preciso saber editar?</span>
@@ -1113,7 +1113,6 @@
                     </div>
                 </div>
 
-                <!-- Pergunta 3 -->
                 <div class="reveal delay-200 bg-white border-2 border-gray-100 rounded-[20px] shadow-[0_4px_0_0_#f1f1f5] overflow-hidden transition-all duration-300">
                     <button class="accordion-btn w-full flex justify-between items-center p-5 md:p-6 text-left focus:outline-none hover:bg-gray-50 transition-colors" aria-expanded="false">
                         <span class="text-[#5b4a78] font-bold text-[15px] md:text-[16px]">O site fica no ar para sempre?</span>
@@ -1130,7 +1129,6 @@
                     </div>
                 </div>
 
-                <!-- Pergunta 4 -->
                 <div class="reveal delay-200 bg-white border-2 border-gray-100 rounded-[20px] shadow-[0_4px_0_0_#f1f1f5] overflow-hidden transition-all duration-300">
                     <button class="accordion-btn w-full flex justify-between items-center p-5 md:p-6 text-left focus:outline-none hover:bg-gray-50 transition-colors" aria-expanded="false">
                         <span class="text-[#5b4a78] font-bold text-[15px] md:text-[16px]">Como entrego a surpresa?</span>
@@ -1151,7 +1149,7 @@
         </div>
     </section>
 
-    <!-- Rodapé Completo e Estendido -->
+    <!-- Rodapé -->
     <footer class="w-full bg-[#faf9fc] pt-16 pb-8 border-t-2 border-gray-100 font-sans">
         <div class="max-w-7xl mx-auto px-4 md:px-8">
             
@@ -1161,8 +1159,8 @@
                 <!-- Coluna 1: Logo e Descrição -->
                 <div class="col-span-2 md:col-span-3 lg:col-span-2 flex flex-col items-start">
                     <a href="index.html" class="flex items-center gap-3 mb-6 group">
-                        <div class="w-12 h-12 rounded-2xl bg-[#f8f5ff] border-2 border-[#dcc3f5] flex items-center justify-center overflow-hidden shrink-0 group-hover:-translate-y-1 group-hover:shadow-[0_4px_0_0_#dcc3f5] transition-all">
-                            <span class="text-2xl">🦦</span>
+                        <div class="w-12 h-12 rounded-2xl bg-[#f8f5ff] border-2 border-[#dcc3f5] flex items-center justify-center overflow-hidden shrink-0 group-hover:-translate-y-1 group-hover:shadow-[0_4px_0_0_#dcc3f5] transition-all p-1.5">
+                            <img src="https://i.imgur.com/sTgAwVX.png" alt="Lontra Logo" class="w-full h-full object-contain">
                         </div>
                         <span class="text-[#4a4a5f] text-[22px] font-black tracking-tight group-hover:text-[#a874e4] transition-colors">Lontra</span>
                     </a>
@@ -1176,9 +1174,9 @@
                     <h4 class="text-[#4a4a5f] font-bold text-[16px]">Produto</h4>
                     <ul class="flex flex-col gap-3.5 text-[#8a8a9e] text-[14px] font-medium">
                         <li><a href="#como-funciona" class="hover:text-[#a874e4] hover:underline transition-colors">Como Funciona</a></li>
-                        <li><a href="#recursos" class="hover:text-[#a874e4] hover:underline transition-colors">Recursos</a></li>
+                        <li><a href="#funcionalidades-carrossel" class="hover:text-[#a874e4] hover:underline transition-colors">Recursos</a></li>
                         <li><a href="#precos" class="hover:text-[#a874e4] hover:underline transition-colors">Preços</a></li>
-                        <li><a href="demo.html" class="hover:text-[#a874e4] hover:underline transition-colors">Exemplo</a></li>
+                        <li><a href="#demo" class="hover:text-[#a874e4] hover:underline transition-colors">Exemplo</a></li>
                         <li><a href="quiz.html" class="hover:text-[#a874e4] hover:underline transition-colors">Criar Presente</a></li>
                     </ul>
                 </div>
@@ -1251,40 +1249,31 @@
             const langBtn = document.getElementById('langBtn');
             if (langBtn) langBtn.addEventListener('click', () => showToast('Mais idiomas chegando em breve! 🌍'));
 
-            const accountBtn = document.getElementById('accountBtn');
-            if (accountBtn) accountBtn.addEventListener('click', () => showToast('Área de conta chegando em breve! 💜'));
-
-            // --- Menu Mobile Lógica ---
+            // --- Menu Mobile Lógica e Animação ---
             const mobileMenuBtn = document.getElementById('mobile-menu-btn');
             const mobileMenu = document.getElementById('mobile-menu');
-            const hamburgerIcon = document.getElementById('hamburger-icon');
-            const closeIcon = document.getElementById('close-icon');
-
             if(mobileMenuBtn && mobileMenu) {
                 mobileMenuBtn.addEventListener('click', () => {
-                    const isClosed = mobileMenu.classList.contains('opacity-0');
-                    if (isClosed) {
-                        // Abre o menu
-                        mobileMenu.classList.remove('opacity-0', 'invisible', '-translate-y-4');
-                        mobileMenu.classList.add('translate-y-0');
-                        hamburgerIcon.classList.add('hidden');
-                        closeIcon.classList.remove('hidden');
+                    const isOpen = mobileMenu.classList.contains('translate-y-0');
+                    if (isOpen) {
+                        // Fechar
+                        mobileMenu.classList.remove('translate-y-0', 'opacity-100', 'pointer-events-auto');
+                        mobileMenu.classList.add('-translate-y-[150%]', 'opacity-0', 'pointer-events-none');
+                        mobileMenuBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>';
                     } else {
-                        // Fecha o menu
-                        mobileMenu.classList.add('opacity-0', 'invisible', '-translate-y-4');
-                        mobileMenu.classList.remove('translate-y-0');
-                        hamburgerIcon.classList.remove('hidden');
-                        closeIcon.classList.add('hidden');
+                        // Abrir
+                        mobileMenu.classList.remove('-translate-y-[150%]', 'opacity-0', 'pointer-events-none');
+                        mobileMenu.classList.add('translate-y-0', 'opacity-100', 'pointer-events-auto');
+                        mobileMenuBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
                     }
                 });
-
-                // Fechar ao clicar num link
+                
+                // Fecha automaticamente ao clicar em um link do menu
                 mobileMenu.querySelectorAll('a').forEach(link => {
                     link.addEventListener('click', () => {
-                        mobileMenu.classList.add('opacity-0', 'invisible', '-translate-y-4');
-                        mobileMenu.classList.remove('translate-y-0');
-                        hamburgerIcon.classList.remove('hidden');
-                        closeIcon.classList.add('hidden');
+                        mobileMenu.classList.remove('translate-y-0', 'opacity-100', 'pointer-events-auto');
+                        mobileMenu.classList.add('-translate-y-[150%]', 'opacity-0', 'pointer-events-none');
+                        mobileMenuBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>';
                     });
                 });
             }
@@ -1326,7 +1315,7 @@
             }
             typeWriter();
 
-            // --- 2. Lógica do Acordeão (FAQ) Melhorada e Robusta ---
+            // --- 2. Lógica do Acordeão (FAQ) Robusta ---
             const accordions = document.querySelectorAll(".accordion-btn");
 
             accordions.forEach(acc => {
@@ -1410,18 +1399,28 @@
 
             // --- 4. Animação de Troca de Avaliações no Hero ---
             const heroReviews = [
-                { name: "Carla", text: '"Minha amiga disse que foi o presente mais criativo que já ganhou na vida!"' },
-                { name: "Marcos", text: '"Criei em cinco minutos e ficou incrível. Minha namorada amou de verdade."' },
-                { name: "Fernanda", text: '"Chorou de emoção! Melhor presente que já dei, super recomendo a plataforma."' },
-                { name: "Diego", text: '"A interface é incrivelmente fácil de mexer, e o resultado final é lindo demais!"' }
+                { name: "Carla & João", image: "https://media.lovepanda.com.br/static/br/images/social-proof/couples/1.webp", text: '"Minha amiga disse que foi o presente mais criativo que já ganhou na vida!"' },
+                { name: "Marcos & Ana", image: "https://media.lovepanda.com.br/static/br/images/social-proof/couples/2.webp", text: '"Criei em cinco minutos e ficou incrível. Minha namorada amou de verdade."' },
+                { name: "Fernanda", image: "https://media.lovepanda.com.br/static/br/images/social-proof/couples/3.webp", text: '"Chorou de emoção! Melhor presente que já dei, super recomendo a plataforma."' },
+                { name: "Diego & Carol", image: "https://media.lovepanda.com.br/static/br/images/social-proof/couples/4.webp", text: '"A interface é incrivelmente fácil de mexer, e o resultado final é lindo demais!"' },
+                { name: "Camila", image: "https://media.lovepanda.com.br/static/br/images/social-proof/couples/5.webp", text: '"Fizemos um ano de namoro e esse foi o presente perfeito, muito obrigado!"' },
+                { name: "Rafael & Júlia", image: "https://media.lovepanda.com.br/static/br/images/social-proof/couples/6.webp", text: '"Nunca vi nada parecido, a qualidade é excelente e muito fácil de usar."' },
+                { name: "Letícia", image: "https://media.lovepanda.com.br/static/br/images/social-proof/couples/7.webp", text: '"Presente de última hora que acabou sendo o melhor de todos. Sensacional!"' },
+                { name: "Pedro & Bia", image: "https://media.lovepanda.com.br/static/br/images/social-proof/couples/8.webp", text: '"O player de música é um charme a mais. Deixou tudo super romântico."' },
+                { name: "Sofia", image: "https://media.lovepanda.com.br/static/br/images/social-proof/couples/9.webp", text: '"Choramos os dois assistindo a retrospectiva. Valeu cada centavo."' },
+                { name: "Matheus & Luana", image: "https://media.lovepanda.com.br/static/br/images/social-proof/couples/10.webp", text: '"Muito prático e o resultado é profissional. A página carrega super rápido."' },
+                { name: "Beatriz", image: "https://media.lovepanda.com.br/static/br/images/social-proof/couples/11.webp", text: '"Amei poder colocar nossa música do Spotify tocando de fundo!"' },
+                { name: "Thiago & Amanda", image: "https://media.lovepanda.com.br/static/br/images/social-proof/couples/12.webp", text: '"Imprimi o QR Code e coloquei numa caixinha. A surpresa foi inesquecível."' },
+                { name: "Larissa", image: "https://media.lovepanda.com.br/static/br/images/social-proof/couples/13.webp", text: '"A linha do tempo animada é linda! Contei nossa história e ela amou."' }
             ];
             
             let currentReviewIndex = 0;
             const reviewContainer = document.getElementById("hero-review-container");
             const reviewName = document.getElementById("hero-review-name");
             const reviewText = document.getElementById("hero-review-text");
+            const reviewImg = document.getElementById("hero-review-img");
 
-            if(reviewContainer && reviewName && reviewText) {
+            if(reviewContainer && reviewName && reviewText && reviewImg) {
                 reviewContainer.style.transition = "opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)";
                 
                 setInterval(() => {
@@ -1432,6 +1431,7 @@
                         currentReviewIndex = (currentReviewIndex + 1) % heroReviews.length;
                         reviewName.innerText = heroReviews[currentReviewIndex].name;
                         reviewText.innerText = heroReviews[currentReviewIndex].text;
+                        reviewImg.src = heroReviews[currentReviewIndex].image;
                         
                         reviewContainer.style.transition = "none";
                         reviewContainer.style.transform = "translateY(12px)";
@@ -1523,7 +1523,6 @@
                         const len = slides.length;
                         const transformBase = 'translate(-50%, -50%)'; 
                         
-                        // Detecta se é mobile para aplicar transformações mais contidas
                         const isMobile = window.innerWidth < 768;
                         
                         const sideTranslateX = isMobile ? 55 : 55;  
@@ -1541,7 +1540,6 @@
                             const blur = phone.querySelector('.screen-blur');
 
                             if (diff === 0) {
-                                // Ativo
                                 phone.style.transform = `${transformBase} translateX(0) scale(1) rotateY(0deg) rotateZ(0deg) translateZ(0)`;
                                 phone.style.zIndex = '30';
                                 phone.style.opacity = '1';
@@ -1549,7 +1547,6 @@
                                 blur.style.opacity = '0';
                                 video.play().catch(e => {}); 
                             } else if (diff === -1 || (len === 2 && diff === 1)) {
-                                // Esquerda
                                 phone.style.transform = `${transformBase} translateX(-${sideTranslateX}%) scale(${sideScale}) rotateY(${sideRotY}deg) rotateZ(-${sideRotZ}deg) translateZ(-50px)`;
                                 phone.style.zIndex = '20';
                                 phone.style.opacity = '0.9';
@@ -1557,7 +1554,6 @@
                                 blur.style.opacity = '1';
                                 video.pause();
                             } else if (diff === 1) {
-                                // Direita
                                 phone.style.transform = `${transformBase} translateX(${sideTranslateX}%) scale(${sideScale}) rotateY(-${sideRotY}deg) rotateZ(${sideRotZ}deg) translateZ(-50px)`;
                                 phone.style.zIndex = '20';
                                 phone.style.opacity = '0.9';
@@ -1565,7 +1561,6 @@
                                 blur.style.opacity = '1';
                                 video.pause();
                             } else {
-                                // Trás
                                 const sign = Math.sign(diff) || 1;
                                 phone.style.transform = `${transformBase} translateX(${sign * (sideTranslateX + 20)}%) scale(0.6) rotateY(${sign * -25}deg) rotateZ(${sign * 8}deg) translateZ(-100px)`;
                                 phone.style.zIndex = '10';
@@ -1637,7 +1632,6 @@
                         changeSlide(newIndex, 'next');
                     });
 
-                    // Atualiza layout em resize do navegador
                     window.addEventListener('resize', update3DPositions);
 
                     initCarousel();
