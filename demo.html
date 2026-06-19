@@ -6,6 +6,7 @@
 <title>Seu Presente Especial</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://unpkg.com/lucide@latest"></script>
+<!-- REMOVIDO: Script da API do YouTube -->
 
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap');
@@ -21,6 +22,8 @@
         background-color: #faf9fc;
         color: #4a4a5f;
         -webkit-tap-highlight-color: transparent;
+        /* Garante que o corpo tenha altura mínima para os polaroids fixos não cortarem */
+        min-height: 150vh; /* Aumentado para permitir scroll e ver o efeito */
     }
 
     /* ---------- Entrada escalonada ---------- */
@@ -37,6 +40,7 @@
     .delay-6 { animation-delay: .60s; }
     .delay-7 { animation-delay: .70s; }
     .delay-8 { animation-delay: .80s; }
+    .delay-9 { animation-delay: .90s; }
     .delay-10 { animation-delay: 1.0s; }
 
     /* ---------- Botão "Revelar Surpresa" (moeda 3D) ---------- */
@@ -90,14 +94,6 @@
     .card-stack-item.dragging { transition: none; cursor: grabbing; }
     .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 
-    /* ---------- Equalizador da música ---------- */
-    @keyframes eqBar1 { 0%, 100% { height: 40%; } 50% { height: 100%; } }
-    @keyframes eqBar2 { 0%, 100% { height: 100%; } 50% { height: 30%; } }
-    @keyframes eqBar3 { 0%, 100% { height: 60%; } 50% { height: 100%; } }
-    .eq-bar-1 { animation: eqBar1 0.6s ease-in-out infinite; }
-    .eq-bar-2 { animation: eqBar2 0.7s ease-in-out infinite; }
-    .eq-bar-3 { animation: eqBar3 0.5s ease-in-out infinite; }
-
     /* ---------- Toast ---------- */
     #toast {
         position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-20px);
@@ -107,16 +103,97 @@
         z-index: 200; max-width: 88vw; text-align: center;
     }
     #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
+
+    /* ---------- Desktop Polaroids ---------- */
+    .desktop-polaroids {
+        display: none;
+        position: fixed;
+        top: 0;
+        height: 120vh; /* Um pouco maior que a tela para o scroll */
+        width: 28%; /* Ocupa as laterais */
+        pointer-events: none; /* Não interfere no clique */
+        z-index: 0; /* Fica atrás do conteúdo principal */
+        will-change: transform;
+        transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Suaviza o scroll */
+    }
+    #polaroidLeft { left: 0; }
+    #polaroidRight { right: 0; }
+
+    @media (min-width: 1024px) { /* Apenas em telas grandes (lg do tailwind) */
+        .desktop-polaroids { display: block; }
+    }
+
+    .polaroid-float {
+        position: absolute;
+        animation: floatPolaroid 7s ease-in-out infinite alternate;
+        animation-delay: var(--delay);
+        will-change: transform;
+    }
+
+    @keyframes floatPolaroid {
+        0% { transform: translateY(0) rotate(var(--rot)); }
+        100% { transform: translateY(-20px) rotate(var(--rot)); }
+    }
+
+    /* ---------- Estilos para a Mensagem Especial ---------- */
+    /* REMOVIDO: .blur-text e .reveal-message-btn não são mais necessários */
+
+    /* ---------- Estilos para o Player de Música (Estilo Spotify) ---------- */
+    .music-player-spotify {
+        /* MUDANÇA: Cor de fundo inicial e transição suave */
+        background-color: #1c3c60; 
+        color: white;
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.5s ease; /* Transição suave da cor */
+    }
+    .spotify-progress-bar {
+        height: 4px;
+        background-color: rgba(255, 255, 255, 0.3);
+        border-radius: 2px;
+        position: relative;
+        cursor: pointer;
+    }
+    .spotify-progress-fill {
+        height: 100%;
+        background-color: white;
+        border-radius: 2px;
+        width: 0%;
+        position: relative;
+    }
+    .spotify-progress-thumb {
+        position: absolute;
+        right: -6px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 12px;
+        height: 12px;
+        background-color: white;
+        border-radius: 50%;
+        opacity: 0;
+        transition: opacity 0.2s;
+    }
+    .spotify-progress-bar:hover .spotify-progress-thumb {
+        opacity: 1;
+    }
+
 </style>
 </head>
-<body class="antialiased overflow-x-hidden">
+<body class="antialiased overflow-x-hidden relative">
+
+    <!-- ===================== CONTAINERS POLAROID DESKTOP ===================== -->
+    <!-- Adicionado will-change para performance no scroll -->
+    <div id="polaroidLeft" class="desktop-polaroids will-change-transform"></div>
+    <div id="polaroidRight" class="desktop-polaroids will-change-transform"></div>
 
     <!-- ===================== PORTÃO DE REVELAÇÃO ===================== -->
     <div id="revealGate" class="fixed inset-0 z-50 bg-[#faf9fc] flex items-center justify-center px-6 transition-opacity duration-500">
 
         <div id="loadingState" class="absolute flex flex-col items-center text-center transition-all duration-700 ease-in-out opacity-100 transform scale-100">
-            <div class="w-24 h-24 bg-white border-4 border-[#dcc3f5] rounded-full shadow-[0_8px_0_0_#f1f1f5] flex items-center justify-center mb-6 overflow-hidden relative">
-                <img src="https://em-content.zobj.net/source/animated-noto-color-emoji/461/otter_1f9a6.gif" alt="Carregando" class="w-16 h-16 object-contain z-10">
+            <!-- LOGO -->
+            <div class="w-24 h-24 bg-white border-4 border-[#dcc3f5] rounded-full shadow-[0_8px_0_0_#f1f1f5] flex items-center justify-center mb-6 overflow-hidden relative p-1">
+                <img src="https://i.imgur.com/sTgAwVX.png" alt="Carregando" class="w-full h-full object-contain z-10 rounded-full">
             </div>
             <h2 class="text-[#a874e4] font-black text-2xl tracking-tight mb-2">Preparando sua surpresa...</h2>
             <p class="text-[#8a8a9e] font-bold text-sm">Quase lá...</p>
@@ -135,21 +212,25 @@
                 <div class="relative w-8 h-8 ml-2 z-20" style="perspective: 800px;">
                     <div id="revealCoin" class="w-full h-full relative" style="transform-style: preserve-3d;">
                         <div class="absolute inset-0 rounded-full bg-[#cba4f1]" style="transform: translateZ(0);"></div>
+                        <!-- MUDANÇA 1: Emoji de Lontra na moeda -->
                         <div class="coin-face" style="transform: rotateY(180deg) translateZ(1px);">🦦</div>
                         <div class="coin-face" style="transform: translateZ(1px);">🎁</div>
                     </div>
                 </div>
             </button>
+            <!-- ADICIONADO: Texto De: Gustavo Para: Gabrielle -->
+            <p class="text-[#8a8a9e] font-medium text-sm mt-4">De: Gustavo Para: Gabrielle</p>
         </div>
     </div>
 
     <!-- ===================== CONTEÚDO PRINCIPAL ===================== -->
     <main id="mainContent" class="hidden min-h-screen flex-col items-center pb-12 w-full max-w-md mx-auto px-5 pt-12 gap-6 relative z-10">
 
-        <!-- Mascote -->
+        <!-- Mascote/Logo -->
         <div class="flex justify-center mb-2 fade-up delay-1">
-            <div class="w-20 h-20 bg-[#f8f5ff] border-2 border-[#dcc3f5] rounded-full shadow-[0_4px_0_0_#f1f1f5] flex items-center justify-center overflow-hidden">
-                <img src="https://em-content.zobj.net/source/animated-noto-color-emoji/461/otter_1f9a6.gif" alt="Mascote" class="w-14 h-14 object-contain">
+            <!-- LOGO -->
+            <div class="w-24 h-24 bg-white border-2 border-[#dcc3f5] rounded-full shadow-[0_4px_0_0_#f1f1f5] flex items-center justify-center overflow-hidden p-1">
+                <img src="https://i.imgur.com/sTgAwVX.png" alt="Mascote" class="w-full h-full object-cover rounded-full">
             </div>
         </div>
 
@@ -204,7 +285,7 @@
             </div>
         </a>
 
-        <!-- Pilha de Fotos (Aumentei a altura pra 350px e margem pra caber perfeitamente os botões sem sobrepor) -->
+        <!-- Pilha de Fotos (Delay ajustado para 5) -->
         <div class="w-full py-4 mt-2 mb-2 fade-up delay-5">
             <div id="photoSection" class="flex flex-col items-center w-full">
                 <div class="relative h-[350px] w-full max-w-[320px] mx-auto touch-none" id="cardStackArea">
@@ -214,61 +295,91 @@
             </div>
         </div>
 
-        <!-- Vamos Jogar -->
+        <!-- Vamos Jogar (Delay ajustado para 6) -->
         <a href="jogos.html" class="fade-up delay-6 w-full bg-white border-2 border-gray-100 rounded-[24px] shadow-[0_4px_0_0_#f1f1f5] p-4 flex items-center gap-4 hover:border-[#a874e4] hover:-translate-y-1 transition-all group mt-2">
             <div class="w-12 h-12 bg-[#f8f5ff] border-2 border-[#dcc3f5] rounded-2xl flex items-center justify-center text-[#a874e4] shrink-0 group-hover:-rotate-12 transition-transform">
                 <i data-lucide="gamepad-2" class="w-[22px] h-[22px]" style="stroke-width:2.5"></i>
             </div>
             <div class="flex flex-col text-left">
                 <span class="font-bold text-[#4a4a5f] text-[15px]">Vamos Jogar?</span>
-                <span class="text-[11px] font-medium text-[#8a8a9e] mt-0.5">2 joguinhos feitos com as memórias de vocês</span>
+                <span class="text-[11px] font-medium text-[#8a8a9e] mt-0.5">Joguinhos feitos com as memórias de vocês</span>
             </div>
         </a>
 
-        <!-- Player de Música -->
-        <div class="fade-up delay-7 w-full bg-white border-2 border-gray-100 rounded-[24px] shadow-[0_4px_0_0_#f1f1f5] p-5 flex flex-col gap-4 mt-2">
-            <div class="flex items-center gap-4">
-                <div id="musicAlbumWrap" class="w-16 h-16 bg-[#1e1e26] rounded-xl overflow-hidden shadow-sm shrink-0 relative group cursor-pointer">
-                    <img id="musicAlbumArt" src="" alt="Capa Álbum" class="w-full h-full object-cover opacity-90 transition-all duration-500 group-hover:scale-105">
-                    <div id="musicOverlay" class="absolute inset-0 flex items-center justify-center transition-all bg-black/20 opacity-0 group-hover:opacity-100">
-                        <div id="musicEqBars" class="hidden flex gap-[3px] items-end h-5">
-                            <div class="eq-bar-1 w-1.5 bg-[#a874e4] rounded-full"></div>
-                            <div class="eq-bar-2 w-1.5 bg-[#a874e4] rounded-full"></div>
-                            <div class="eq-bar-3 w-1.5 bg-[#a874e4] rounded-full"></div>
-                        </div>
-                        <i id="musicVolumeIcon" data-lucide="volume-2" class="text-white w-6 h-6"></i>
+        <!-- Player de Música (Estilo Spotify - Dark Blue) (Delay ajustado para 7) -->
+        <div id="musicPlayerContainer" class="fade-up delay-7 w-full music-player-spotify mt-3 flex flex-col gap-4 transition-colors duration-500" style="background-color: #1c3c60;">
+            <!-- Capa do álbum grande -->
+            <div class="w-full aspect-square rounded-xl overflow-hidden shadow-lg mb-2">
+                <!-- MUDANÇA: Imagem será atualizada pelo JS, removido src fixo -->
+                <img id="musicAlbumArtLarge" src="" alt="Capa Álbum" class="w-full h-full object-cover transition-opacity duration-200">
+            </div>
+
+            <div class="flex items-center justify-between">
+                <div class="flex flex-col text-left">
+                    <!-- Título e Artista -->
+                    <h3 id="musicTitle" class="font-black text-2xl leading-tight">Still Loving You</h3>
+                    <p class="text-sm font-medium text-white/70">Lontra</p>
+                </div>
+                <!-- MUDANÇA: Removido o ícone de Check -->
+            </div>
+
+            <!-- Barra de progresso -->
+            <div class="flex flex-col gap-1">
+                <div id="musicProgressBar" class="spotify-progress-bar group">
+                    <div id="musicProgressFill" class="spotify-progress-fill" style="width:0%">
+                        <div class="spotify-progress-thumb"></div>
                     </div>
                 </div>
-
-                <div class="flex flex-col text-left w-full">
-                    <span class="text-[9px] font-bold text-[#8a8a9e] tracking-widest uppercase flex items-center gap-1 mb-0.5">
-                        <i data-lucide="music" class="w-3 h-3"></i> Nossa Música
-                    </span>
-                    <span id="musicTitle" class="font-black text-[#4a4a5f] text-lg leading-tight mb-2">djonga procuro alguem</span>
-
-                    <div class="flex items-center gap-2 w-full text-[9px] font-bold text-[#8a8a9e]">
-                        <span class="w-5 text-right" id="musicCurrentTime">0:00</span>
-                        <div id="musicProgressBar" class="h-1.5 flex-1 bg-[#f1f1f5] rounded-full overflow-hidden relative cursor-pointer group">
-                            <div id="musicProgressFill" class="h-full bg-[#a874e4] rounded-full relative group-hover:bg-[#9760d6] transition-colors" style="width:15%"></div>
-                        </div>
-                        <span>4:29</span>
-                    </div>
+                <div class="flex justify-between text-xs font-medium text-white/70">
+                    <span id="musicCurrentTime">0:00</span>
+                    <!-- Duração fixa conforme o print -->
+                    <span id="musicDuration">-4:39</span>
                 </div>
             </div>
 
-            <div class="flex items-center justify-between px-1 mt-1">
-                <button id="musicStatusBtn" type="button" class="text-[#8a8a9e] hover:text-[#a874e4] flex items-center gap-1.5 text-xs font-bold transition-colors">
-                    <i id="volumeIcon" data-lucide="volume-2" class="w-4 h-4"></i>
-                    <span id="musicStatusText">Som ligado</span>
+            <!-- Controles -->
+            <div class="flex items-center justify-between mt-2">
+                <!-- MUDANÇA: Botão Shuffle desabilitado visualmente -->
+                <button type="button" class="text-white/70 transition-colors pointer-events-none opacity-50">
+                    <i data-lucide="shuffle" class="w-6 h-6"></i>
                 </button>
-                <button id="playPauseBtn" type="button" class="w-12 h-12 rounded-full bg-[#a874e4] shadow-[0_4px_0_0_#8b5bc4] text-white flex items-center justify-center hover:bg-[#9760d6] active:translate-y-1 active:shadow-none transition-all pl-0">
-                    <span id="playPauseIcon"></span>
+                
+                <div class="flex items-center gap-6">
+                    <!-- Botão Anterior (Controla Fotos) -->
+                    <button id="prevPhotoBtn" type="button" class="text-white/70 hover:text-white transition-colors">
+                        <i data-lucide="skip-back" class="w-8 h-8 fill-current"></i>
+                    </button>
+
+                    <!-- Botão Play/Pause -->
+                    <button id="playPauseBtn" type="button" class="w-16 h-16 rounded-full bg-white text-[#1c3c60] flex items-center justify-center hover:scale-105 active:translate-y-0.5 transition-all">
+                        <span id="playPauseIcon" class="scale-125"></span>
+                    </button>
+
+                    <!-- Botão Próximo (Controla Fotos) -->
+                    <button id="nextPhotoBtn" type="button" class="text-white/70 hover:text-white transition-colors">
+                        <i data-lucide="skip-forward" class="w-8 h-8 fill-current"></i>
+                    </button>
+                </div>
+
+                <!-- MUDANÇA: Botão Repeat desabilitado visualmente -->
+                <button type="button" class="text-white/70 transition-colors pointer-events-none opacity-50">
+                    <i data-lucide="repeat" class="w-6 h-6"></i>
                 </button>
             </div>
         </div>
 
-        <!-- Card Final VIP -->
-        <div class="fade-up delay-8 w-full bg-white border-2 border-[#dcc3f5] rounded-[32px] p-5 md:p-6 flex flex-col gap-6 mt-6 shadow-[0_8px_0_0_#f8f5ff]">
+        <!-- NOVA SEÇÃO: Mensagem Especial (Estilo Azul - MOVIDA E ALTERADA) (Delay ajustado para 8) -->
+        <div class="fade-up delay-8 w-full bg-[#4A90E2] rounded-[24px] p-6 flex flex-col gap-4 text-white shadow-[0_4px_0_0_#357ABD]">
+            <h3 class="text-lg font-bold">Mensagem especial</h3>
+            <!-- REMOVIDO CLASSE blur-text e REMOVIDO hífen final -->
+            <p id="specialMessageText" class="text-xl font-black leading-tight transition-all duration-500">
+                E pensar que tudo começou do nada... ✨ Olha só pra gente agora: escrevendo nossa própria história.
+            </p>
+            <!-- REMOVIDO BOTÃO "Mostrar Mensagem" -->
+        </div>
+
+        <!-- Card Final VIP (Delay ajustado para 9) -->
+        <div class="fade-up delay-9 w-full bg-white border-2 border-[#dcc3f5] rounded-[32px] p-5 md:p-6 flex flex-col gap-6 mt-6 shadow-[0_8px_0_0_#f8f5ff]">
             <a href="#" id="editPageBtn" class="bg-gradient-to-r from-[#a874e4] to-[#cba4f1] text-white rounded-[20px] p-4 flex items-center gap-4 shadow-[0_4px_0_0_#8b5bc4] hover:-translate-y-1 hover:shadow-[0_6px_0_0_#8b5bc4] active:translate-y-[2px] active:shadow-none transition-all cursor-pointer">
                 <div class="bg-white/20 p-2 rounded-xl text-lg backdrop-blur-sm">👑</div>
                 <div class="flex flex-col text-left flex-1">
@@ -302,22 +413,26 @@
             </div>
         </div>
 
-        <!-- Rodapé Redes Sociais -->
+        <!-- Rodapé Redes Sociais (Delay ajustado para 10) -->
         <div class="fade-up delay-10 flex flex-col items-center gap-4 mt-6 mb-8">
             <span class="text-[#8a8a9e] font-bold text-xs uppercase tracking-widest">Siga-nos</span>
             <div class="flex gap-4">
                 <a href="#" class="social-icon-link w-11 h-11 rounded-full bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-500 flex items-center justify-center text-white shadow-[0_4px_0_0_#f1f1f5] hover:-translate-y-1 active:translate-y-0 active:shadow-none transition-all">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line></svg>
                 </a>
-                <a href="#" class="social-icon-link w-11 h-11 rounded-full bg-[#25D366] flex items-center justify-center text-white shadow-[0_4px_0_0_#f1f1f5] hover:-translate-y-1 active:translate-y-0 active:shadow-none transition-all">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
-                </a>
+                <!-- BOTÃO WHATSAPP REMOVIDO AQUI -->
                 <a href="#" class="social-icon-link w-11 h-11 rounded-full bg-[#8b5bc4] flex items-center justify-center text-white shadow-[0_4px_0_0_#f1f1f5] hover:-translate-y-1 active:translate-y-0 active:shadow-none transition-all">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
                 </a>
             </div>
             <span class="text-[11px] font-semibold text-[#b4b4c4] mt-4">Criado com <a href="index.html" class="text-[#a874e4] font-bold hover:underline">Lontra</a></span>
         </div>
+        
+        <!-- REMOVIDO: Div do player do YouTube -->
+
+        <!-- ADICIONADO: Tag de áudio HTML5 nativa -->
+        <!-- IMPORTANTE: Substitua o link no 'src' pelo link direto (MP3/OGG) da sua música -->
+        <audio id="bgMusic" preload="auto" loop src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
 
     </main>
 
@@ -327,20 +442,20 @@
 lucide.createIcons();
 
 /* ============================================================
-   1) CARREGAR DADOS DO PRESENTE (vindos do quiz, ou exemplo padrão)
+   1) CARREGAR DADOS DO PRESENTE
    ============================================================ */
 const DEFAULT_MESSAGE = "Desde o dia que te conheci, tudo na minha vida virou mais bonito. Você é meu lugar favorito do mundo, meu sorriso de manhã, meu sono em paz à noite. Te amar é a coisa mais leve que eu já fiz.";
 
-// Somente as 8 melhores fotos escolhidas!
+// MUDANÇA: Adicionadas cores para cada foto padrão
 const DEFAULT_PHOTOS = [
-    { id: "1", title: "Um dos nossos primeiros encontros!", description: "11 de outubro de 2018", imageUrl: "https://storage.googleapis.com/amore-pages1-62585403-acd4b.firebasestorage.app/lovepages/FmpSee8q4pO4mEzmXo45/timeline/1776000583445-tnir4b-download__34_.jfif" },
-    { id: "2", title: "Te amo🥰", description: "07 de fevereiro de 2019", imageUrl: "https://storage.googleapis.com/amore-pages1-62585403-acd4b.firebasestorage.app/lovepages/FmpSee8q4pO4mEzmXo45/timeline/1776000583451-rzksfl-download__33_.jfif" },
-    { id: "3", title: "Role de bike", description: "14 de maio de 2021", imageUrl: "https://storage.googleapis.com/amore-pages1-62585403-acd4b.firebasestorage.app/lovepages/FmpSee8q4pO4mEzmXo45/timeline/1776000583458-cjzrvh-cycling_date.jfif" },
-    { id: "4", title: "Minha moto nova🥺", description: "13 de junho de 2023", imageUrl: "https://storage.googleapis.com/amore-pages1-62585403-acd4b.firebasestorage.app/lovepages/FmpSee8q4pO4mEzmXo45/timeline/1776000583467-p6oyjl-download__32_.jfif" },
-    { id: "5", title: "Clubzao", description: "25 de outubro de 2024", imageUrl: "https://storage.googleapis.com/amore-pages1-62585403-acd4b.firebasestorage.app/lovepages/FmpSee8q4pO4mEzmXo45/timeline/1776000583498-k5xpnr-download__29_.jfif" },
-    { id: "6", title: "ME vendo passar raiva", description: "20 de novembro de 2024", imageUrl: "https://storage.googleapis.com/amore-pages1-62585403-acd4b.firebasestorage.app/lovepages/FmpSee8q4pO4mEzmXo45/timeline/1776000583535-i0fttl-download__28_.jfif" },
-    { id: "7", title: "Esse fim de ano foi mt bom", description: "31 de dezembro de 2024", imageUrl: "https://storage.googleapis.com/amore-pages1-62585403-acd4b.firebasestorage.app/lovepages/FmpSee8q4pO4mEzmXo45/timeline/1776000583527-vuj98n-download__26_.jfif" },
-    { id: "8", title: "Paz 💜", description: "Sempre", imageUrl: "https://storage.googleapis.com/amore-pages1-62585403-acd4b.firebasestorage.app/lovepages/FmpSee8q4pO4mEzmXo45/gallery/1776000471633-mnfi6m-__.jfif" }
+    { id: "1", title: "eu te amo", description: "11 de outubro de 2018", imageUrl: "https://storage.googleapis.com/amore-pages1-62585403-acd4b.firebasestorage.app/lovepages/FmpSee8q4pO4mEzmXo45/timeline/1776000583445-tnir4b-download__34_.jfif", color: "#4A90E2" },
+    { id: "2", title: "Te amo🥰", description: "07 de fevereiro de 2019", imageUrl: "https://storage.googleapis.com/amore-pages1-62585403-acd4b.firebasestorage.app/lovepages/FmpSee8q4pO4mEzmXo45/timeline/1776000583451-rzksfl-download__33_.jfif", color: "#E74C3C" },
+    { id: "3", title: "Role de bike", description: "14 de maio de 2021", imageUrl: "https://storage.googleapis.com/amore-pages1-62585403-acd4b.firebasestorage.app/lovepages/FmpSee8q4pO4mEzmXo45/timeline/1776000583458-cjzrvh-cycling_date.jfif", color: "#2ECC71" },
+    { id: "4", title: "Minha moto nova🥺", description: "13 de junho de 2023", imageUrl: "https://storage.googleapis.com/amore-pages1-62585403-acd4b.firebasestorage.app/lovepages/FmpSee8q4pO4mEzmXo45/timeline/1776000583467-p6oyjl-download__32_.jfif", color: "#F1C40F" },
+    { id: "5", title: "Clubzao", description: "25 de outubro de 2024", imageUrl: "https://storage.googleapis.com/amore-pages1-62585403-acd4b.firebasestorage.app/lovepages/FmpSee8q4pO4mEzmXo45/timeline/1776000583498-k5xpnr-download__29_.jfif", color: "#9B59B6" },
+    { id: "6", title: "ME vendo passar raiva", description: "20 de novembro de 2024", imageUrl: "https://storage.googleapis.com/amore-pages1-62585403-acd4b.firebasestorage.app/lovepages/FmpSee8q4pO4mEzmXo45/timeline/1776000583535-i0fttl-download__28_.jfif", color: "#E67E22" },
+    { id: "7", title: "Esse fim de ano foi mt bom", description: "31 de dezembro de 2024", imageUrl: "https://storage.googleapis.com/amore-pages1-62585403-acd4b.firebasestorage.app/lovepages/FmpSee8q4pO4mEzmXo45/timeline/1776000583527-vuj98n-download__26_.jfif", color: "#1ABC9C" },
+    { id: "8", title: "Paz 💜", description: "Sempre", imageUrl: "https://storage.googleapis.com/amore-pages1-62585403-acd4b.firebasestorage.app/lovepages/FmpSee8q4pO4mEzmXo45/gallery/1776000471633-mnfi6m-__.jfif", color: "#34495E" }
 ];
 
 const RECIPIENT_LABELS = {
@@ -449,7 +564,7 @@ function renderCounter() {
 }
 
 /* ============================================================
-   4) PILHA DE FOTOS (arrastável com bloqueio de scroll)
+   4) PILHA DE FOTOS (arrastável)
    ============================================================ */
 let cards = [];
 let cardEls = [];
@@ -463,7 +578,8 @@ function stackPositionOf(i) {
 
 function buildCardStack() {
     if (!usingDefaultData && Array.isArray(giftData.photos) && giftData.photos.length > 0) {
-        cards = giftData.photos.map((url, i) => ({ id: 'p' + i, title: '', description: '', imageUrl: url }));
+        // MUDANÇA: Garante que fotos do usuário tenham uma cor padrão se não definida
+        cards = giftData.photos.map((url, i) => ({ id: 'p' + i, title: '', description: '', imageUrl: url, color: DEFAULT_PHOTOS[i % DEFAULT_PHOTOS.length].color }));
     } else {
         cards = DEFAULT_PHOTOS;
     }
@@ -492,6 +608,11 @@ function buildCardStack() {
     updateCardPositions();
     setupDragHandlers();
     startCardAutoplay();
+
+    // INICIA OS POLAROIDS DE DESKTOP APÓS CARREGAR AS FOTOS
+    setupDesktopPolaroids();
+    // MUDANÇA: Atualiza o player com a primeira foto/cor
+    updatePlayerDisplay();
 }
 
 function updateCardPositions() {
@@ -515,6 +636,28 @@ function goToIndex(newIndex) {
     if (!cards.length) return;
     activeIndex = ((newIndex % cards.length) + cards.length) % cards.length;
     updateCardPositions();
+    // MUDANÇA: Atualiza o player com a nova foto/cor ao mudar o índice
+    updatePlayerDisplay();
+}
+
+// MUDANÇA: Nova função para atualizar o player de música com base no card atual
+function updatePlayerDisplay() {
+    if (!cards.length) return;
+    const currentCard = cards[activeIndex];
+    const playerContainer = document.getElementById('musicPlayerContainer');
+    const playerImage = document.getElementById('musicAlbumArtLarge');
+
+    if (playerContainer && currentCard.color) {
+        playerContainer.style.backgroundColor = currentCard.color;
+    }
+    if (playerImage && currentCard.imageUrl) {
+        // Efeito de fade para a imagem
+        playerImage.style.opacity = '0';
+        setTimeout(() => {
+            playerImage.src = currentCard.imageUrl;
+            playerImage.style.opacity = '1';
+        }, 200);
+    }
 }
 
 function renderCardDots() {
@@ -543,15 +686,10 @@ function stopCardAutoplay() {
 
 function setupDragHandlers() {
     const area = document.getElementById('cardStackArea');
-
-    // Bloqueador agressivo de scroll nativo (corrige o "samba" no iOS/Safari)
-    const blockTouchScroll = (e) => {
-        if (dragState) e.preventDefault();
-    };
+    const blockTouchScroll = (e) => { if (dragState) e.preventDefault(); };
 
     const onMove = (e) => {
         if (!dragState || !e.isPrimary) return;
-        // Previne a rolagem nativa do navegador durante o arrasto para evitar o "samba" e recarregamentos na aba
         e.preventDefault();
         dragState.dx = e.clientX - dragState.startX;
         dragState.el.style.transform = `translateX(${dragState.dx}px) rotate(${dragState.dx / 18}deg)`;
@@ -563,16 +701,11 @@ function setupDragHandlers() {
         const { el, dx, startTime } = dragState;
         const dt = Math.max(1, Date.now() - startTime);
         const velocity = dx / dt;
-        
         el.classList.remove('dragging');
         el.style.borderRadius = '';
         el.style.transform = '';
-        
-        // Libera a captura do ponteiro que havíamos criado
         try { el.releasePointerCapture(e.pointerId); } catch(err) {}
         dragState = null;
-
-        // Removemos os eventos globais assim que soltamos
         window.removeEventListener('pointermove', onMove);
         window.removeEventListener('pointerup', onEnd);
         window.removeEventListener('pointercancel', onEnd);
@@ -590,18 +723,14 @@ function setupDragHandlers() {
     };
 
     area.addEventListener('pointerdown', (e) => {
-        if (!e.isPrimary) return; // Garante que apenas o primeiro toque processe o arraste
+        if (!e.isPrimary) return;
         const topIdx = cards.findIndex((_, i) => stackPositionOf(i) === 0);
         const topEl = cardEls[topIdx];
         if (!topEl || !topEl.contains(e.target)) return;
-        
         stopCardAutoplay();
         topEl.classList.add('dragging');
         dragState = { el: topEl, startX: e.clientX, dx: 0, startTime: Date.now() };
-        
-        // Trava o rastreamento especificamente neste elemento até o dedo soltar (Impede de soltar ao sair da div)
         try { topEl.setPointerCapture(e.pointerId); } catch(err) {}
-        
         window.addEventListener('pointermove', onMove, { passive: false });
         window.addEventListener('pointerup', onEnd);
         window.addEventListener('pointercancel', onEnd);
@@ -610,87 +739,88 @@ function setupDragHandlers() {
 }
 
 /* ============================================================
-   5) PLAYER DE MÚSICA (simulado)
+   5) PLAYER DE MÚSICA (HTML5 AUDIO NATIVO)
    ============================================================ */
-const PLAY_ICON = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none" class="ml-1"><path d="M5 3l14 9-14 9V3z"/></svg>';
-const PAUSE_ICON = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>';
+const PLAY_ICON = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none" class="scale-125"><path d="M5 3l14 9-14 9V3z"/></svg>';
+const PAUSE_ICON = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none" class="scale-125"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>';
 
-let isPlaying = false;
-let musicProgress = 15;
-const totalDuration = 269; // 4:29
-let musicInterval = null;
+// Referência ao elemento de áudio
+const audioEl = document.getElementById('bgMusic');
 
-function formatTime(percent) {
-    const seconds = Math.floor((percent / 100) * totalDuration);
-    const m = Math.floor(seconds / 60);
-    const s = seconds % 60;
+function formatTime(totalSeconds) {
+    const m = Math.floor(totalSeconds / 60);
+    const s = Math.floor(totalSeconds % 60);
     return `${m}:${String(s).padStart(2, '0')}`;
 }
 
 function setupMusicDefaults() {
-    const albumArt = document.getElementById('musicAlbumArt');
-    const titleEl = document.getElementById('musicTitle');
-    if (!usingDefaultData && giftData.song && giftData.song.title) {
-        titleEl.innerText = `${giftData.song.title} — ${giftData.song.artist || ''}`.trim().replace(/—\s*$/, '');
-        albumArt.src = giftData.song.cover || 'https://images.unsplash.com/photo-1614680376593-902f74cf0d41?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80';
-    } else {
-        titleEl.innerText = 'djonga procuro alguem';
-        albumArt.src = 'https://images.unsplash.com/photo-1614680376593-902f74cf0d41?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80';
+    // O player agora é estático com a imagem e textos fornecidos.
+    // A funcionalidade do audioEl.src ainda pode ser usada se houver um link no giftData.
+    if (!usingDefaultData && giftData.song && giftData.song.url) {
+        audioEl.src = giftData.song.url;
     }
-    updateMusicUI();
+
+    // Atualiza a duração quando os metadados do áudio carregarem
+    // A duração exibida é fixa, mas a lógica interna pode usar a real.
+    audioEl.addEventListener('loadedmetadata', () => {
+        // document.getElementById('musicDuration').innerText = formatTime(audioEl.duration);
+    });
 }
 
-function updateMusicUI() {
-    document.getElementById('musicProgressFill').style.width = musicProgress + '%';
-    document.getElementById('musicCurrentTime').innerText = formatTime(musicProgress);
-    document.getElementById('playPauseIcon').innerHTML = isPlaying ? PAUSE_ICON : PLAY_ICON;
-
-    const overlay = document.getElementById('musicOverlay');
-    const eqBars = document.getElementById('musicEqBars');
-    const volIcon = document.getElementById('musicVolumeIcon');
-    if (isPlaying) {
-        overlay.classList.remove('bg-black/20', 'opacity-0', 'group-hover:opacity-100');
-        overlay.classList.add('bg-black/40', 'opacity-100');
-        eqBars.classList.remove('hidden');
-        volIcon.classList.add('hidden');
+function togglePlayPause() {
+    if (audioEl.paused) {
+        audioEl.play();
     } else {
-        overlay.classList.add('bg-black/20', 'opacity-0', 'group-hover:opacity-100');
-        overlay.classList.remove('bg-black/40', 'opacity-100');
-        eqBars.classList.add('hidden');
-        volIcon.classList.remove('hidden');
+        audioEl.pause();
     }
-
-    document.getElementById('musicStatusText').innerText = isPlaying ? 'Som tocando' : 'Som ligado';
-    const statusIcon = document.getElementById('volumeIcon');
-    statusIcon.classList.toggle('animate-pulse', isPlaying);
-    statusIcon.classList.toggle('text-[#a874e4]', isPlaying);
 }
 
-function setPlaying(val) {
-    isPlaying = val;
-    updateMusicUI();
-    clearInterval(musicInterval);
-    if (isPlaying) {
-        musicInterval = setInterval(() => {
-            musicProgress += 100 / totalDuration;
-            if (musicProgress >= 100) { musicProgress = 0; setPlaying(false); return; }
-            updateMusicUI();
-        }, 1000);
-    }
+function updateMusicUIState(playing) {
+   document.getElementById('playPauseIcon').innerHTML = playing ? PAUSE_ICON : PLAY_ICON;
+   // O player estilo Spotify não tem overlays, eqBars ou volumeIcon para atualizar.
 }
 
 function setupMusicHandlers() {
-    document.getElementById('musicAlbumWrap').addEventListener('click', () => setPlaying(!isPlaying));
-    document.getElementById('playPauseBtn').addEventListener('click', () => setPlaying(!isPlaying));
+    // Controla play/pause pelo botão da UI
+    document.getElementById('playPauseBtn').addEventListener('click', togglePlayPause);
+
+    // Sincroniza a UI com os eventos nativos do áudio
+    audioEl.addEventListener('play', () => updateMusicUIState(true));
+    audioEl.addEventListener('pause', () => updateMusicUIState(false));
+
+    // Atualiza a barra de progresso e o tempo atual
+    audioEl.addEventListener('timeupdate', () => {
+         const currentTime = audioEl.currentTime;
+         const duration = audioEl.duration || 1; // Evita divisão por zero
+         const progressPercent = (currentTime / duration) * 100;
+
+         document.getElementById('musicProgressFill').style.width = progressPercent + '%';
+         document.getElementById('musicCurrentTime').innerText = formatTime(currentTime);
+    });
+
+    // Permite clicar na barra de progresso para pular (seek)
     document.getElementById('musicProgressBar').addEventListener('click', (e) => {
         const rect = e.currentTarget.getBoundingClientRect();
-        musicProgress = Math.min(100, Math.max(0, ((e.clientX - rect.left) / rect.width) * 100));
-        updateMusicUI();
+        const clickPosition = (e.clientX - rect.left) / rect.width;
+        audioEl.currentTime = clickPosition * audioEl.duration;
+    });
+
+    // Botões de Anterior/Próximo controlam a pilha de fotos
+    document.getElementById('prevPhotoBtn').addEventListener('click', () => {
+        stopCardAutoplay();
+        goToIndex(activeIndex - 1);
+        startCardAutoplay();
+    });
+
+    document.getElementById('nextPhotoBtn').addEventListener('click', () => {
+        stopCardAutoplay();
+        goToIndex(activeIndex + 1);
+        startCardAutoplay();
     });
 }
 
 /* ============================================================
-   6) TOAST
+   6) TOAST & Mensagem Especial
    ============================================================ */
 let toastTimer = null;
 function showToast(msg) {
@@ -702,7 +832,7 @@ function showToast(msg) {
 }
 
 /* ============================================================
-   7) COMPARTILHAR / QR CODE / EDITAR (VIP) / REDES SOCIAIS
+   7) COMPARTILHAR / QR CODE / REDES SOCIAIS
    ============================================================ */
 function setupShareHandlers() {
     document.getElementById('shareBtn').addEventListener('click', async () => {
@@ -712,17 +842,13 @@ function setupShareHandlers() {
             url: window.location.href
         };
         if (navigator.share) {
-            try { await navigator.share(shareData); } catch (e) { /* cancelado pelo usuário */ }
+            try { await navigator.share(shareData); } catch (e) {}
         } else if (navigator.clipboard && navigator.clipboard.writeText) {
             try {
                 await navigator.clipboard.writeText(shareData.url);
                 showToast('Link copiado! Cole para enviar 💜');
-            } catch (e) {
-                showToast('Copie o link na barra de endereço para compartilhar.');
-            }
-        } else {
-            showToast('Copie o link na barra de endereço para compartilhar.');
-        }
+            } catch (e) { showToast('Copie o link na barra de endereço.'); }
+        } else { showToast('Copie o link na barra de endereço.'); }
     });
 
     document.getElementById('editPageBtn').addEventListener('click', (e) => {
@@ -764,15 +890,10 @@ async function handleDownloadQR() {
     if (qrState !== 'idle') return;
     qrState = 'downloading';
     renderQrBtn();
-
     const targetUrl = window.location.href;
     const qrImgUrl = `https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${encodeURIComponent(targetUrl)}`;
-
     try {
-        const [resp] = await Promise.all([
-            fetch(qrImgUrl),
-            new Promise(r => setTimeout(r, 900))
-        ]);
+        const [resp] = await Promise.all([ fetch(qrImgUrl), new Promise(r => setTimeout(r, 900)) ]);
         if (!resp.ok) throw new Error('Falha ao gerar QR Code');
         const blob = await resp.blob();
         const blobUrl = URL.createObjectURL(blob);
@@ -783,7 +904,6 @@ async function handleDownloadQR() {
         a.click();
         a.remove();
         setTimeout(() => URL.revokeObjectURL(blobUrl), 4000);
-
         qrState = 'done';
         renderQrBtn();
         setTimeout(() => { qrState = 'idle'; renderQrBtn(); }, 2500);
@@ -795,19 +915,14 @@ async function handleDownloadQR() {
 }
 
 /* ============================================================
-   8) PORTÃO DE REVELAÇÃO (loading -> fade out -> botão)
+   8) PORTÃO DE REVELAÇÃO
    ============================================================ */
 function setupRevealGate() {
     const loading = document.getElementById('loadingState');
     const ready = document.getElementById('readyState');
-
-    // Transição animada e suave depois de 2.5s
     setTimeout(() => {
-        // Sai suave o loading
         loading.classList.remove('opacity-100', 'scale-100');
         loading.classList.add('opacity-0', 'scale-90', 'pointer-events-none');
-        
-        // Entra suave o Botão CTA (com leve atraso)
         setTimeout(() => {
             ready.classList.remove('opacity-0', 'translate-y-8', 'pointer-events-none');
             ready.classList.add('opacity-100', 'translate-y-0');
@@ -818,43 +933,32 @@ function setupRevealGate() {
     const coin = document.getElementById('revealCoin');
     const textEl = document.getElementById('revealBtnText');
     let clicked = false;
-
     btn.addEventListener('click', () => {
         if (clicked) return;
         clicked = true;
         textEl.innerText = 'Preparando...';
         setTimeout(flipCoin, 50);
     });
-
     function flipCoin() {
         const duration = 1500;
         const start = performance.now();
         const spins = 5;
         let impacted = false;
-
         function loop(time) {
             let p = (time - start) / duration;
             if (p > 1) p = 1;
-
             const height = 4 * p * (1 - p);
             const flyY = -height * 140;
             const flyScale = 1 + height * 0.6;
             const rotP = 1 - Math.pow(1 - p, 3);
             const rotY = rotP * spins * 360;
-
             coin.style.transform = `translateY(${flyY}px) scale(${flyScale}) rotateY(${rotY}deg)`;
-
             if (p > 0.95 && !impacted) {
                 impacted = true;
                 btn.classList.add('impacting');
                 textEl.innerText = 'Surpresa!';
             }
-
-            if (p < 1) {
-                requestAnimationFrame(loop);
-            } else {
-                setTimeout(revealMainContent, 600);
-            }
+            if (p < 1) { requestAnimationFrame(loop); } else { setTimeout(revealMainContent, 600); }
         }
         requestAnimationFrame(loop);
     }
@@ -865,29 +969,80 @@ function revealMainContent() {
     gate.style.opacity = '0';
     gate.style.pointerEvents = 'none';
     setTimeout(() => { gate.style.display = 'none'; }, 500);
-
     const main = document.getElementById('mainContent');
     main.classList.remove('hidden');
     main.classList.add('flex');
-
-    setPlaying(true);
+    
+    // MUDANÇA 5: Inicia o áudio nativo ao revelar
+    // Navegadores podem bloquear o autoplay se não houver interação prévia suficiente.
+    // O clique no botão de revelar geralmente é suficiente.
+    audioEl.play().catch(e => console.log("Autoplay bloqueado pelo navegador:", e));
 }
 
 /* ============================================================
-   9) INICIALIZAÇÃO
+   9) INJEÇÃO DE POLAROIDS DESKTOP (COM SCROLL E LEGENDAS)
+   ============================================================ */
+function setupDesktopPolaroids() {
+    if (window.innerWidth < 1024) return;
+
+    const containerLeft = document.getElementById('polaroidLeft');
+    const containerRight = document.getElementById('polaroidRight');
+    if (!containerLeft || !containerRight) return;
+
+    const sidePhotos = cards.slice(0, 6);
+
+    sidePhotos.forEach((card, i) => {
+        const isLeft = i % 2 === 0;
+        const container = isLeft ? containerLeft : containerRight;
+        const el = document.createElement('div');
+        el.className = 'polaroid-float';
+        
+        const topPos = (i * 130) + Math.random() * 60 + 40;
+        const rot = (Math.random() * 16 - 8).toFixed(1);
+        const delay = (Math.random() * 3).toFixed(1);
+        const sideOffset = Math.random() * 50 + 10;
+
+        el.style.cssText = `
+            top: ${topPos}px;
+            ${isLeft ? `right: ${sideOffset}px` : `left: ${sideOffset}px`};
+            --rot: ${rot}deg;
+            --delay: -${delay}s;
+        `;
+        
+        el.innerHTML = `
+            <div class="p-2.5 bg-white shadow-[0_4px_15px_rgba(0,0,0,0.08)] rotate-[var(--rot)] transition-transform hover:scale-105 duration-300 text-center" style="transform: rotate(var(--rot));">
+                <div class="w-36 h-36 bg-gray-100 overflow-hidden mb-2">
+                    <img src="${card.imageUrl}" class="w-full h-full object-cover pointer-events-none">
+                </div>
+                <div class="px-1 pb-1">
+                    <p class="text-[10px] font-bold text-gray-600 line-clamp-1">${escapeHtml(card.title || 'Momento Especial')}</p>
+                    <p class="text-[8px] font-medium text-gray-400">${escapeHtml(card.description ? card.description.split(',')[0] : '')}</p>
+                </div>
+            </div>
+        `;
+        container.appendChild(el);
+    });
+
+    window.addEventListener('scroll', () => {
+        const scrolled = window.scrollY;
+        containerLeft.style.transform = `translateY(-${scrolled * 0.05}px)`;
+        containerRight.style.transform = `translateY(-${scrolled * 0.08}px)`;
+    }, { passive: true });
+}
+
+/* ============================================================
+   10) INICIALIZAÇÃO
    ============================================================ */
 document.addEventListener('DOMContentLoaded', () => {
     setupTitleAndMessage();
     renderCounter();
     setInterval(renderCounter, 1000);
-
     buildCardStack();
+    // REMOVIDO: setupSpecialMessage();
     setupMusicDefaults();
     setupMusicHandlers();
     setupShareHandlers();
-
     document.getElementById('qrBtn').addEventListener('click', handleDownloadQR);
-
     setupRevealGate();
 });
 </script>
