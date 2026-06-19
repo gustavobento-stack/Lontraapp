@@ -136,7 +136,34 @@
     }
 
     /* ---------- Estilos para a Mensagem Especial ---------- */
-    /* REMOVIDO: .blur-text e .reveal-message-btn não são mais necessários */
+    .blur-text {
+        /* Efeito de texto "embaçado" ou "vidro fosco" */
+        color: transparent;
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.9), 0 0 20px rgba(255, 255, 255, 0.5);
+        user-select: none;
+        pointer-events: none;
+    }
+    .reveal-message-btn {
+        background-color: #f8f9fa;
+        color: #495057;
+        font-weight: 600;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        outline: none;
+        -webkit-tap-highlight-color: transparent;
+    }
+    .reveal-message-btn:hover:not(.disabled) {
+        background-color: #e9ecef;
+    }
+    /* MUDANÇA: Estilo para o botão desabilitado após o clique */
+    .reveal-message-btn.disabled {
+        opacity: 0.6;
+        cursor: default;
+        pointer-events: none;
+    }
 
     /* ---------- Estilos para o Player de Música (Estilo Spotify) ---------- */
     .music-player-spotify {
@@ -146,7 +173,8 @@
         border-radius: 16px;
         padding: 20px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        transition: background-color 0.5s ease; /* Transição suave da cor */
+        /* MUDANÇA: Transição restaurada para a troca de cor */
+        transition: background-color 0.5s ease;
     }
     .spotify-progress-bar {
         height: 4px;
@@ -307,10 +335,11 @@
         </a>
 
         <!-- Player de Música (Estilo Spotify - Dark Blue) (Delay ajustado para 7) -->
-        <div id="musicPlayerContainer" class="fade-up delay-7 w-full music-player-spotify mt-3 flex flex-col gap-4 transition-colors duration-500" style="background-color: #1c3c60;">
+        <!-- MUDANÇA: Removido o style inline para permitir que o JS controle a cor -->
+        <div id="musicPlayerContainer" class="fade-up delay-7 w-full music-player-spotify mt-3 flex flex-col gap-4">
             <!-- Capa do álbum grande -->
             <div class="w-full aspect-square rounded-xl overflow-hidden shadow-lg mb-2">
-                <!-- MUDANÇA: Imagem será atualizada pelo JS, removido src fixo -->
+                <!-- MUDANÇA: A imagem será controlada pelo JavaScript -->
                 <img id="musicAlbumArtLarge" src="" alt="Capa Álbum" class="w-full h-full object-cover transition-opacity duration-200">
             </div>
 
@@ -345,8 +374,8 @@
                 </button>
                 
                 <div class="flex items-center gap-6">
-                    <!-- Botão Anterior (Controla Fotos) -->
-                    <button id="prevPhotoBtn" type="button" class="text-white/70 hover:text-white transition-colors">
+                    <!-- MUDANÇA: Botão Anterior (Controla o carrossel e o player) -->
+                    <button id="musicPrevBtn" type="button" class="text-white/70 hover:text-white transition-colors">
                         <i data-lucide="skip-back" class="w-8 h-8 fill-current"></i>
                     </button>
 
@@ -355,8 +384,8 @@
                         <span id="playPauseIcon" class="scale-125"></span>
                     </button>
 
-                    <!-- Botão Próximo (Controla Fotos) -->
-                    <button id="nextPhotoBtn" type="button" class="text-white/70 hover:text-white transition-colors">
+                    <!-- MUDANÇA: Botão Próximo (Controla o carrossel e o player) -->
+                    <button id="musicNextBtn" type="button" class="text-white/70 hover:text-white transition-colors">
                         <i data-lucide="skip-forward" class="w-8 h-8 fill-current"></i>
                     </button>
                 </div>
@@ -371,11 +400,14 @@
         <!-- NOVA SEÇÃO: Mensagem Especial (Estilo Azul - MOVIDA E ALTERADA) (Delay ajustado para 8) -->
         <div class="fade-up delay-8 w-full bg-[#4A90E2] rounded-[24px] p-6 flex flex-col gap-4 text-white shadow-[0_4px_0_0_#357ABD]">
             <h3 class="text-lg font-bold">Mensagem especial</h3>
-            <!-- REMOVIDO CLASSE blur-text e REMOVIDO hífen final -->
-            <p id="specialMessageText" class="text-xl font-black leading-tight transition-all duration-500">
+            <!-- MUDANÇA: Adicionada classe blur-text -->
+            <p id="specialMessageText" class="text-xl font-black leading-tight blur-text transition-all duration-500">
                 E pensar que tudo começou do nada... ✨ Olha só pra gente agora: escrevendo nossa própria história.
             </p>
-            <!-- REMOVIDO BOTÃO "Mostrar Mensagem" -->
+            <!-- MUDANÇA: Adicionado botão "Mostrar Mensagem" -->
+            <button id="revealMessageBtn" class="reveal-message-btn self-start mt-2">
+                Mostrar Mensagem
+            </button>
         </div>
 
         <!-- Card Final VIP (Delay ajustado para 9) -->
@@ -640,7 +672,7 @@ function goToIndex(newIndex) {
     updatePlayerDisplay();
 }
 
-// MUDANÇA: Nova função para atualizar o player de música com base no card atual
+// MUDANÇA: Função re-implementada para atualizar o player com base no card atual
 function updatePlayerDisplay() {
     if (!cards.length) return;
     const currentCard = cards[activeIndex];
@@ -659,6 +691,8 @@ function updatePlayerDisplay() {
         }, 200);
     }
 }
+
+// MUDANÇA: Função updatePlayerImage removida, pois não é mais necessária
 
 function renderCardDots() {
     const dotsWrap = document.getElementById('cardStackDots');
@@ -805,14 +839,14 @@ function setupMusicHandlers() {
         audioEl.currentTime = clickPosition * audioEl.duration;
     });
 
-    // Botões de Anterior/Próximo controlam a pilha de fotos
-    document.getElementById('prevPhotoBtn').addEventListener('click', () => {
+    // MUDANÇA: Botões de Anterior/Próximo do player voltam a controlar o carrossel de fotos
+    document.getElementById('musicPrevBtn').addEventListener('click', () => {
         stopCardAutoplay();
         goToIndex(activeIndex - 1);
         startCardAutoplay();
     });
 
-    document.getElementById('nextPhotoBtn').addEventListener('click', () => {
+    document.getElementById('musicNextBtn').addEventListener('click', () => {
         stopCardAutoplay();
         goToIndex(activeIndex + 1);
         startCardAutoplay();
@@ -829,6 +863,25 @@ function showToast(msg) {
     toast.classList.add('show');
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => toast.classList.remove('show'), 2600);
+}
+
+// MUDANÇA: Função restaurada e aprimorada para o botão de revelar mensagem
+function setupSpecialMessage() {
+    const btn = document.getElementById('revealMessageBtn');
+    const text = document.getElementById('specialMessageText');
+    if (btn && text) {
+        btn.addEventListener('click', () => {
+            if (btn.classList.contains('disabled')) return;
+            
+            text.classList.remove('blur-text');
+            // Animação e desabilitação do botão
+            btn.style.opacity = '0';
+            setTimeout(() => {
+                btn.classList.add('disabled');
+                btn.style.opacity = ''; // Remove o estilo inline para usar a opacidade da classe disabled
+            }, 300); // Tempo da transição CSS
+        });
+    }
 }
 
 /* ============================================================
@@ -1038,7 +1091,8 @@ document.addEventListener('DOMContentLoaded', () => {
     renderCounter();
     setInterval(renderCounter, 1000);
     buildCardStack();
-    // REMOVIDO: setupSpecialMessage();
+    // MUDANÇA: setupSpecialMessage(); restaurado
+    setupSpecialMessage();
     setupMusicDefaults();
     setupMusicHandlers();
     setupShareHandlers();
