@@ -31,6 +31,15 @@
         .animate-step {
             animation: slideInBottom 0.5s both ease-out;
         }
+
+        /* Animação de fade up para o contador */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(0.5rem); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-up {
+            animation: fadeUp 0.6s both ease-out;
+        }
     </style>
 </head>
 <body class="bg-[#faf9fc] text-[#4a4a5f] font-poppins min-h-screen overflow-x-hidden relative">
@@ -49,8 +58,7 @@
                 <header class="flex items-center">
                     <button 
                         id="btnBack"
-                        class="p-2 -ml-2 rounded-full transition-colors text-gray-200 cursor-not-allowed"
-                        disabled
+                        class="p-2 -ml-2 rounded-full transition-colors hover:bg-gray-100 cursor-pointer text-gray-400"
                     >
                         <i data-lucide="arrow-left" class="w-6 h-6"></i>
                     </button>
@@ -69,7 +77,7 @@
                 <div class="w-28 h-28 bg-white rounded-full flex items-center justify-center shadow-sm border border-gray-50 mb-3 relative z-10 transition-transform duration-500">
                     <div class="w-24 h-24 bg-gradient-to-tr from-purple-100 to-[#f3e8ff] rounded-full flex items-center justify-center relative overflow-hidden">
                         <img 
-                            src="https://em-content.zobj.net/source/animated-noto-color-emoji/461/otter_1f9a6.gif" 
+                            src="https://i.imgur.com/sTgAwVX.png" 
                             alt="Lontra Animada" 
                             class="w-16 h-16 object-contain"
                         />
@@ -144,8 +152,11 @@
                         <label class="text-[13px] font-semibold text-[#8a8a9e] ml-2">Nome da pessoa especial</label>
                         <input id="inputRecipientName" type="text" placeholder="Ex: Amanda" class="w-full text-lg font-semibold text-[#5b4a78] bg-white border-2 border-gray-100 rounded-[20px] p-4 shadow-sm focus:outline-none focus:border-[#a874e4] focus:ring-4 focus:ring-[#f3e8ff] transition-all placeholder:text-gray-300 placeholder:font-normal" />
                     </div>
-                    <div class="mt-2 text-center text-[12px] font-medium text-[#8a8a9e] bg-[#f8f5ff] py-3 px-4 rounded-[16px] border border-[#f3e8ff]">
-                        Você poderá editar todas as informações depois.
+                    
+                    <!-- Dica com ícone -->
+                    <div class="mt-2 flex items-center justify-center gap-1.5 text-center text-[12px] font-medium text-[#8a8a9e] bg-[#f8f5ff] py-3 px-4 rounded-[16px] border border-[#f3e8ff]">
+                        <i data-lucide="pencil" class="w-3.5 h-3.5 text-[#a874e4]"></i>
+                        <span>Você poderá editar todas as informações depois.</span>
                     </div>
                 </div>
 
@@ -185,7 +196,7 @@
                     </div>
 
                     <!-- Relógio em Tempo Real -->
-                    <div id="timeContainer" class="hidden mt-4 bg-gradient-to-br from-[#f8f5ff] to-[#f3e8ff] rounded-[20px] p-5 border border-[#dcc3f5] shadow-sm animate-step">
+                    <div id="timeContainer" class="hidden mt-4 bg-gradient-to-br from-[#f8f5ff] to-[#f3e8ff] rounded-[20px] p-5 border border-[#dcc3f5] shadow-sm animate-fade-up">
                         <p class="text-center text-[13px] font-bold text-[#a874e4] uppercase tracking-widest mb-3">
                             Uau, vocês estão juntos há:
                         </p>
@@ -289,7 +300,7 @@
                     </div>
                     <input type="file" multiple accept="image/*" class="hidden" id="fileInput" onchange="handlePhotoUpload(event)" />
 
-                    <div id="photoGrid" class="grid grid-cols-3 gap-3 mt-2 hidden">
+                    <div id="photoGrid" class="hidden flex flex-col gap-4 mt-2">
                         <!-- Fotos Renderizadas Aqui -->
                     </div>
                 </div>
@@ -342,8 +353,7 @@
             meetCity: '',
             title: '',
             message: '',
-            photos: [],
-            photoFiles: [],
+            photoData: [], // Array de objetos {url, file, title, description}
             song: null
         };
         let isTyping = false;
@@ -354,7 +364,7 @@
 
         const questions = {
             1: "Que tipo de presente vamos criar?",
-            2: "Que legal! Conta pra mim, quem está dando e quem vai receber?",
+            2: "Perfeito! Agora me conta, qual é o seu nome e o da pessoa especial?",
             3: "Quando a história de vocês começou?",
             4: "Escreva o título que vai marcar esse momento especial.",
             5: "Escreva uma mensagem inesquecível (para emocionar)!",
@@ -446,6 +456,9 @@
                 updateStepVisibility();
                 startTypewriter();
                 validateStep();
+            } else {
+                // Redireciona se estiver na primeira página
+                window.location.href = 'https://lontraapp.vercel.app/';
             }
         });
 
@@ -458,7 +471,7 @@
                 case 3: isValid = answers.meetDate !== ''; break;
                 case 4: isValid = answers.title.trim() !== ''; break;
                 case 5: isValid = answers.message.trim() !== ''; break;
-                case 6: isValid = answers.photos.length > 0; break;
+                case 6: isValid = answers.photoData.length > 0; break;
                 case 7: isValid = answers.song !== null; break;
             }
             
@@ -471,17 +484,9 @@
             const progressPercentage = ((currentStep - 1) / 6) * 100;
             document.getElementById('progressBar').style.width = `${progressPercentage}%`;
 
-            // Botão Voltar
+            // Botão Voltar - Sempre habilitado agora, mas com comportamento diferente na page 1
             const btnBack = document.getElementById('btnBack');
-            if (currentStep === 1) {
-                btnBack.classList.add('text-gray-200', 'cursor-not-allowed');
-                btnBack.classList.remove('hover:bg-gray-100', 'cursor-pointer', 'text-gray-400');
-                btnBack.disabled = true;
-            } else {
-                btnBack.classList.remove('text-gray-200', 'cursor-not-allowed');
-                btnBack.classList.add('hover:bg-gray-100', 'cursor-pointer', 'text-gray-400');
-                btnBack.disabled = false;
-            }
+            btnBack.disabled = false;
 
             // Barra inferior e Botão Continuar
             const bottomBar = document.getElementById('bottomBar');
@@ -506,11 +511,6 @@
                     stepEl.classList.add('hidden');
                 }
             }
-
-            // Foco nos inputs dinâmicos
-            if (currentStep === 2) document.getElementById('inputSenderName').focus();
-            if (currentStep === 4) document.getElementById('inputTitle').focus();
-            if (currentStep === 5) document.getElementById('inputMessage').focus();
         }
 
         // Lógica dos Inputs
@@ -619,7 +619,7 @@
 
         // Upload de Fotos
         function triggerPhotoUpload() {
-            if (answers.photos.length < 8) {
+            if (answers.photoData.length < 8) {
                 document.getElementById('fileInput').click();
             }
         }
@@ -628,12 +628,14 @@
             const files = Array.from(e.target.files);
             if (files.length === 0) return;
 
-            const newPhotos = files.map(file => URL.createObjectURL(file));
-            const combinedPhotos = [...answers.photos, ...newPhotos];
-            const combinedFiles = [...answers.photoFiles, ...files];
+            const newPhotoObjects = files.map(file => ({
+                url: URL.createObjectURL(file),
+                file: file,
+                title: '',
+                description: ''
+            }));
 
-            answers.photos = combinedPhotos.slice(0, 8);
-            answers.photoFiles = combinedFiles.slice(0, 8);
+            answers.photoData = [...answers.photoData, ...newPhotoObjects].slice(0, 8);
             
             e.target.value = ''; // Reset
             renderPhotos();
@@ -641,10 +643,15 @@
         }
 
         function removePhoto(indexToRemove) {
-            answers.photos = answers.photos.filter((_, index) => index !== indexToRemove);
-            answers.photoFiles = answers.photoFiles.filter((_, index) => index !== indexToRemove);
+            answers.photoData = answers.photoData.filter((_, index) => index !== indexToRemove);
             renderPhotos();
             validateStep();
+        }
+
+        function updatePhotoMetadata(index, field, value) {
+            if (answers.photoData[index]) {
+                answers.photoData[index][field] = value;
+            }
         }
 
         function renderPhotos() {
@@ -654,24 +661,49 @@
             const grid = document.getElementById('photoGrid');
 
             // Atualiza Botão Área
-            if (answers.photos.length >= 8) {
+            if (answers.photoData.length >= 8) {
                 area.className = "w-full border-2 border-dashed rounded-[24px] p-6 flex flex-col items-center justify-center gap-3 transition-all bg-gray-50 border-gray-200 cursor-not-allowed opacity-60";
                 title.innerText = 'Limite atingido';
             } else {
                 area.className = "w-full border-2 border-dashed rounded-[24px] p-6 flex flex-col items-center justify-center gap-3 transition-all bg-[#fdfaff] border-[#cba4f1] hover:bg-[#f8f5ff] hover:border-[#a874e4] cursor-pointer";
                 title.innerText = 'Toque para enviar fotos';
             }
-            subtitle.innerText = `${answers.photos.length}/8 fotos selecionadas`;
+            subtitle.innerText = `${answers.photoData.length}/8 fotos selecionadas`;
 
-            // Atualiza Grid
-            if (answers.photos.length > 0) {
+            // Atualiza Lista de Fotos com Inputs
+            if (answers.photoData.length > 0) {
                 grid.classList.remove('hidden');
-                grid.innerHTML = answers.photos.map((url, index) => `
-                    <div class="relative aspect-square rounded-[16px] overflow-hidden group border-2 border-gray-100 shadow-sm">
-                        <img src="${url}" alt="Foto ${index + 1}" class="w-full h-full object-cover" />
-                        <button onclick="removePhoto(${index})" class="absolute top-1.5 right-1.5 w-6 h-6 bg-white/90 backdrop-blur-sm text-gray-600 rounded-full flex items-center justify-center shadow-sm hover:bg-red-50 hover:text-red-500 transition-colors">
-                            <i data-lucide="x" class="w-4 h-4"></i>
+                // Mudança de grid para coluna única para acomodar inputs
+                grid.className = "flex flex-col gap-4 mt-4";
+                grid.innerHTML = answers.photoData.map((data, index) => `
+                    <div class="bg-white rounded-[20px] p-3 border-2 border-gray-100 shadow-sm animate-fade-up relative">
+                        <button onclick="removePhoto(${index})" class="absolute top-3 right-3 z-10 w-8 h-8 bg-white/90 backdrop-blur-sm text-gray-500 rounded-full flex items-center justify-center shadow-sm border border-gray-100 hover:bg-red-50 hover:text-red-500 transition-all">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
                         </button>
+
+                        <div class="flex gap-4">
+                            <!-- Thumbnail -->
+                            <div class="relative w-24 h-24 rounded-[16px] overflow-hidden shrink-0 border border-gray-100">
+                                <img src="${data.url}" alt="Foto ${index + 1}" class="w-full h-full object-cover" />
+                            </div>
+
+                            <!-- Inputs fields -->
+                            <div class="flex-1 flex flex-col gap-2 pr-8"> <!-- pr-8 to avoid overlap with delete button -->
+                                <input
+                                    type="text"
+                                    placeholder="Título da foto (opcional)"
+                                    value="${data.title}"
+                                    oninput="updatePhotoMetadata(${index}, 'title', this.value)"
+                                    class="w-full text-[14px] font-semibold text-[#5b4a78] bg-[#f8f5ff] border-2 border-[#f3e8ff] rounded-xl py-2 px-3 focus:outline-none focus:border-[#a874e4] transition-all placeholder:text-gray-300 placeholder:font-normal"
+                                />
+                                <textarea
+                                    rows="2"
+                                    placeholder="Escreva uma breve descrição..."
+                                    oninput="updatePhotoMetadata(${index}, 'description', this.value)"
+                                    class="w-full text-[13px] font-medium text-[#5b4a78] bg-[#f8f5ff] border-2 border-[#f3e8ff] rounded-xl py-2 px-3 focus:outline-none focus:border-[#a874e4] transition-all placeholder:text-gray-300 placeholder:font-normal resize-none leading-relaxed"
+                                >${data.description}</textarea>
+                            </div>
+                        </div>
                     </div>
                 `).join('');
                 lucide.createIcons();
@@ -770,7 +802,7 @@
                 title: answers.title,
                 message: answers.message,
                 song: answers.song,
-                photos: [],
+                photos: [], // Será preenchido abaixo
                 createdAt: Date.now()
             };
 
@@ -785,13 +817,23 @@
             let saved = false;
             for (let i = 0; i < attempts.length && !saved; i++) {
                 try {
-                    giftData.photos = await Promise.all(
-                        answers.photoFiles.map(file => compressImageFile(file, attempts[i].maxDim, attempts[i].quality))
+                    // Comprime as imagens
+                    const compressedUrls = await Promise.all(
+                        answers.photoData.map(data => compressImageFile(data.file, attempts[i].maxDim, attempts[i].quality))
                     );
+
+                    // Combina as URLs comprimidas de volta com seus metadados (título/descrição)
+                    giftData.photos = answers.photoData.map((data, index) => ({
+                        url: compressedUrls[index], // A nova URL base64
+                        title: data.title,
+                        description: data.description
+                    }));
+
                     localStorage.setItem('lontra_gift_data', JSON.stringify(giftData));
                     saved = true;
                 } catch (err) {
                     saved = false;
+                    console.error('Erro ao salvar na tentativa ' + i, err);
                 }
             }
 
