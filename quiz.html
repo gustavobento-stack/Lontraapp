@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Presente Especial</title>
+    <title>Criar Presente Especial</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap');
         
-        body { font-family: 'Poppins', sans-serif; }
+        body { font-family: 'Poppins', sans-serif; background-color: #faf9fc;}
         .font-poppins { font-family: 'Poppins', sans-serif; }
         
         .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -24,7 +24,7 @@
             box-sizing: border-box; margin: 0; padding: 0;
         }
 
-        /* Animações nativas para substituir o tailwindcss-animate do React */
+        /* Animações nativas */
         @keyframes slideInBottom {
             from { opacity: 0; transform: translateY(1rem); }
             to { opacity: 1; transform: translateY(0); }
@@ -33,7 +33,6 @@
             animation: slideInBottom 0.5s both ease-out;
         }
 
-        /* Animação de fade up para o contador */
         @keyframes fadeUp {
             from { opacity: 0; transform: translateY(0.5rem); }
             to { opacity: 1; transform: translateY(0); }
@@ -41,326 +40,423 @@
         .animate-fade-up {
             animation: fadeUp 0.6s both ease-out;
         }
+
+        @keyframes loaderProgress {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #dcc3f5; border-radius: 20px; }
+
+        .phone-mockup {
+            box-shadow: 0 0 0 12px #1f2937, 0 20px 40px -10px rgba(0,0,0,0.3);
+        }
+        
+        /* Plan Cards Animação Aprimorada */
+        .plan-card {
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        .plan-card:hover {
+            transform: translateY(-4px);
+        }
+        .plan-card:has(input:checked) {
+            border-color: #a874e4;
+            background-color: #fdfaff;
+            transform: scale(1.02);
+            box-shadow: 0 10px 30px -5px rgba(168, 116, 228, 0.25);
+        }
     </style>
 </head>
-<body class="bg-[#faf9fc] text-[#4a4a5f] font-poppins min-h-screen overflow-x-hidden relative">
+<body class="text-[#4a4a5f] font-poppins min-h-screen overflow-hidden relative bg-[#faf9fc]">
 
-    <div class="flex justify-center pb-32 w-full">
-        
-        <!-- Banner Promo Topo -->
-        <div class="fixed top-0 left-0 w-full bg-[#a874e4] text-white text-[10.5px] font-medium tracking-wide text-center py-2 z-[60] shadow-sm">
-            Apenas hoje, <span id="todayFormatted"></span> <span class="font-bold ml-1 text-white">TODOS OS PLANOS COM 50% OFF</span>
+    <div id="loaderOverlay" class="fixed inset-0 bg-[#faf9fc]/95 backdrop-blur-md z-[100] hidden flex-col items-center justify-center opacity-0 transition-all duration-700 ease-in-out">
+        <div class="relative flex items-center justify-center mb-6">
+            <div class="absolute inset-0 border-4 border-[#eaddfc] rounded-full animate-ping opacity-50"></div>
+            <!-- Loading com a logo da marca -->
+            <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-xl border-2 border-[#f3e8ff] relative z-10 overflow-hidden p-3">
+                <img src="https://i.imgur.com/sTgAwVX.png" alt="Carregando..." class="w-full h-full object-contain animate-pulse">
+            </div>
         </div>
+        <p class="text-[#5b4a78] font-black text-2xl tracking-tight mb-2 transform translate-y-4 opacity-0 transition-all duration-700 delay-100" id="loaderText">Preparando o ambiente...</p>
+        <p class="text-[#8a8a9e] text-sm font-medium mb-8 transform translate-y-4 opacity-0 transition-all duration-700 delay-150" id="loaderSubText">Organizando tudo para o preview mágico ✨</p>
+        
+        <div class="w-64 h-3 bg-[#f3e8ff] rounded-full overflow-hidden transform translate-y-4 opacity-0 transition-all duration-700 delay-200" id="loaderBarContainer">
+            <div class="h-full bg-[#a874e4] rounded-full animate-[loaderProgress_2.5s_ease-in-out_forwards]"></div>
+        </div>
+    </div>
 
-        <div class="w-full max-w-[420px] px-5 pt-[110px] flex flex-col relative">
+    <div class="flex w-full h-screen">
+        
+        <div id="quizArea" class="w-full lg:w-full h-full overflow-y-auto custom-scrollbar relative bg-[#faf9fc] z-10 flex flex-col items-center pb-32 transition-all duration-700 ease-in-out">
             
-            <!-- Header com Barra de Progresso Fixo -->
-            <div class="fixed top-[32px] left-1/2 -translate-x-1/2 w-full max-w-[420px] bg-[#faf9fc] z-50 px-5 pt-6 pb-4">
-                <header class="flex items-center">
-                    <button 
-                        id="btnBack"
-                        class="p-2 -ml-2 rounded-full transition-colors hover:bg-gray-100 cursor-pointer text-gray-400"
-                    >
-                        <i data-lucide="arrow-left" class="w-6 h-6"></i>
-                    </button>
-                    <div class="flex-1 ml-4 h-3 bg-gray-100/80 rounded-full overflow-hidden relative">
-                        <div 
-                            id="progressBar"
-                            class="absolute top-0 left-0 h-full bg-[#a874e4] rounded-full transition-all duration-500 ease-out"
-                            style="width: 0%"
-                        ></div>
-                    </div>
-                </header>
-            </div>
-
-            <!-- Avatar e Balão de Fala -->
-            <div class="flex flex-col items-center mb-8 transition-all duration-300 mt-2">
-                <div class="w-28 h-28 bg-white rounded-full flex items-center justify-center shadow-sm border border-gray-50 mb-3 relative z-10 transition-transform duration-500">
-                    <div class="w-24 h-24 bg-gradient-to-tr from-purple-100 to-[#f3e8ff] rounded-full flex items-center justify-center relative overflow-hidden">
-                        <img 
-                            src="https://i.imgur.com/sTgAwVX.png" 
-                            alt="Lontra Animada" 
-                            class="w-16 h-16 object-contain"
-                        />
-                    </div>
+            <!-- STICKY TOP CONTAINER: Protege do vazamento de scroll -->
+            <div class="sticky top-0 z-[60] w-full bg-[#faf9fc] flex flex-col items-center border-b border-gray-100/50 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] shrink-0">
+                <div class="w-full bg-[#a874e4] text-white text-[10.5px] font-medium tracking-wide text-center py-2 shadow-sm">
+                    Apenas hoje, <span id="todayFormatted"></span> <span class="font-bold ml-1 text-white">TODOS OS PLANOS COM 50% OFF</span>
                 </div>
 
-                <div class="relative w-full max-w-[320px]">
-                    <div class="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white rotate-45 border-t border-l border-gray-100 shadow-sm z-0"></div>
-                    <div class="bg-white px-6 py-5 rounded-[20px] shadow-[0_4px_24px_-8px_rgba(0,0,0,0.06)] border border-gray-100 relative z-10 text-center min-h-[82px] flex items-center justify-center">
-                        <!-- O ID foi movido para o h2 para controlarmos todo o HTML interno via JS -->
-                        <h2 id="typewriterContainer" class="text-[#4a4a5f] text-[15px] font-medium leading-snug w-full">
-                        </h2>
-                    </div>
+                <div class="w-full max-w-[420px] px-5 pt-5 pb-4">
+                    <header class="flex items-center">
+                        <button id="btnBack" class="p-2 -ml-2 rounded-full transition-colors hover:bg-gray-100 cursor-pointer text-gray-400">
+                            <i data-lucide="arrow-left" class="w-6 h-6"></i>
+                        </button>
+                        <div class="flex-1 ml-4 h-3 bg-gray-100/80 rounded-full overflow-hidden relative">
+                            <div id="progressBar" class="absolute top-0 left-0 h-full bg-[#a874e4] rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
+                        </div>
+                    </header>
                 </div>
             </div>
 
-            <!-- CONTEÚDO DINÂMICO BASEADO NO PASSO -->
-            <div id="stepContainer" class="flex flex-col gap-5 w-full animate-step">
+            <div class="w-full max-w-[420px] px-5 pt-6 flex flex-col relative shrink-0">
                 
-                <!-- --- PASSO 1: Destinatário --- -->
-                <div id="step-1" class="flex flex-col gap-5">
-                    <div class="relative pt-3">
-                        <div class="absolute top-0 left-1/2 -translate-x-1/2 bg-[#a874e4] text-white text-[10px] font-bold px-4 py-1.5 rounded-full shadow-sm tracking-widest uppercase z-10">Mais Popular</div>
-                        <button onclick="handleNext('recipientType', 'amor')" class="w-full rounded-[24px] p-5 flex items-center text-left transition-all duration-150 active:translate-y-[4px] active:shadow-none border-2 border-gray-100 bg-white shadow-[0_4px_0_0_#f1f1f5] hover:border-[#a874e4] hover:bg-[#fdfaff] hover:shadow-[0_4px_0_0_#dcc3f5] group">
+                <div id="avatarHeader" class="flex flex-col items-center mb-8 transition-all duration-300">
+                    <div class="w-28 h-28 bg-white rounded-full flex items-center justify-center shadow-sm border border-gray-50 mb-3 relative z-10">
+                        <div class="w-24 h-24 bg-gradient-to-tr from-purple-100 to-[#f3e8ff] rounded-full flex items-center justify-center relative overflow-hidden">
+                            <img src="https://i.imgur.com/sTgAwVX.png" alt="Lontra Animada" class="w-16 h-16 object-contain" />
+                        </div>
+                    </div>
+
+                    <div class="relative w-full max-w-[320px]">
+                        <div class="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white rotate-45 border-t border-l border-gray-100 shadow-sm z-0"></div>
+                        <div class="bg-white px-6 py-5 rounded-[20px] shadow-[0_4px_24px_-8px_rgba(0,0,0,0.06)] border border-gray-100 relative z-10 text-center min-h-[82px] flex items-center justify-center">
+                            <h2 id="typewriterContainer" class="text-[#4a4a5f] text-[15px] font-medium leading-snug w-full"></h2>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="stepContainer" class="flex flex-col gap-5 w-full animate-step">
+                    
+                    <!-- PASSO 1 -->
+                    <div id="step-1" class="flex flex-col gap-5">
+                        <div class="relative pt-3">
+                            <div class="absolute top-0 left-1/2 -translate-x-1/2 bg-[#a874e4] text-white text-[10px] font-bold px-4 py-1.5 rounded-full shadow-sm tracking-widest uppercase z-10">Mais Popular</div>
+                            <button onclick="handleNext('recipientType', 'amor')" class="w-full rounded-[24px] p-5 flex items-center text-left transition-all duration-150 active:translate-y-[4px] active:shadow-none border-2 border-gray-100 bg-white shadow-[0_4px_0_0_#f1f1f5] hover:border-[#a874e4] hover:bg-[#fdfaff] hover:shadow-[0_4px_0_0_#dcc3f5] group">
+                                <div class="w-[52px] h-[52px] rounded-full bg-[#f8f5ff] group-hover:bg-[#f3e8ff] flex items-center justify-center mr-4 shrink-0 transition-colors">
+                                    <i data-lucide="heart" class="w-6 h-6 text-[#cba4f1] group-hover:text-[#a874e4]" style="fill: none;"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="font-bold text-lg mb-0.5 text-[#4a4a5f] group-hover:text-[#5b4a78] transition-colors">Presente de Amor</h3>
+                                    <p class="text-[#8a8a9e] text-[13px] mb-2 font-medium">Para namorado(a) ou cônjuge</p>
+                                    <p class="text-[#a874e4] text-[10px] font-bold tracking-widest uppercase">+ Retrospectiva Wrapped</p>
+                                </div>
+                            </button>
+                        </div>
+                        
+                        <button onclick="handleNext('recipientType', 'amiga')" class="w-full rounded-[24px] p-5 flex items-center text-left transition-all duration-150 active:translate-y-[4px] active:shadow-none border-2 border-gray-100 bg-white shadow-[0_4px_0_0_#f1f1f5] hover:border-[#a874e4] hover:bg-[#fdfaff] hover:shadow-[0_4px_0_0_#dcc3f5] group">
                             <div class="w-[52px] h-[52px] rounded-full bg-[#f8f5ff] group-hover:bg-[#f3e8ff] flex items-center justify-center mr-4 shrink-0 transition-colors">
-                                <i data-lucide="heart" class="w-6 h-6 text-[#cba4f1] group-hover:text-[#a874e4]" style="fill: none;"></i>
+                                <i data-lucide="message-circle-heart" class="w-6 h-6 text-[#cba4f1] group-hover:text-[#a874e4]"></i>
                             </div>
                             <div class="flex-1">
-                                <h3 class="font-bold text-lg mb-0.5 text-[#4a4a5f] group-hover:text-[#5b4a78] transition-colors">Presente de Amor</h3>
-                                <p class="text-[#8a8a9e] text-[13px] mb-2 font-medium">Para namorado(a) ou cônjuge</p>
+                                <h3 class="font-bold text-lg mb-0.5 text-[#4a4a5f] group-hover:text-[#5b4a78] transition-colors">Presente para Amiga</h3>
+                                <p class="text-[#8a8a9e] text-[13px] mb-2 font-medium">Surpreenda sua melhor amiga</p>
                                 <p class="text-[#a874e4] text-[10px] font-bold tracking-widest uppercase">+ Retrospectiva Wrapped</p>
                             </div>
                         </button>
-                    </div>
-                    
-                    <button onclick="handleNext('recipientType', 'amiga')" class="w-full rounded-[24px] p-5 flex items-center text-left transition-all duration-150 active:translate-y-[4px] active:shadow-none border-2 border-gray-100 bg-white shadow-[0_4px_0_0_#f1f1f5] hover:border-[#a874e4] hover:bg-[#fdfaff] hover:shadow-[0_4px_0_0_#dcc3f5] group">
-                        <div class="w-[52px] h-[52px] rounded-full bg-[#f8f5ff] group-hover:bg-[#f3e8ff] flex items-center justify-center mr-4 shrink-0 transition-colors">
-                            <i data-lucide="message-circle-heart" class="w-6 h-6 text-[#cba4f1] group-hover:text-[#a874e4]"></i>
-                        </div>
-                        <div class="flex-1">
-                            <h3 class="font-bold text-lg mb-0.5 text-[#4a4a5f] group-hover:text-[#5b4a78] transition-colors">Presente para Amiga</h3>
-                            <p class="text-[#8a8a9e] text-[13px] mb-2 font-medium">Surpreenda sua melhor amiga</p>
-                            <p class="text-[#a874e4] text-[10px] font-bold tracking-widest uppercase">+ Retrospectiva Wrapped</p>
-                        </div>
-                    </button>
-                    
-                    <div class="flex items-center gap-4 my-2">
-                        <div class="flex-1 h-[2px] bg-gray-100"></div>
-                        <span class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Ou homenageie diretamente:</span>
-                        <div class="flex-1 h-[2px] bg-gray-100"></div>
-                    </div>
-                    
-                    <div id="directTributesContainer" class="flex flex-wrap justify-center gap-3">
-                        <!-- Renderizado via JS -->
-                    </div>
-
-                    <!-- FOOTER (Apenas na página 1) -->
-                    <div class="mt-8 mb-4 text-center text-[11px] text-[#b4b4c4] flex flex-col items-center gap-1">
-                        <span>Feito com 🦦 no Brasil</span>
-                        <span id="footerYear"></span>
-                    </div>
-                </div>
-
-                <!-- --- PASSO 2: Nomes --- -->
-                <div id="step-2" class="hidden flex flex-col gap-4">
-                    <div class="space-y-1.5">
-                        <label class="text-[13px] font-semibold text-[#8a8a9e] ml-2">Seu nome</label>
-                        <input id="inputSenderName" type="text" placeholder="Ex: João" class="w-full text-lg font-semibold text-[#5b4a78] bg-white border-2 border-gray-100 rounded-[20px] p-4 shadow-sm focus:outline-none focus:border-[#a874e4] focus:ring-4 focus:ring-[#f3e8ff] transition-all placeholder:text-gray-300 placeholder:font-normal" />
-                    </div>
-                    <div class="space-y-1.5">
-                        <label class="text-[13px] font-semibold text-[#8a8a9e] ml-2">Nome da pessoa especial</label>
-                        <input id="inputRecipientName" type="text" placeholder="Ex: Amanda" class="w-full text-lg font-semibold text-[#5b4a78] bg-white border-2 border-gray-100 rounded-[20px] p-4 shadow-sm focus:outline-none focus:border-[#a874e4] focus:ring-4 focus:ring-[#f3e8ff] transition-all placeholder:text-gray-300 placeholder:font-normal" />
-                    </div>
-                    
-                    <!-- Dica com ícone -->
-                    <div class="mt-2 flex items-center justify-center gap-1.5 text-center text-[12px] font-medium text-[#8a8a9e] bg-[#f8f5ff] py-3 px-4 rounded-[16px] border border-[#f3e8ff]">
-                        <i data-lucide="pencil" class="w-3.5 h-3.5 text-[#a874e4]"></i>
-                        <span>Você poderá editar todas as informações depois.</span>
-                    </div>
-                </div>
-
-                <!-- --- PASSO 3: Quando se conheceram + Contador --- -->
-                <div id="step-3" class="hidden flex flex-col gap-4">
-                    <div class="space-y-1.5">
-                        <label class="flex justify-between items-center text-[13px] font-semibold text-[#8a8a9e] ml-2 mr-2">
-                            <span>Data que se conheceram</span>
-                            <span class="text-red-400 text-[10px] uppercase tracking-wider">Obrigatório</span>
-                        </label>
-                        <div class="relative w-full">
-                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none"><i data-lucide="calendar" class="h-5 w-5 text-[#cba4f1]"></i></div>
-                            <!-- Adicionado max-w-full, min-w-0 e appearance-none para resolver o tamanho no mobile -->
-                            <input id="inputMeetDate" type="date" class="w-full max-w-full min-w-0 appearance-none text-[16px] font-medium text-[#5b4a78] bg-white border-2 border-gray-100 rounded-[20px] py-4 pl-12 pr-4 shadow-sm focus:outline-none focus:border-[#a874e4] focus:ring-4 focus:ring-[#f3e8ff] transition-all relative block" />
-                        </div>
-                    </div>
-                    
-                    <div class="space-y-1.5">
-                        <label class="flex justify-between items-center text-[13px] font-semibold text-[#8a8a9e] ml-2 mr-1">
-                            <span>Hora</span>
-                            <span class="text-gray-300 text-[10px] uppercase tracking-wider">Opcional</span>
-                        </label>
-                        <div class="relative w-full">
-                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none"><i data-lucide="clock" class="h-5 w-5 text-[#cba4f1]"></i></div>
-                            <!-- Adicionado max-w-full, min-w-0 e appearance-none para resolver o tamanho no mobile -->
-                            <input id="inputMeetTime" type="time" class="w-full max-w-full min-w-0 appearance-none text-[16px] font-medium text-[#5b4a78] bg-white border-2 border-gray-100 rounded-[20px] py-4 pl-12 pr-4 shadow-sm focus:outline-none focus:border-[#a874e4] focus:ring-4 focus:ring-[#f3e8ff] transition-all relative block" />
-                        </div>
-                    </div>
-                    
-                    <div class="space-y-1.5">
-                        <label class="flex justify-between items-center text-[13px] font-semibold text-[#8a8a9e] ml-2 mr-1">
-                            <span>Cidade</span>
-                            <span class="text-gray-300 text-[10px] uppercase tracking-wider">Opcional</span>
-                        </label>
-                        <div class="relative w-full">
-                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none"><i data-lucide="map-pin" class="h-5 w-5 text-[#cba4f1]"></i></div>
-                            <input id="inputMeetCity" type="text" placeholder="Ex: Curitiba" class="w-full max-w-full min-w-0 appearance-none text-[16px] font-medium text-[#5b4a78] bg-white border-2 border-gray-100 rounded-[20px] py-4 pl-12 pr-4 shadow-sm focus:outline-none focus:border-[#a874e4] focus:ring-4 focus:ring-[#f3e8ff] transition-all relative block placeholder:text-gray-300" />
-                        </div>
-                    </div>
-
-                    <!-- Relógio em Tempo Real -->
-                    <div id="timeContainer" class="hidden mt-4 bg-gradient-to-br from-[#f8f5ff] to-[#f3e8ff] rounded-[20px] p-5 border border-[#dcc3f5] shadow-sm">
-                        <p class="text-center text-[13px] font-bold text-[#a874e4] uppercase tracking-widest mb-3 animate-fade-up">
-                            Uau, vocês estão juntos há:
-                        </p>
-                        <div class="grid grid-cols-3 gap-2">
-                            <div class="bg-white rounded-xl p-2 text-center shadow-sm">
-                                <span id="timeY" class="block text-xl font-bold text-[#5b4a78] animate-fade-up" style="animation-delay: 0.1s; animation-fill-mode: both;">0</span>
-                                <span class="text-[10px] text-[#8a8a9e] font-semibold uppercase">Anos</span>
-                            </div>
-                            <div class="bg-white rounded-xl p-2 text-center shadow-sm">
-                                <span id="timeM" class="block text-xl font-bold text-[#5b4a78] animate-fade-up" style="animation-delay: 0.2s; animation-fill-mode: both;">0</span>
-                                <span class="text-[10px] text-[#8a8a9e] font-semibold uppercase">Meses</span>
-                            </div>
-                            <div class="bg-white rounded-xl p-2 text-center shadow-sm">
-                                <span id="timeD" class="block text-xl font-bold text-[#5b4a78] animate-fade-up" style="animation-delay: 0.3s; animation-fill-mode: both;">0</span>
-                                <span class="text-[10px] text-[#8a8a9e] font-semibold uppercase">Dias</span>
-                            </div>
-                            <div class="bg-white rounded-xl p-2 text-center shadow-sm">
-                                <span id="timeH" class="block text-xl font-bold text-[#a874e4] animate-fade-up" style="animation-delay: 0.4s; animation-fill-mode: both;">0</span>
-                                <span class="text-[10px] text-[#8a8a9e] font-semibold uppercase">Horas</span>
-                            </div>
-                            <div class="bg-white rounded-xl p-2 text-center shadow-sm">
-                                <span id="timeMin" class="block text-xl font-bold text-[#a874e4] animate-fade-up" style="animation-delay: 0.5s; animation-fill-mode: both;">0</span>
-                                <span class="text-[10px] text-[#8a8a9e] font-semibold uppercase">Min</span>
-                            </div>
-                            <div class="bg-white rounded-xl p-2 text-center shadow-sm">
-                                <span id="timeS" class="block text-xl font-bold text-[#a874e4] animate-fade-up" style="animation-delay: 0.6s; animation-fill-mode: both;">0</span>
-                                <span class="text-[10px] text-[#8a8a9e] font-semibold uppercase">Seg</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- --- PASSO 4: Título do Presente --- -->
-                <div id="step-4" class="hidden flex flex-col gap-4">
-                    <div class="space-y-2">
-                        <div class="flex justify-between items-center ml-2 mr-2">
-                            <label class="text-[13px] font-semibold text-[#8a8a9e]">Título Especial</label>
-                            <button onclick="generateAI('title')" class="text-[11px] font-bold text-[#a874e4] bg-[#f8f5ff] px-2 py-1 rounded-md flex items-center gap-1 hover:bg-[#f3e8ff] transition-colors">
-                                <i data-lucide="sparkles" class="w-3 h-3"></i> Gerar com IA
-                            </button>
+                        
+                        <div class="flex items-center gap-4 my-2">
+                            <div class="flex-1 h-[2px] bg-gray-100"></div>
+                            <span class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Ou homenageie diretamente:</span>
+                            <div class="flex-1 h-[2px] bg-gray-100"></div>
                         </div>
                         
-                        <div class="relative">
-                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                <i data-lucide="type" class="h-5 w-5 text-[#cba4f1]"></i>
-                            </div>
-                            <input 
-                                id="inputTitle"
-                                type="text" 
-                                maxlength="50"
-                                placeholder="Ex: Nosso Primeiro Ano Juntos"
-                                class="w-full text-lg font-semibold text-[#5b4a78] bg-white border-2 border-gray-100 rounded-[20px] py-4 pl-12 pr-4 shadow-sm focus:outline-none focus:border-[#a874e4] focus:ring-4 focus:ring-[#f3e8ff] transition-all placeholder:text-gray-300 placeholder:font-normal"
-                            />
-                        </div>
-                        <div class="flex justify-between items-center px-2">
-                            <p class="text-[11px] text-gray-400">Este será o destaque principal.</p>
-                            <span id="titleLength" class="text-[11px] font-semibold text-gray-400">0/50</span>
+                        <div id="directTributesContainer" class="flex flex-wrap justify-center gap-3"></div>
+
+                        <div class="mt-8 mb-4 text-center text-[11px] text-[#b4b4c4] flex flex-col items-center gap-1">
+                            <span>Feito com 🦦 no Brasil</span>
+                            <span id="footerYear"></span>
                         </div>
                     </div>
-                </div>
 
-                <!-- --- PASSO 5: Mensagem --- -->
-                <div id="step-5" class="hidden flex flex-col gap-4">
-                    <div class="space-y-2">
-                        <div class="flex justify-between items-center ml-2 mr-2">
-                            <label class="text-[13px] font-semibold text-[#8a8a9e] flex items-center gap-1.5">
-                                <i data-lucide="align-left" class="w-4 h-4"></i> Sua Mensagem
+                    <!-- PASSO 2 -->
+                    <div id="step-2" class="hidden flex flex-col gap-4">
+                        <div class="space-y-1.5">
+                            <label class="text-[13px] font-semibold text-[#8a8a9e] ml-2">Seu nome</label>
+                            <input id="inputSenderName" type="text" placeholder="Ex: João" class="w-full text-lg font-semibold text-[#5b4a78] bg-white border-2 border-gray-100 rounded-[20px] p-4 shadow-sm focus:outline-none focus:border-[#a874e4] focus:ring-4 focus:ring-[#f3e8ff] transition-all" />
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-[13px] font-semibold text-[#8a8a9e] ml-2">Nome da pessoa especial</label>
+                            <input id="inputRecipientName" type="text" placeholder="Ex: Amanda" class="w-full text-lg font-semibold text-[#5b4a78] bg-white border-2 border-gray-100 rounded-[20px] p-4 shadow-sm focus:outline-none focus:border-[#a874e4] focus:ring-4 focus:ring-[#f3e8ff] transition-all" />
+                        </div>
+                        <div class="mt-2 flex items-center justify-center gap-1.5 text-center text-[12px] font-medium text-[#8a8a9e] bg-[#f8f5ff] py-3 px-4 rounded-[16px] border border-[#f3e8ff]">
+                            <i data-lucide="pencil" class="w-3.5 h-3.5 text-[#a874e4]"></i>
+                            <span>Você poderá editar todas as informações depois.</span>
+                        </div>
+                    </div>
+
+                    <!-- PASSO 3 -->
+                    <div id="step-3" class="hidden flex flex-col gap-4">
+                        <div class="space-y-1.5">
+                            <label class="flex justify-between items-center text-[13px] font-semibold text-[#8a8a9e] ml-2 mr-2">
+                                <span>Data que se conheceram</span>
+                                <span class="text-red-400 text-[10px] uppercase tracking-wider">Obrigatório</span>
                             </label>
-                            <button onclick="generateAI('message')" class="text-[11px] font-bold text-[#a874e4] bg-[#f8f5ff] px-2 py-1 rounded-md flex items-center gap-1 hover:bg-[#f3e8ff] transition-colors">
-                                <i data-lucide="sparkles" class="w-3 h-3"></i> Gerar com IA
-                            </button>
+                            <div class="relative w-full">
+                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none"><i data-lucide="calendar" class="h-5 w-5 text-[#cba4f1]"></i></div>
+                                <input id="inputMeetDate" type="date" class="w-full appearance-none text-[16px] font-medium text-[#5b4a78] bg-white border-2 border-gray-100 rounded-[20px] py-4 pl-12 pr-4 shadow-sm focus:outline-none focus:border-[#a874e4] transition-all" />
+                            </div>
                         </div>
                         
-                        <textarea 
-                            id="inputMessage"
-                            rows="6"
-                            maxlength="1000"
-                            placeholder="Escreva algo especial..."
-                            class="w-full text-[15px] leading-relaxed font-medium text-[#5b4a78] bg-white border-2 border-gray-100 rounded-[20px] p-4 shadow-sm focus:outline-none focus:border-[#a874e4] focus:ring-4 focus:ring-[#f3e8ff] transition-all placeholder:text-gray-300 placeholder:font-normal resize-none"
-                        ></textarea>
-                        <div class="flex justify-end px-2">
-                            <span id="messageLength" class="text-[11px] font-semibold text-gray-400">0/1000</span>
+                        <div class="space-y-1.5">
+                            <label class="flex justify-between items-center text-[13px] font-semibold text-[#8a8a9e] ml-2 mr-1">
+                                <span>Hora e Cidade (Opcional)</span>
+                            </label>
+                            <div class="flex gap-2 w-full">
+                                <div class="relative w-1/2">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><i data-lucide="clock" class="h-4 w-4 text-[#cba4f1]"></i></div>
+                                    <input id="inputMeetTime" type="time" class="w-full appearance-none text-[15px] font-medium text-[#5b4a78] bg-white border-2 border-gray-100 rounded-[20px] py-4 pl-9 pr-3 focus:outline-none focus:border-[#a874e4]" />
+                                </div>
+                                <div class="relative w-1/2">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><i data-lucide="map-pin" class="h-4 w-4 text-[#cba4f1]"></i></div>
+                                    <input id="inputMeetCity" type="text" placeholder="Curitiba" class="w-full appearance-none text-[15px] font-medium text-[#5b4a78] bg-white border-2 border-gray-100 rounded-[20px] py-4 pl-9 pr-3 focus:outline-none focus:border-[#a874e4]" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="timeContainer" class="hidden mt-4 bg-gradient-to-br from-[#f8f5ff] to-[#f3e8ff] rounded-[20px] p-5 border border-[#dcc3f5] shadow-sm">
+                            <p class="text-center text-[13px] font-bold text-[#a874e4] uppercase tracking-widest mb-3">Uau, vocês estão juntos há:</p>
+                            <div class="grid grid-cols-3 gap-2">
+                                <div class="bg-white rounded-xl p-2 text-center shadow-sm"><span id="timeY" class="block text-xl font-bold text-[#5b4a78]">0</span><span class="text-[10px] text-[#8a8a9e] font-semibold uppercase">Anos</span></div>
+                                <div class="bg-white rounded-xl p-2 text-center shadow-sm"><span id="timeM" class="block text-xl font-bold text-[#5b4a78]">0</span><span class="text-[10px] text-[#8a8a9e] font-semibold uppercase">Meses</span></div>
+                                <div class="bg-white rounded-xl p-2 text-center shadow-sm"><span id="timeD" class="block text-xl font-bold text-[#5b4a78]">0</span><span class="text-[10px] text-[#8a8a9e] font-semibold uppercase">Dias</span></div>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- --- PASSO 6: Fotos --- -->
-                <div id="step-6" class="hidden flex flex-col gap-4">
-                    <div 
-                        id="photoUploadArea"
-                        onclick="triggerPhotoUpload()"
-                        class="w-full border-2 border-dashed rounded-[24px] p-6 flex flex-col items-center justify-center gap-3 transition-all bg-[#fdfaff] border-[#cba4f1] hover:bg-[#f8f5ff] hover:border-[#a874e4] cursor-pointer"
-                    >
-                        <div class="w-12 h-12 bg-[#f3e8ff] rounded-full flex items-center justify-center">
-                            <i data-lucide="image-plus" class="w-6 h-6 text-[#a874e4]"></i>
-                        </div>
-                        <div class="text-center">
-                            <p id="photoUploadTitle" class="text-[#5b4a78] font-semibold text-[14px]">Toque para enviar fotos</p>
-                            <p id="photoUploadSubtitle" class="text-[#8a8a9e] text-[12px] mt-0.5">0/8 fotos selecionadas</p>
+                    <!-- PASSO 4 -->
+                    <div id="step-4" class="hidden flex flex-col gap-4">
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-center ml-2 mr-2">
+                                <label class="text-[13px] font-semibold text-[#8a8a9e]">Título Especial</label>
+                                <button onclick="generateAI('title')" class="text-[11px] font-bold text-[#a874e4] bg-[#f8f5ff] px-2 py-1 rounded-md flex items-center gap-1 hover:bg-[#f3e8ff]"><i data-lucide="sparkles" class="w-3 h-3"></i> Gerar com IA</button>
+                            </div>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none"><i data-lucide="type" class="h-5 w-5 text-[#cba4f1]"></i></div>
+                                <input id="inputTitle" type="text" maxlength="50" placeholder="Ex: Nosso Primeiro Ano Juntos" class="w-full text-lg font-semibold text-[#5b4a78] bg-white border-2 border-gray-100 rounded-[20px] py-4 pl-12 pr-4 focus:outline-none focus:border-[#a874e4]" />
+                            </div>
                         </div>
                     </div>
-                    <input type="file" multiple accept="image/*" class="hidden" id="fileInput" onchange="handlePhotoUpload(event)" />
 
-                    <div id="photoGrid" class="hidden flex flex-col gap-4 mt-2">
-                        <!-- Fotos Renderizadas Aqui -->
+                    <!-- PASSO 5 -->
+                    <div id="step-5" class="hidden flex flex-col gap-4">
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-center ml-2 mr-2">
+                                <label class="text-[13px] font-semibold text-[#8a8a9e] flex items-center gap-1.5"><i data-lucide="align-left" class="w-4 h-4"></i> Sua Mensagem</label>
+                                <button onclick="generateAI('message')" class="text-[11px] font-bold text-[#a874e4] bg-[#f8f5ff] px-2 py-1 rounded-md flex items-center gap-1 hover:bg-[#f3e8ff]"><i data-lucide="sparkles" class="w-3 h-3"></i> Gerar com IA</button>
+                            </div>
+                            <textarea id="inputMessage" rows="6" maxlength="1000" placeholder="Escreva algo especial..." class="w-full text-[15px] leading-relaxed font-medium text-[#5b4a78] bg-white border-2 border-gray-100 rounded-[20px] p-4 focus:outline-none focus:border-[#a874e4] resize-none"></textarea>
+                        </div>
                     </div>
+
+                    <!-- PASSO 6 -->
+                    <div id="step-6" class="hidden flex flex-col gap-4">
+                        <p class="text-[13px] font-semibold text-[#8a8a9e] text-center mb-1">Fotos para a linha do tempo (Cards):</p>
+                        <div id="photoUploadArea" onclick="triggerPhotoUpload()" class="w-full border-2 border-dashed rounded-[24px] p-6 flex flex-col items-center justify-center gap-3 transition-all bg-[#fdfaff] border-[#cba4f1] hover:bg-[#f8f5ff] hover:border-[#a874e4] cursor-pointer">
+                            <div class="w-12 h-12 bg-[#f3e8ff] rounded-full flex items-center justify-center"><i data-lucide="image-plus" class="w-6 h-6 text-[#a874e4]"></i></div>
+                            <div class="text-center">
+                                <p id="photoUploadTitle" class="text-[#5b4a78] font-semibold text-[14px]">Toque para enviar fotos</p>
+                                <p id="photoUploadSubtitle" class="text-[#8a8a9e] text-[12px] mt-0.5">0/8 fotos selecionadas</p>
+                            </div>
+                        </div>
+                        <input type="file" multiple accept="image/*" class="hidden" id="fileInput" onchange="handlePhotoUpload(event)" />
+                        <div id="photoGrid" class="hidden flex flex-col gap-4 mt-2"></div>
+                    </div>
+
+                    <!-- PASSO 7: BUSCA DE MÚSICAS YOUTUBE -->
+                    <div id="step-7" class="hidden flex flex-col gap-4">
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none"><i data-lucide="search" class="h-5 w-5 text-gray-400"></i></div>
+                            <input id="inputSearchSong" type="search" placeholder="Pesquisar música ou artista..." class="w-full text-[15px] font-medium text-[#5b4a78] bg-white border-2 border-gray-100 rounded-[20px] py-4 pl-12 pr-4 shadow-sm focus:outline-none focus:border-[#a874e4]" />
+                        </div>
+                        <div id="songCategoriesContainer" class="flex gap-2 overflow-x-auto no-scrollbar pb-2 -mx-2 px-2"></div>
+                        <div id="songsListContainer" class="flex flex-col gap-2 mt-2"></div>
+                    </div>
+
+                    <!-- PASSO 8 -->
+                    <div id="step-8" class="hidden flex flex-col gap-5">
+                        <p class="text-[13px] font-semibold text-[#8a8a9e] text-center mb-1">Personalize o Player de Música:</p>
+                        
+                        <div class="bg-white p-4 rounded-[20px] border-2 border-gray-100 shadow-sm flex flex-col gap-3">
+                            <div class="space-y-1">
+                                <label class="text-[12px] font-semibold text-gray-500">Nome da Música</label>
+                                <input id="inputCustomSongTitle" type="text" class="w-full text-[15px] font-semibold text-[#5b4a78] bg-[#f8f5ff] border-2 border-[#f3e8ff] rounded-xl p-3 focus:outline-none focus:border-[#a874e4]" />
+                            </div>
+                            <div class="space-y-1">
+                                <label class="text-[12px] font-semibold text-gray-500">Nome do Artista/Banda</label>
+                                <input id="inputCustomSongArtist" type="text" class="w-full text-[15px] font-semibold text-[#5b4a78] bg-[#f8f5ff] border-2 border-[#f3e8ff] rounded-xl p-3 focus:outline-none focus:border-[#a874e4]" />
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-4 rounded-[20px] border-2 border-gray-100 shadow-sm flex flex-col gap-3">
+                            <label class="text-[12px] font-semibold text-gray-500">Fotos de Capa e Cores de Fundo do Player</label>
+                            
+                            <div id="playerPhotoUploadArea" onclick="document.getElementById('playerFileInput').click()" class="w-full border-2 border-dashed rounded-[16px] p-4 flex flex-col items-center justify-center gap-2 bg-[#fdfaff] border-[#cba4f1] hover:bg-[#f8f5ff] hover:border-[#a874e4] cursor-pointer">
+                                <i data-lucide="camera" class="w-5 h-5 text-[#a874e4]"></i>
+                                <span class="text-[#5b4a78] font-semibold text-[13px]">Adicionar Capa(s) ao Player</span>
+                            </div>
+                            <input type="file" multiple accept="image/*" class="hidden" id="playerFileInput" onchange="handlePlayerPhotoUpload(event)" />
+
+                            <div id="playerPhotoGrid" class="flex flex-col gap-3 mt-2">
+                                <!-- Renderizado via JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PASSO 9: Mensagem Secreta -->
+                    <div id="step-9" class="hidden flex flex-col gap-4">
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-center ml-2 mr-2">
+                                <label class="text-[13px] font-semibold text-[#8a8a9e] flex items-center gap-1.5"><i data-lucide="lock" class="w-4 h-4 text-[#a874e4]"></i> Mensagem Secreta</label>
+                                <button onclick="generateAI('specialMessage')" class="text-[11px] font-bold text-[#a874e4] bg-[#f8f5ff] px-2 py-1 rounded-md flex items-center gap-1 hover:bg-[#f3e8ff]"><i data-lucide="sparkles" class="w-3 h-3"></i> Gerar com IA</button>
+                            </div>
+                            <textarea id="inputSpecialMessage" rows="5" maxlength="500" placeholder="Uma mensagem escondida..." class="w-full text-[15px] leading-relaxed font-medium text-[#5b4a78] bg-[#fdfaff] border-2 border-[#cba4f1] rounded-[20px] p-4 focus:outline-none focus:border-[#a874e4] resize-none"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- PASSO 10: Stories -->
+                    <div id="step-10" class="hidden flex flex-col gap-5">
+                        <p class="text-[13px] font-semibold text-[#8a8a9e] text-center mb-1">Personalize seus destaques (Stories):</p>
+                        <div id="storiesAdvancedContainer" class="flex flex-col gap-4"></div>
+                    </div>
+
+                    <!-- PASSO 11: PLANOS -->
+                    <div id="step-11" class="hidden flex flex-col gap-5">
+                        <div class="text-center space-y-2 mb-2">
+                            <h3 class="text-2xl font-black text-[#5b4a78]">Escolha seu plano</h3>
+                            <p class="text-[#8a8a9e] text-sm font-medium">Você está a um passo de surpreender quem você ama.</p>
+                        </div>
+
+                        <!-- Plano Só Hoje -->
+                        <label class="plan-card relative flex flex-col bg-white border-2 border-gray-100 rounded-3xl p-5 cursor-pointer hover:border-[#dcc3f5] transition-all overflow-hidden" onclick="selectPlan('1dia')">
+                            <input type="radio" name="plan" value="1dia" class="peer absolute opacity-0">
+                            <div class="absolute inset-0 border-2 border-transparent peer-checked:border-[#a874e4] peer-checked:bg-[#f8f5ff]/50 rounded-3xl transition-colors pointer-events-none"></div>
+                            
+                            <div class="flex justify-between items-start relative z-10">
+                                <div>
+                                    <h4 class="font-bold text-lg text-[#5b4a78]">Só Hoje (24h)</h4>
+                                    <p class="text-[13px] text-[#8a8a9e] font-medium mt-1">Uma surpresa rápida e emocionante.</p>
+                                </div>
+                                <div class="w-6 h-6 rounded-full border-2 border-gray-200 flex items-center justify-center peer-checked:border-[#a874e4] peer-checked:bg-[#a874e4] peer-checked:scale-110 transition-all duration-300 shrink-0">
+                                    <i data-lucide="check" class="w-3 h-3 text-white opacity-0 peer-checked:opacity-100 transition-opacity"></i>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4 flex items-end gap-1 relative z-10">
+                                <span class="text-sm font-bold text-gray-400 line-through">R$ 29,90</span>
+                                <div class="flex items-start text-[#a874e4]">
+                                    <span class="text-lg font-bold mt-1">R$</span>
+                                    <span class="text-4xl font-black leading-none tracking-tight">14</span>
+                                    <span class="text-lg font-bold mt-1">,90</span>
+                                </div>
+                            </div>
+
+                            <ul class="mt-5 space-y-2.5 relative z-10 text-[13px] text-[#5b4a78] font-medium">
+                                <li class="flex items-center gap-2"><i data-lucide="clock" class="w-4 h-4 text-[#cba4f1]"></i> Acesso por 1 dia</li>
+                                <li class="flex items-center gap-2"><i data-lucide="edit-3" class="w-4 h-4 text-[#cba4f1]"></i> Edições Ilimitadas</li>
+                            </ul>
+                        </label>
+
+                        <!-- Plano Vitalício -->
+                        <label class="plan-card relative flex flex-col bg-white border-2 border-[#dcc3f5] rounded-3xl p-5 cursor-pointer hover:border-[#a874e4] transition-all overflow-hidden" onclick="selectPlan('vitalicio')">
+                            <input type="radio" name="plan" value="vitalicio" class="peer absolute opacity-0" checked>
+                            <div class="absolute inset-0 border-2 border-transparent peer-checked:border-[#a874e4] peer-checked:bg-[#f8f5ff]/50 rounded-3xl transition-colors pointer-events-none"></div>
+                            
+                            <!-- Badge -->
+                            <div class="absolute top-0 right-0 bg-gradient-to-r from-[#a874e4] to-[#cba4f1] text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-bl-xl z-20 shadow-sm">
+                                Melhor Custo-Benefício
+                            </div>
+
+                            <div class="flex justify-between items-start relative z-10 mt-1">
+                                <div>
+                                    <h4 class="font-bold text-lg text-[#5b4a78]">Para Sempre (Vitalício)</h4>
+                                    <p class="text-[13px] text-[#8a8a9e] font-medium mt-1">Guarde esse momento para sempre.</p>
+                                </div>
+                                <div class="w-6 h-6 rounded-full border-2 border-gray-200 flex items-center justify-center peer-checked:border-[#a874e4] peer-checked:bg-[#a874e4] peer-checked:scale-110 transition-all duration-300 shrink-0">
+                                    <i data-lucide="check" class="w-3 h-3 text-white opacity-0 peer-checked:opacity-100 transition-opacity"></i>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4 flex items-end gap-1 relative z-10">
+                                <span class="text-sm font-bold text-gray-400 line-through">R$ 69,90</span>
+                                <div class="flex items-start text-[#a874e4]">
+                                    <span class="text-lg font-bold mt-1">R$</span>
+                                    <span class="text-4xl font-black leading-none tracking-tight">24</span>
+                                    <span class="text-lg font-bold mt-1">,90</span>
+                                </div>
+                            </div>
+
+                            <ul class="mt-5 space-y-2.5 relative z-10 text-[13px] text-[#5b4a78] font-medium">
+                                <li class="flex items-center gap-2"><i data-lucide="infinity" class="w-4 h-4 text-[#a874e4]"></i> <strong class="text-[#a874e4]">Acesso Para Sempre</strong></li>
+                                <li class="flex items-center gap-2"><i data-lucide="edit-3" class="w-4 h-4 text-[#cba4f1]"></i> Edições Ilimitadas</li>
+                                <li class="flex items-center gap-2"><i data-lucide="image" class="w-4 h-4 text-[#cba4f1]"></i> Fotos e Música Ilimitadas</li>
+                            </ul>
+                        </label>
+                    </div>
+
                 </div>
+            </div>
 
-                <!-- --- PASSO 7: Trilha Sonora --- -->
-                <div id="step-7" class="hidden flex flex-col gap-4">
-                    <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none"><i data-lucide="search" class="h-5 w-5 text-gray-400"></i></div>
-                        <input id="inputSearchSong" type="search" placeholder="Pesquisar música ou artista..." class="w-full text-[15px] font-medium text-[#5b4a78] bg-white border-2 border-gray-100 rounded-[20px] py-4 pl-12 pr-4 shadow-sm focus:outline-none focus:border-[#a874e4] focus:ring-4 focus:ring-[#f3e8ff] transition-all placeholder:text-gray-300" />
-                    </div>
-                    
-                    <div id="songCategoriesContainer" class="flex gap-2 overflow-x-auto no-scrollbar pb-2 -mx-2 px-2">
-                        <!-- Renderizado via JS -->
-                    </div>
-                    
-                    <div id="songsListContainer" class="flex flex-col gap-2 mt-2">
-                        <!-- Renderizado via JS -->
-                    </div>
-                </div>
-
+            <!-- BOTÃO CONTINUAR -->
+            <div id="bottomBar" class="hidden fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[420px] bg-gradient-to-t from-[#faf9fc] via-[#faf9fc] to-transparent pt-12 pb-6 px-5 z-50 transition-all duration-700 ease-in-out">
+                <button id="btnNext" onclick="handleNextStep()" disabled class="w-full bg-[#a874e4] text-white font-bold text-lg rounded-[20px] p-5 flex justify-center items-center gap-2 transition-all active:translate-y-[4px] active:shadow-none shadow-[0_4px_0_0_#8b5bc4] disabled:opacity-50 disabled:cursor-not-allowed">
+                    <span id="btnNextText">Continuar</span> <i data-lucide="chevron-right" class="w-5 h-5"></i>
+                </button>
+            </div>
+            
+        </div>
+        
+        <div id="previewAreaDesktop" class="w-0 lg:w-0 h-full overflow-hidden opacity-0 hidden lg:flex justify-center items-center relative transition-all duration-700 ease-in-out bg-gradient-to-br from-[#f8f5ff] to-[#eaddfc]">
+            <!-- Mockup do Celular Limpo -->
+            <div class="w-[375px] h-[812px] bg-white rounded-[3rem] phone-mockup relative z-20 flex flex-col overflow-hidden shrink-0">
+                <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[150px] h-[30px] bg-[#1f2937] rounded-b-3xl z-30"></div>
+                <iframe id="previewFrameDesktop" class="w-full h-full bg-white border-none" sandbox="allow-scripts allow-same-origin pointer-lock allow-downloads"></iframe>
             </div>
         </div>
+    </div>
 
-        <!-- --- BOTÃO "CONTINUAR" FIXO NO BOTTOM --- -->
-        <div id="bottomBar" class="hidden fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[420px] bg-gradient-to-t from-[#faf9fc] via-[#faf9fc] to-transparent pt-12 pb-6 px-5 z-50">
-            <button 
-                id="btnNext"
-                onclick="handleNextStep()"
-                disabled
-                class="w-full bg-[#a874e4] text-white font-bold text-lg rounded-[20px] p-5 flex justify-center items-center gap-2 transition-all duration-150 active:translate-y-[4px] active:shadow-none shadow-[0_4px_0_0_#8b5bc4] disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-                <span id="btnNextText">Continuar</span> <i data-lucide="chevron-right" class="w-5 h-5"></i>
-            </button>
+    <!-- BOTÃO PREVIEW MOBILE -->
+    <button id="mobilePreviewToggle" onclick="toggleMobilePreview()" class="hidden lg:hidden fixed bottom-28 right-4 z-[90] bg-[#a874e4] text-white py-3 px-5 rounded-full shadow-[0_4px_15px_rgba(168,116,228,0.5)] items-center justify-center gap-2 transition-transform active:scale-95 animate-bounce">
+        <i data-lucide="smartphone" class="w-5 h-5"></i>
+        <span class="font-bold text-sm">Ver Preview</span>
+    </button>
+
+    <div id="mobilePreviewModal" class="fixed inset-0 z-[100] bg-black/90 hidden flex-col transition-opacity duration-300 opacity-0">
+        <div class="flex justify-between items-center p-4 text-white">
+            <div class="flex items-center gap-2"><i data-lucide="eye" class="w-5 h-5 text-[#cba4f1]"></i><span class="font-bold">Preview em tempo real</span></div>
+            <button onclick="toggleMobilePreview()" class="p-2 bg-white/20 rounded-full hover:bg-white/30 transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
         </div>
-
+        <div class="flex-1 w-full bg-white rounded-t-3xl overflow-hidden relative">
+            <iframe id="previewFrameMobile" class="w-full h-full border-none" sandbox="allow-scripts allow-same-origin pointer-lock allow-downloads"></iframe>
+        </div>
     </div>
 
     <script>
-        // Inicializa ícones na primeira carga
         lucide.createIcons();
 
         // Estados Globais
         let currentStep = 1;
+        const totalSteps = 11;
+        const defaultColors = ['#1c3c60', '#4A90E2', '#E74C3C', '#2ECC71', '#F1C40F', '#9B59B6', '#E67E22', '#1ABC9C'];
+
         let answers = {
-            recipientType: '',
-            senderName: '',
-            recipientName: '',
-            meetDate: '',
-            meetTime: '',
-            meetCity: '',
-            title: '',
-            message: '',
+            recipientType: '', senderName: '', recipientName: '',
+            meetDate: '', meetTime: '', meetCity: '',
+            title: '', message: '',
             photoData: [], 
-            song: null
+            song: null,
+            customSongTitle: '', customSongArtist: '',
+            playerPhotos: [],
+            specialMessage: '',
+            plan: 'vitalicio',
+            stories: [
+                { id: 'dates', title: 'Nossos Dates', coverUrl: '', photos: [] },
+                { id: 'random', title: 'Fotos Aleatórias', coverUrl: '', photos: [] },
+                { id: 'trip', title: 'Primeira Viagem', coverUrl: '', photos: [] }
+            ]
         };
+        
         let isTyping = false;
-        let searchQuery = '';
-        let selectedCategory = '';
         let typewriterTimer = null;
         let clockTimerId = null;
 
@@ -370,8 +466,12 @@
             3: "Quando a história de vocês começou?",
             4: "Escreva o título que vai marcar esse momento especial.",
             5: "Escreva uma mensagem inesquecível (para emocionar)!",
-            6: "Envie de 1 a 8 fotos que contam a história de vocês.",
-            7: "Pesquise qualquer música ou escolha por categoria."
+            6: "Envie de 1 a 8 fotos para a linha do tempo.",
+            7: "Pesquise qualquer música ou escolha por categoria.",
+            8: "Personalize a capa e os títulos do player de música.",
+            9: "Que tal uma mensagem secreta escondida num botão?",
+            10: "Para fechar com chave de ouro, personalize os destaques!",
+            11: "" // Não tem pergunta, mostra os planos diretos
         };
 
         const directTributes = [
@@ -380,46 +480,658 @@
             { id: 'avo', label: 'Avó', icon: 'infinity' },
             { id: 'irma', label: 'Irmã', icon: 'ribbon' },
             { id: 'tia', label: 'Tia', icon: 'flower-2' },
-            { id: 'filha', label: 'Filha', icon: 'baby' },
-            { id: 'madrinha', label: 'Madrinha', icon: 'wand-2' },
+            { id: 'filha', label: 'Filha', icon: 'baby' }
         ];
 
-        const songCategories = ['Romântica', 'Sertanejo', 'Pop', 'K-Pop', 'Internacional', 'Rock'];
+        const songCategories = ['Romântica', 'Sertanejo', 'Pop', 'K-Pop', 'Internacional'];
+        let selectedCategory = '';
         
+        // Músicas reais muito tocadas no Brasil com IDs reais
         const mockSongs = [
-            { id: 1, title: 'Perfect', artist: 'Ed Sheeran', cover: 'https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=100&h=100&fit=crop&auto=format' },
-            { id: 2, title: 'Yellow', artist: 'Coldplay', cover: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=100&h=100&fit=crop&auto=format' },
-            { id: 3, title: 'A Thousand Years', artist: 'Christina Perri', cover: 'https://images.unsplash.com/photo-1493225457124-a1a2a5f5f9af?w=100&h=100&fit=crop&auto=format' },
-            { id: 4, title: 'Evidências', artist: 'Chitãozinho & Xororó', cover: 'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=100&h=100&fit=crop&auto=format' },
+            { id: '1X13Z2xP-0Q', title: 'Deus Me Livre, Mas Quem Me Dera', artist: 'Israel & Rodolffo', cover: 'https://i.ytimg.com/vi/1X13Z2xP-0Q/hqdefault.jpg' },
+            { id: '_zKkXmN2U2Q', title: 'Posso Até Não Te Dar Flores', artist: 'Gusttavo Lima', cover: 'https://i.ytimg.com/vi/_zKkXmN2U2Q/hqdefault.jpg' },
+            { id: 'ePj1qEzITjc', title: 'Evidências', artist: 'Chitãozinho & Xororó', cover: 'https://i.ytimg.com/vi/ePj1qEzITjc/hqdefault.jpg' },
+            { id: 'rtOvBOTyX00', title: 'A Thousand Years', artist: 'Christina Perri', cover: 'https://i.ytimg.com/vi/rtOvBOTyX00/hqdefault.jpg' }
         ];
+        
+        let searchResults = [...mockSongs]; 
 
-        // Setup Inicial
+        const DEMO_HTML_CONTENT = `
+        <!DOCTYPE html>
+        <html lang="pt-BR">
+        <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Preview</title>
+        <script src="https://cdn.tailwindcss.com"><\/script>
+        <script src="https://unpkg.com/lucide@latest"><\/script>
+        <!-- Importação da API do YouTube -->
+        <script src="https://www.youtube.com/iframe_api"><\/script>
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap');
+            html, body { overflow-x: hidden; width: 100%; max-width: 100vw; font-family: 'Poppins', sans-serif; background-color: #faf9fc; color: #4a4a5f; -webkit-tap-highlight-color: transparent; }
+            @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+            .fade-up { opacity: 0; animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+            
+            .card-stack-item { position: absolute; width: calc(100% - 24px); height: 280px; background: #fff; border: 4px solid #fff; border-radius: 24px; box-shadow: 0 12px 30px rgba(168, 116, 228, 0.2); transition: top .35s cubic-bezier(.34,1.56,.64,1), left .35s cubic-bezier(.34,1.56,.64,1), transform .35s cubic-bezier(.34,1.56,.64,1); overflow: hidden; touch-action: none; }
+            .card-stack-item.card-stack-top { cursor: grab; } 
+            .card-stack-item.card-stack-top:active { cursor: grabbing; } 
+            .card-stack-item:not(.card-stack-top) { pointer-events: none; } 
+            .card-stack-item.dragging { transition: none; cursor: grabbing; }
+            
+            .blur-text { color: transparent; text-shadow: 0 0 10px rgba(255, 255, 255, 0.9), 0 0 20px rgba(255, 255, 255, 0.5); user-select: none; pointer-events: none; }
+            .music-player-spotify { background-color: #a874e4; color: white; border-radius: 16px; padding: 20px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); transition: background-color 0.5s ease; }
+            .story-card { transition: transform 0.2s ease; } .story-card:hover { transform: scale(1.05); }
+            .story-progress-segment { flex: 1; background-color: rgba(156, 163, 175, 0.5); border-radius: 9999px; overflow: hidden; height: 100%; }
+            .story-progress-fill { height: 100%; background-color: white; width: 0%; transition: width 0.1s linear; }
+        </style>
+        </head>
+        <body class="antialiased overflow-x-hidden pb-12">
+            
+            <main id="mainContent" class="flex min-h-screen flex-col items-center w-full max-w-md mx-auto px-5 pt-12 gap-6 relative z-10">
+                <div class="flex justify-center mb-2 fade-up">
+                    <div class="w-24 h-24 bg-white border-2 border-[#dcc3f5] rounded-full shadow-[0_4px_0_0_#f1f1f5] flex items-center justify-center overflow-hidden p-1"><img src="https://i.imgur.com/sTgAwVX.png" class="w-full h-full object-cover rounded-full"></div>
+                </div>
+
+                <div class="flex flex-col items-center text-center gap-4 fade-up">
+                    <h1 class="text-[32px] font-black leading-tight tracking-tight"><span id="giftTitleLabel">Para Especial</span> <br><span class="text-[#a874e4]" id="giftRecipientName">Alguém</span> 💜</h1>
+                    <p id="giftMessage" class="text-[14.5px] font-medium text-[#8a8a9e] leading-relaxed px-2">A magia está acontecendo...</p>
+                </div>
+
+                <div id="counterCard" class="w-full bg-white border-2 border-gray-100 rounded-[24px] shadow-[0_4px_0_0_#f1f1f5] p-5 flex-col items-center mt-4 fade-up hidden">
+                    <h3 class="text-[11px] font-bold text-[#5b4a78] uppercase tracking-widest mb-4">Compartilhando momentos há</h3>
+                    <div class="flex justify-between w-full gap-1.5">
+                        <div class="flex flex-col items-center bg-[#f8f5ff] py-2 px-1 rounded-xl flex-1"><span class="text-base font-black text-[#a874e4] mb-1" id="cYears">00</span><span class="text-[8px] font-bold text-[#8a8a9e] uppercase">Anos</span></div>
+                        <div class="flex flex-col items-center bg-[#f8f5ff] py-2 px-1 rounded-xl flex-1"><span class="text-base font-black text-[#a874e4] mb-1" id="cMonths">00</span><span class="text-[8px] font-bold text-[#8a8a9e] uppercase">Meses</span></div>
+                        <div class="flex flex-col items-center bg-[#f8f5ff] py-2 px-1 rounded-xl flex-1"><span class="text-base font-black text-[#a874e4] mb-1" id="cDays">00</span><span class="text-[8px] font-bold text-[#8a8a9e] uppercase">Dias</span></div>
+                        <div class="flex flex-col items-center bg-[#f8f5ff] py-2 px-1 rounded-xl flex-1"><span class="text-base font-black text-[#a874e4] mb-1" id="cHours">00</span><span class="text-[8px] font-bold text-[#8a8a9e] uppercase">Horas</span></div>
+                        <div class="flex flex-col items-center bg-[#f8f5ff] py-2 px-1 rounded-xl flex-1"><span class="text-base font-black text-[#a874e4] mb-1" id="cMinutes">00</span><span class="text-[8px] font-bold text-[#8a8a9e] uppercase">Min</span></div>
+                        <div class="flex flex-col items-center bg-[#f8f5ff] py-2 px-1 rounded-xl flex-1"><span class="text-base font-black text-[#a874e4] mb-1" id="cSeconds">00</span><span class="text-[8px] font-bold text-[#8a8a9e] uppercase">Seg</span></div>
+                    </div>
+                </div>
+
+                <div id="photoSectionContainer" class="w-full py-4 mt-2 mb-2 fade-up hidden">
+                    <div class="flex flex-col items-center w-full">
+                        <div class="relative h-[350px] w-full max-w-[320px] mx-auto touch-none" id="cardStackArea"><div id="cardStackInner" class="absolute inset-0"></div></div>
+                        <div class="flex justify-center gap-2 mt-6 pb-2" id="cardStackDots"></div>
+                    </div>
+                </div>
+
+                <div id="musicPlayerContainer" class="fade-up w-full music-player-spotify mt-3 flex-col gap-4 hidden">
+                    <div class="w-full aspect-square rounded-xl overflow-hidden shadow-lg mb-2"><img id="musicAlbumArtLarge" src="" class="w-full h-full object-cover transition-opacity duration-200"></div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex flex-col text-left"><h3 id="musicTitle" class="font-black text-2xl leading-tight"></h3><p id="musicArtist" class="text-sm font-medium text-white/70"></p></div>
+                    </div>
+                    
+                    <div class="flex flex-col gap-1 mt-2 px-1">
+                        <div id="musicProgressBar" class="h-1.5 bg-white/30 rounded-full cursor-pointer relative group">
+                            <div id="musicProgressFill" class="absolute top-0 left-0 h-full bg-white rounded-full transition-all duration-300" style="width:0%">
+                                <div class="absolute right-[-4px] top-1/2 transform -translate-y-1/2 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-sm"></div>
+                            </div>
+                        </div>
+                        <div class="flex justify-between text-[10px] font-medium text-white/70 mt-1">
+                            <span id="musicCurrentTime">0:00</span>
+                            <span id="musicDuration">0:00</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between mt-2">
+                        <button type="button" class="text-white/70 pointer-events-none opacity-50"><i data-lucide="shuffle" class="w-6 h-6"></i></button>
+                        <div class="flex items-center gap-6">
+                            <button id="musicPrevBtn" type="button" class="text-white/70 hover:text-white transition-colors"><i data-lucide="skip-back" class="w-8 h-8 fill-current"></i></button>
+                            <button id="playPauseBtn" type="button" class="w-16 h-16 rounded-full bg-white text-[#1c3c60] flex items-center justify-center transition-all hover:scale-105 active:translate-y-0.5"><span id="playPauseIcon" class="scale-125"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none" class="scale-125"><path d="M5 3l14 9-14 9V3z"/></svg></span></button>
+                            <button id="musicNextBtn" type="button" class="text-white/70 hover:text-white transition-colors"><i data-lucide="skip-forward" class="w-8 h-8 fill-current"></i></button>
+                        </div>
+                        <button type="button" class="text-white/70 pointer-events-none opacity-50"><i data-lucide="repeat" class="w-6 h-6"></i></button>
+                    </div>
+                    <div id="ytplayer" style="display: none;"></div>
+                </div>
+
+                <div id="specialMessageCard" class="fade-up w-full bg-[#4A90E2] rounded-[24px] p-6 flex-col gap-4 text-white shadow-[0_4px_0_0_#357ABD] hidden">
+                    <h3 class="text-lg font-bold">Mensagem secreta</h3>
+                    <p id="specialMessageText" class="text-xl font-black leading-tight blur-text transition-all duration-500"></p>
+                    <button id="revealMessageBtn" class="bg-white text-gray-800 font-bold px-4 py-2 rounded-xl self-start mt-2 hover:bg-gray-100 transition-colors">Mostrar Mensagem</button>
+                </div>
+
+                <div id="storiesSection" class="fade-up w-full bg-[#2c2c2c] rounded-[24px] p-5 flex-col gap-4 text-white shadow-[0_4px_0_0_rgba(0,0,0,0.1)] mt-3 transition-colors duration-500 hidden">
+                    <h3 class="text-lg font-bold">Conheça nossa história</h3>
+                    <div class="grid grid-cols-3 gap-3" id="storiesGrid"></div>
+                </div>
+                
+                <div class="fade-up w-full bg-white border-2 border-[#dcc3f5] rounded-[32px] p-5 flex flex-col gap-6 mt-6 shadow-[0_8px_0_0_#f8f5ff]">
+                    <div class="flex flex-col items-center text-center mt-2">
+                        <div class="w-12 h-12 bg-[#f8f5ff] rounded-full flex items-center justify-center text-[#a874e4] shadow-[0_2px_0_0_#dcc3f5] border-2 border-[#dcc3f5] mb-4">
+                            <i data-lucide="heart" class="w-5 h-5" style="fill:currentColor"></i>
+                        </div>
+                        <h3 class="font-black text-[#4a4a5f] text-[20px] mb-1">Gostou dessa página?</h3>
+                        <button type="button" class="w-full bg-[#a874e4] text-white font-bold py-4 rounded-[20px] shadow-[0_4px_0_0_#8b5bc4] mt-4 hover:bg-[#9760d6] transition-colors">Criar minha página</button>
+                    </div>
+                </div>
+                <div class="flex flex-col items-center gap-4 mt-6 mb-8 fade-up"><span class="text-[11px] font-semibold text-[#b4b4c4]">Criado com <span class="text-[#a874e4] font-bold">Lontra</span></span></div>
+
+            </main>
+
+            <!-- MODAL DE STORIES -->
+            <div id="storyModal" class="fixed inset-0 z-[100] bg-black hidden flex-col">
+                <div class="flex items-center justify-between p-4 text-white absolute top-0 left-0 right-0 z-10">
+                    <button id="closeStoryBtn" type="button"><i data-lucide="x" class="w-6 h-6"></i></button>
+                    <h3 id="storyTitle" class="font-bold text-lg">Título</h3>
+                    <button type="button"><i data-lucide="more-horizontal" class="w-6 h-6"></i></button>
+                </div>
+                <div id="storyProgressContainer" class="absolute top-14 left-0 right-0 h-1 flex gap-1 px-1"></div>
+                <div class="flex-1 flex items-center justify-center pointer-events-auto" id="storyImageArea">
+                    <img id="storyImage" src="" class="max-h-full max-w-full object-contain select-none">
+                </div>
+            </div>
+
+            <script>
+                lucide.createIcons();
+
+                document.getElementById('revealMessageBtn').addEventListener('click', function() {
+                    document.getElementById('specialMessageText').classList.remove('blur-text');
+                    this.style.opacity = '0.5';
+                    this.style.pointerEvents = 'none';
+                });
+
+                // ESTADOS E CONTROLES CARDS E AUDIO
+                let cardsData = []; 
+                let activeCardIndex = 0;
+                let playerPhotosData = [];
+                let activeMusicIndex = 0;
+
+                // Audio e Player setup via YouTube API
+                let ytPlayer;
+                let isYtReady = false;
+                let currentVideoId = '';
+                let ytProgressTimer = null;
+
+                const PLAY_ICON = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none" class="scale-125"><path d="M5 3l14 9-14 9V3z"/></svg>';
+                const PAUSE_ICON = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none" class="scale-125"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>';
+
+                window.onYouTubeIframeAPIReady = function() {
+                    ytPlayer = new YT.Player('ytplayer', {
+                        height: '0',
+                        width: '0',
+                        videoId: '',
+                        playerVars: { 'autoplay': 0, 'controls': 0, 'playsinline': 1 },
+                        events: {
+                            'onReady': onPlayerReady,
+                            'onStateChange': onPlayerStateChange
+                        }
+                    });
+                };
+
+                function onPlayerReady(event) {
+                    isYtReady = true;
+                    if(currentVideoId) {
+                        ytPlayer.cueVideoById(currentVideoId);
+                    }
+                }
+
+                function onPlayerStateChange(event) {
+                    if (event.data === YT.PlayerState.PLAYING) {
+                        document.getElementById('playPauseIcon').innerHTML = PAUSE_ICON;
+                        ytProgressTimer = setInterval(updateProgress, 500);
+                    } else {
+                        document.getElementById('playPauseIcon').innerHTML = PLAY_ICON;
+                        clearInterval(ytProgressTimer);
+                    }
+                }
+
+                function formatTime(totalSeconds) {
+                    if (isNaN(totalSeconds) || !isFinite(totalSeconds)) return "0:00";
+                    const m = Math.floor(totalSeconds / 60);
+                    const s = Math.floor(totalSeconds % 60);
+                    return \`\${m}:\${String(s).padStart(2, '0')}\`;
+                }
+
+                function updateProgress() {
+                    if(!isYtReady || !ytPlayer || !ytPlayer.getCurrentTime) return;
+                    const currentTime = ytPlayer.getCurrentTime();
+                    const duration = ytPlayer.getDuration() || 1;
+                    const progressPercent = (currentTime / duration) * 100;
+                    document.getElementById('musicProgressFill').style.width = progressPercent + '%';
+                    document.getElementById('musicCurrentTime').innerText = formatTime(currentTime);
+                    document.getElementById('musicDuration').innerText = formatTime(duration);
+                }
+
+                document.getElementById('playPauseBtn').addEventListener('click', () => {
+                    if(!isYtReady || !ytPlayer) return;
+                    const state = ytPlayer.getPlayerState();
+                    if(state === YT.PlayerState.PLAYING) {
+                        ytPlayer.pauseVideo();
+                    } else {
+                        ytPlayer.playVideo();
+                    }
+                });
+
+                document.getElementById('musicProgressBar').addEventListener('click', (e) => {
+                    if(!isYtReady || !ytPlayer || !ytPlayer.getDuration) return;
+                    const rect = e.currentTarget.getBoundingClientRect();
+                    const clickPosition = (e.clientX - rect.left) / rect.width;
+                    const duration = ytPlayer.getDuration();
+                    ytPlayer.seekTo(clickPosition * duration, true);
+                });
+
+                // Lógica de Drag para Cards
+                let dragState = null;
+                function setupDragHandlers() {
+                    const area = document.getElementById('cardStackArea');
+                    if(!area) return;
+
+                    const onMove = (e) => {
+                        if (!dragState || !e.isPrimary) return;
+                        e.preventDefault();
+                        dragState.dx = e.clientX - dragState.startX;
+                        dragState.el.style.transform = \`translateX(\${dragState.dx}px) rotate(\${dragState.dx / 18}deg)\`;
+                    };
+
+                    const onEnd = (e) => {
+                        if (!dragState || !e.isPrimary) return;
+                        const { el, dx } = dragState;
+                        el.classList.remove('dragging');
+                        el.style.transform = '';
+                        dragState = null;
+                        window.removeEventListener('pointermove', onMove);
+                        window.removeEventListener('pointerup', onEnd);
+                        window.removeEventListener('pointercancel', onEnd);
+
+                        if (dx < -50) goToCardIndex(activeCardIndex + 1);
+                        else if (dx > 50) goToCardIndex(activeCardIndex - 1);
+                        else updateCardPositions();
+                    };
+
+                    area.addEventListener('pointerdown', (e) => {
+                        if (!e.isPrimary) return;
+                        const topEls = document.querySelectorAll('.card-stack-top');
+                        if(topEls.length === 0) return;
+                        const topEl = topEls[0];
+                        if (!topEl.contains(e.target)) return;
+                        
+                        topEl.classList.add('dragging');
+                        dragState = { el: topEl, startX: e.clientX, dx: 0 };
+                        window.addEventListener('pointermove', onMove, { passive: false });
+                        window.addEventListener('pointerup', onEnd);
+                        window.addEventListener('pointercancel', onEnd);
+                    });
+                }
+
+                function stackPositionOf(i) { return (i - activeCardIndex + cardsData.length) % cardsData.length; }
+
+                function goToCardIndex(newIndex) {
+                    if (!cardsData.length) return;
+                    activeCardIndex = ((newIndex % cardsData.length) + cardsData.length) % cardsData.length;
+                    updateCardPositions();
+                }
+
+                function updateCardPositions() {
+                    const inner = document.getElementById('cardStackInner');
+                    Array.from(inner.children).forEach((el, i) => {
+                        const pos = stackPositionOf(i);
+                        el.style.top = (pos * 8) + 'px';
+                        el.style.left = (pos * 8) + 'px';
+                        el.style.zIndex = String(cardsData.length - pos);
+                        if (!el.classList.contains('dragging')) el.style.transform = \`rotate(\${(pos - 1) * 2}deg)\`;
+                        el.classList.toggle('card-stack-top', pos === 0);
+                    });
+                    const dotsWrap = document.getElementById('cardStackDots');
+                    if(dotsWrap) dotsWrap.innerHTML = cardsData.map((_, i) => \`<div class="h-2.5 rounded-full transition-all duration-300 \${i === activeCardIndex ? 'w-6 bg-[#a874e4] shadow-sm' : 'w-2.5 bg-[#dcc3f5]'}"></div>\`).join('');
+                }
+
+                function renderCards() {
+                    const inner = document.getElementById('cardStackInner');
+                    inner.innerHTML = '';
+                    cardsData.forEach((c, i) => {
+                        const div = document.createElement('div');
+                        div.className = 'card-stack-item';
+                        div.innerHTML = \`
+                            <div class="relative w-full h-full bg-[#f8f5ff] select-none">
+                                <img src="\${c.url}" class="absolute inset-0 w-full h-full object-cover pointer-events-none">
+                                <div class="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/80 to-transparent pointer-events-none"></div>
+                                <div class="absolute bottom-5 left-5 right-5 pointer-events-none">
+                                    <h3 class="font-black text-white text-xl leading-tight mb-1">\${c.title||''}</h3>
+                                    <p class="text-[13px] font-medium text-white/90 line-clamp-2">\${c.description||''}</p>
+                                </div>
+                            </div>\`;
+                        inner.appendChild(div);
+                    });
+                    goToCardIndex(0);
+                    setupDragHandlers();
+                }
+
+                // Logica do Player Customizado
+                function updatePlayerDisplay() {
+                    const playerContainer = document.getElementById('musicPlayerContainer');
+                    const storiesSection = document.getElementById('storiesSection');
+                    const playerImage = document.getElementById('musicAlbumArtLarge');
+                    
+                    let bg = '#a874e4';
+                    let cover = '';
+                    
+                    if(playerPhotosData.length > 0) {
+                        const cur = playerPhotosData[activeMusicIndex % playerPhotosData.length];
+                        bg = cur.color; cover = cur.url;
+                    } else if(window.lastSongCover) {
+                        cover = window.lastSongCover;
+                    }
+
+                    if(playerContainer) playerContainer.style.backgroundColor = bg;
+                    if(storiesSection) storiesSection.style.backgroundColor = bg;
+                    
+                    if(cover && playerImage) {
+                        playerImage.style.opacity = '0';
+                        setTimeout(() => { playerImage.src = cover; playerImage.style.opacity = '1'; }, 150);
+                    }
+                }
+
+                document.getElementById('musicPrevBtn').addEventListener('click', () => {
+                    if(playerPhotosData.length > 0) {
+                        activeMusicIndex = ((activeMusicIndex - 1 % playerPhotosData.length) + playerPhotosData.length) % playerPhotosData.length;
+                        updatePlayerDisplay();
+                    }
+                });
+                document.getElementById('musicNextBtn').addEventListener('click', () => {
+                    if(playerPhotosData.length > 0) {
+                        activeMusicIndex = (activeMusicIndex + 1) % playerPhotosData.length;
+                        updatePlayerDisplay();
+                    }
+                });
+
+                // LÓGICA DO CONTADOR
+                let pDate = null, pTime = null;
+                setInterval(() => {
+                    if(!pDate) return;
+                    const start = new Date(\`\${pDate}T\${pTime || '00:00'}:00\`);
+                    const now = new Date();
+                    if(now < start) return;
+                    let y = now.getFullYear() - start.getFullYear();
+                    let m = now.getMonth() - start.getMonth();
+                    let d = now.getDate() - start.getDate();
+                    let h = now.getHours() - start.getHours();
+                    let min = now.getMinutes() - start.getMinutes();
+                    let s = now.getSeconds() - start.getSeconds();
+                    if(s<0){s+=60;min--;} if(min<0){min+=60;h--;} if(h<0){h+=24;d--;}
+                    if(d<0){m--;d+=new Date(now.getFullYear(),now.getMonth(),0).getDate();}
+                    if(m<0){m+=12;y--;}
+                    document.getElementById('cYears').innerText = String(y).padStart(2,'0');
+                    document.getElementById('cMonths').innerText = String(m).padStart(2,'0');
+                    document.getElementById('cDays').innerText = String(d).padStart(2,'0');
+                    document.getElementById('cHours').innerText = String(h).padStart(2,'0');
+                    document.getElementById('cMinutes').innerText = String(min).padStart(2,'0');
+                    document.getElementById('cSeconds').innerText = String(s).padStart(2,'0');
+                }, 1000);
+
+                // STORIES LOGIC
+                function renderStoriesGrid(storiesArr) {
+                    const grid = document.getElementById('storiesGrid');
+                    grid.innerHTML = storiesArr.map(s => {
+                        const cover = s.coverUrl || 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+                        const opacity = s.coverUrl ? 'opacity-100' : 'opacity-50';
+                        return \`
+                        <div class="story-card relative h-32 rounded-xl overflow-hidden cursor-pointer" onclick='openStory("\${s.id}", \${JSON.stringify(storiesArr).replace(/"/g, '&quot;')})'>
+                            <img src="\${cover}" class="w-full h-full object-cover \${opacity}">
+                            <div class="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/80 to-transparent"></div>
+                            <p class="absolute bottom-2 left-2 font-bold text-xs text-white z-10">\${s.title || 'Destaque'}</p>
+                        </div>\`;
+                    }).join('');
+                }
+
+                let currentStoryPhotos = [], currentStoryIdx = 0, storyTimer = null, pFills = [];
+                window.openStory = function(sid, arr) {
+                    const s = arr.find(x => x.id === sid);
+                    if(!s || !s.photos || s.photos.length === 0) return;
+                    currentStoryPhotos = s.photos;
+                    document.getElementById('storyTitle').innerText = s.title || 'Destaque';
+                    const pC = document.getElementById('storyProgressContainer');
+                    pC.innerHTML = ''; pFills = [];
+                    currentStoryPhotos.forEach(() => {
+                        const sg = document.createElement('div'); sg.className = 'story-progress-segment';
+                        const f = document.createElement('div'); f.className = 'story-progress-fill';
+                        sg.appendChild(f); pC.appendChild(sg); pFills.push(f);
+                    });
+                    document.getElementById('storyModal').classList.remove('hidden');
+                    document.getElementById('storyModal').classList.add('flex');
+                    showStoryPhoto(0);
+                };
+                function showStoryPhoto(idx) {
+                    if(idx<0 || idx>=currentStoryPhotos.length){ document.getElementById('closeStoryBtn').click(); return;}
+                    currentStoryIdx = idx;
+                    document.getElementById('storyImage').src = currentStoryPhotos[idx];
+                    pFills.forEach((f,i) => { f.style.transition='none'; f.style.width = i<idx?'100%':'0%'; });
+                    void pFills[idx].offsetWidth;
+                    clearTimeout(storyTimer);
+                    pFills[idx].style.transition = 'width 3s linear';
+                    pFills[idx].style.width = '100%';
+                    storyTimer = setTimeout(()=>showStoryPhoto(idx+1), 3000);
+                }
+                document.getElementById('closeStoryBtn').addEventListener('click', ()=>{
+                    document.getElementById('storyModal').classList.add('hidden');
+                    document.getElementById('storyModal').classList.remove('flex');
+                    clearTimeout(storyTimer);
+                });
+                document.getElementById('storyImageArea').addEventListener('click', (e)=>{
+                    const r = e.currentTarget.getBoundingClientRect();
+                    if(e.clientX - r.left < r.width/2) showStoryPhoto(currentStoryIdx-1);
+                    else showStoryPhoto(currentStoryIdx+1);
+                });
+
+                // RECEIVER DE MENSAGENS DO QUIZ
+                window.addEventListener('message', (e) => {
+                    if(e.data && e.data.type === 'LIVE_UPDATE') {
+                        const data = e.data.payload;
+
+                        // Names & Text
+                        const rType = data.recipientType || 'amor';
+                        let lbl = (rType==='amor')?'Para meu Amor':(rType==='amiga')?'Para minha Amiga':'Para';
+                        document.getElementById('giftTitleLabel').innerText = data.title || lbl;
+                        document.getElementById('giftRecipientName').innerText = data.recipientName || 'Alguém';
+                        if(data.message) {
+                            document.getElementById('giftMessage').innerHTML = data.message.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\\n/g, '<br>');
+                        }
+
+                        // Counter
+                        if(data.meetDate) {
+                            pDate = data.meetDate; pTime = data.meetTime;
+                            document.getElementById('counterCard').classList.remove('hidden');
+                            document.getElementById('counterCard').classList.add('flex');
+                        }
+
+                        // Cards (Timeline) - Deep Compare
+                        if(data.photoData && data.photoData.length > 0) {
+                            document.getElementById('photoSectionContainer').classList.remove('hidden');
+                            const oldCardsStr = JSON.stringify(cardsData);
+                            const newCardsStr = JSON.stringify(data.photoData);
+                            if(oldCardsStr !== newCardsStr) {
+                                cardsData = JSON.parse(newCardsStr);
+                                renderCards();
+                            }
+                        }
+
+                        // Player
+                        if(data.song || data.customSongTitle || data.customSongArtist || data.playerPhotos.length>0) {
+                            document.getElementById('musicPlayerContainer').classList.remove('hidden');
+                            document.getElementById('musicPlayerContainer').classList.add('flex');
+                            
+                            document.getElementById('musicTitle').innerText = data.customSongTitle || (data.song ? data.song.title : '');
+                            document.getElementById('musicArtist').innerText = data.customSongArtist || (data.song ? data.song.artist : '');
+                            
+                            if(data.song) {
+                                window.lastSongCover = data.song.cover;
+                                if(data.song.id && currentVideoId !== data.song.id) {
+                                    currentVideoId = data.song.id;
+                                    if(isYtReady && ytPlayer && ytPlayer.cueVideoById) {
+                                        ytPlayer.cueVideoById(currentVideoId);
+                                        document.getElementById('playPauseIcon').innerHTML = PLAY_ICON;
+                                        document.getElementById('musicProgressFill').style.width = "0%";
+                                        document.getElementById('musicCurrentTime').innerText = "0:00";
+                                    }
+                                }
+                            }
+                            
+                            playerPhotosData = data.playerPhotos;
+                            updatePlayerDisplay();
+                        }
+
+                        // Secret Message
+                        if(data.specialMessage && data.specialMessage.trim() !== '') {
+                            document.getElementById('specialMessageCard').classList.remove('hidden');
+                            document.getElementById('specialMessageCard').classList.add('flex');
+                            document.getElementById('specialMessageText').innerText = data.specialMessage;
+                        }
+
+                        // Stories
+                        if(data.stories && data.stories.some(s=>s.coverUrl)) {
+                            document.getElementById('storiesSection').classList.remove('hidden');
+                            document.getElementById('storiesSection').classList.add('flex');
+                            renderStoriesGrid(data.stories);
+                        }
+                    }
+                });
+            <\/script>
+        </body>
+        </html>
+        `;
+
         document.addEventListener('DOMContentLoaded', () => {
             const today = new Date().toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' });
             document.getElementById('todayFormatted').innerText = today;
-            document.getElementById('footerYear').innerText = `© ${new Date().getFullYear()} Lontra. Todos os direitos reservados.`;
+            if(document.getElementById('footerYear')) {
+                document.getElementById('footerYear').innerText = `© ${new Date().getFullYear()} Lontra. Todos os direitos reservados.`;
+            }
             
             renderTributes();
             renderSongCategories();
             renderSongs();
+            renderAdvancedStoriesUI();
             startTypewriter();
             setupInputListeners();
             updateStepVisibility();
+            
+            document.getElementById('previewFrameDesktop').srcdoc = DEMO_HTML_CONTENT;
+            document.getElementById('previewFrameMobile').srcdoc = DEMO_HTML_CONTENT;
         });
 
-        // Efeito Máquina de Escrever - Lógica ajustada para prevenir quebra de layout
+        // LOADER E TRANSIÇÃO (Passo 2 pro 3)
+        function showFakeLoaderAndTransition() {
+            const loader = document.getElementById('loaderOverlay');
+            const loaderText = document.getElementById('loaderText');
+            const loaderSubText = document.getElementById('loaderSubText');
+            const loaderBar = document.getElementById('loaderBarContainer');
+            
+            loader.classList.remove('hidden');
+            loader.classList.add('flex');
+            
+            requestAnimationFrame(() => {
+                loader.classList.remove('opacity-0');
+                loader.classList.add('opacity-100');
+                loaderText.classList.remove('opacity-0', 'translate-y-4');
+                loaderText.classList.add('opacity-100', 'translate-y-0');
+                loaderSubText.classList.remove('opacity-0', 'translate-y-4');
+                loaderSubText.classList.add('opacity-100', 'translate-y-0');
+                loaderBar.classList.remove('opacity-0', 'translate-y-4');
+                loaderBar.classList.add('opacity-100', 'translate-y-0');
+            });
+
+            setTimeout(() => {
+                const quizArea = document.getElementById('quizArea');
+                const previewArea = document.getElementById('previewAreaDesktop');
+                const bottomBar = document.getElementById('bottomBar');
+                const mobileBtn = document.getElementById('mobilePreviewToggle');
+                
+                quizArea.classList.remove('lg:w-full');
+                quizArea.classList.add('lg:w-[50%]');
+                
+                bottomBar.classList.add('lg:left-1/4');
+                bottomBar.classList.remove('-translate-x-1/2');
+                bottomBar.classList.add('-translate-x-[50%]');
+
+                previewArea.classList.remove('w-0', 'lg:w-0', 'hidden');
+                previewArea.classList.add('lg:w-[50%]', 'flex');
+                setTimeout(() => previewArea.classList.remove('opacity-0'), 50);
+
+                mobileBtn.classList.remove('hidden');
+
+                syncPreview();
+
+                loader.classList.remove('opacity-100');
+                loader.classList.add('opacity-0');
+                loaderText.classList.add('opacity-0', 'translate-y-4');
+                loaderBar.classList.add('opacity-0', 'translate-y-4');
+                
+                setTimeout(() => {
+                    loader.classList.remove('flex');
+                    loader.classList.add('hidden');
+                    handleNext();
+                }, 700);
+
+            }, 2500);
+        }
+
+        function revertToCenterForPlans() {
+            const quizArea = document.getElementById('quizArea');
+            const previewArea = document.getElementById('previewAreaDesktop');
+            const bottomBar = document.getElementById('bottomBar');
+            const mobileBtn = document.getElementById('mobilePreviewToggle');
+            const avatarHeader = document.getElementById('avatarHeader');
+
+            // Animações de saída do preview
+            previewArea.classList.add('opacity-0');
+            mobileBtn.classList.add('hidden');
+            avatarHeader.classList.add('hidden'); // Oculta o avatar/texto superior para dar foco nos planos
+
+            setTimeout(() => {
+                previewArea.classList.remove('lg:w-[50%]', 'flex');
+                previewArea.classList.add('w-0', 'lg:w-0', 'hidden');
+                
+                quizArea.classList.remove('lg:w-[50%]');
+                quizArea.classList.add('lg:w-full');
+                
+                bottomBar.classList.remove('lg:left-1/4', '-translate-x-[50%]');
+                bottomBar.classList.add('-translate-x-1/2', 'left-1/2');
+
+                handleNext();
+            }, 500);
+        }
+
+        function syncPreview() {
+            if (currentStep < 2 && !answers.senderName) return; 
+            const frames = [document.getElementById('previewFrameDesktop'), document.getElementById('previewFrameMobile')];
+            frames.forEach(frame => {
+                if(frame && frame.contentWindow) {
+                    frame.contentWindow.postMessage({ type: 'LIVE_UPDATE', payload: answers }, '*');
+                }
+            });
+        }
+
+        function toggleMobilePreview() {
+            const modal = document.getElementById('mobilePreviewModal');
+            if (modal.classList.contains('hidden')) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                setTimeout(() => modal.classList.remove('opacity-0'), 10);
+            } else {
+                modal.classList.add('opacity-0');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                    modal.classList.remove('flex');
+                }, 300);
+            }
+        }
+
         function startTypewriter() {
             clearInterval(typewriterTimer);
-            const text = questions[currentStep];
+            const text = questions[currentStep] || "";
             const headerEl = document.getElementById('typewriterContainer');
             
+            if(text === "") {
+                headerEl.innerHTML = "";
+                return;
+            }
+
             isTyping = true;
             let i = 0;
-
             typewriterTimer = setInterval(() => {
                 if (i <= text.length) {
-                    // Separa o texto digitado do texto invisível.
-                    // O texto invisível ocupa exatamente o mesmo espaço, evitando que a caixa do texto mude de tamanho no meio do processo!
                     const visible = text.substring(0, i);
                     const hidden = text.substring(i);
                     headerEl.innerHTML = visible + '<span class="animate-pulse ml-0.5 text-[#a874e4]">|</span><span class="opacity-0">' + hidden + '</span>';
@@ -427,33 +1139,30 @@
                 } else {
                     isTyping = false;
                     clearInterval(typewriterTimer);
-                    headerEl.innerHTML = text; // Remove o cursor no final
+                    headerEl.innerHTML = text;
                 }
-            }, 40);
+            }, 30);
         }
 
-        // Navegação de Passos
         function handleNext(field, value) {
-            if (field) {
-                answers[field] = value;
-            }
-            if (currentStep < 7) {
+            if (field) { answers[field] = value; syncPreview(); }
+            if (currentStep < totalSteps) {
                 currentStep++;
                 updateStepVisibility();
-                // Inicia a animação apenas se não for o último passo
-                if (currentStep !== 7) {
-                    startTypewriter();
-                }
+                startTypewriter();
                 validateStep();
             }
         }
 
         function handleNextStep() {
-            // Limpa a animação de digitação ANTES de mudar de passo
             clearInterval(typewriterTimer);
             document.getElementById('typewriterContainer').innerHTML = '';
-
-            if (currentStep === 7) {
+            
+            if (currentStep === 2) {
+                showFakeLoaderAndTransition();
+            } else if (currentStep === 10) {
+                revertToCenterForPlans();
+            } else if (currentStep === totalSteps) {
                 finishQuizAndGoToGift();
             } else {
                 handleNext();
@@ -461,65 +1170,90 @@
         }
 
         document.getElementById('btnBack').addEventListener('click', () => {
-            // Limpa a animação de digitação ANTES de mudar de passo
             clearInterval(typewriterTimer);
             document.getElementById('typewriterContainer').innerHTML = '';
+            
+            if (currentStep === 11) {
+                // Voltar do plano (re-mostrar preview)
+                const quizArea = document.getElementById('quizArea');
+                const previewArea = document.getElementById('previewAreaDesktop');
+                const bottomBar = document.getElementById('bottomBar');
+                const mobileBtn = document.getElementById('mobilePreviewToggle');
+                const avatarHeader = document.getElementById('avatarHeader');
 
-            if (currentStep > 1) {
+                avatarHeader.classList.remove('hidden');
+                
+                quizArea.classList.remove('lg:w-full');
+                quizArea.classList.add('lg:w-[50%]');
+                
+                bottomBar.classList.remove('-translate-x-1/2', 'left-1/2');
+                bottomBar.classList.add('lg:left-1/4', '-translate-x-[50%]');
+
+                previewArea.classList.remove('w-0', 'lg:w-0', 'hidden');
+                previewArea.classList.add('lg:w-[50%]', 'flex');
+                
+                setTimeout(() => {
+                    previewArea.classList.remove('opacity-0');
+                    if(window.innerWidth < 1024) mobileBtn.classList.remove('hidden');
+                }, 50);
+
+                currentStep--;
+                updateStepVisibility();
+                startTypewriter();
+                validateStep();
+            } else if (currentStep > 1) {
                 currentStep--;
                 updateStepVisibility();
                 startTypewriter();
                 validateStep();
             } else {
-                // Redireciona se estiver na primeira página
                 window.location.href = 'https://lontraapp.vercel.app/';
             }
         });
 
-        // Validação
+        function selectPlan(plan) {
+            answers.plan = plan;
+            // A estilização é feita via peer-checked no HTML
+        }
+
         function validateStep() {
             let isValid = false;
             switch(currentStep) {
-                case 1: isValid = true; break;
+                case 1: isValid = answers.recipientType !== ''; break;
                 case 2: isValid = answers.senderName.trim() !== '' && answers.recipientName.trim() !== ''; break;
                 case 3: isValid = answers.meetDate !== ''; break;
                 case 4: isValid = answers.title.trim() !== ''; break;
                 case 5: isValid = answers.message.trim() !== ''; break;
                 case 6: isValid = answers.photoData.length > 0; break;
                 case 7: isValid = answers.song !== null; break;
+                case 8: isValid = answers.customSongTitle.trim() !== '' && answers.customSongArtist.trim() !== ''; break;
+                case 9: isValid = answers.specialMessage.trim() !== ''; break;
+                case 10: isValid = true; break;
+                case 11: isValid = answers.plan !== ''; break;
             }
-            
             document.getElementById('btnNext').disabled = !isValid;
         }
 
-        // Atualização da UI para Passos
         function updateStepVisibility() {
-            // Progresso
-            const progressPercentage = ((currentStep - 1) / 6) * 100;
+            const progressPercentage = ((currentStep - 1) / (totalSteps - 1)) * 100;
             document.getElementById('progressBar').style.width = `${progressPercentage}%`;
+            document.getElementById('btnBack').disabled = false;
 
-            // Botão Voltar
-            const btnBack = document.getElementById('btnBack');
-            btnBack.disabled = false;
-
-            // Barra inferior e Botão Continuar
             const bottomBar = document.getElementById('bottomBar');
-            if (currentStep > 1 && currentStep <= 7) {
+            if (currentStep > 1 && currentStep <= totalSteps) {
                 bottomBar.classList.remove('hidden');
-                document.getElementById('btnNextText').innerText = currentStep === 7 ? 'Finalizar' : 'Continuar';
+                document.getElementById('btnNextText').innerText = currentStep === totalSteps ? 'Finalizar Pagamento' : 'Continuar';
             } else {
                 bottomBar.classList.add('hidden');
             }
 
-            // Ocultar todos os passos e mostrar o atual com animação
-            for (let i = 1; i <= 7; i++) {
+            for (let i = 1; i <= totalSteps; i++) {
                 const stepEl = document.getElementById(`step-${i}`);
                 if (i === currentStep) {
                     stepEl.classList.remove('hidden');
-                    // Reiniciar animação
                     const container = document.getElementById('stepContainer');
                     container.classList.remove('animate-step');
-                    void container.offsetWidth; // trigger reflow
+                    void container.offsetWidth;
                     container.classList.add('animate-step');
                 } else {
                     stepEl.classList.add('hidden');
@@ -527,357 +1261,338 @@
             }
         }
 
-        // Lógica dos Inputs
+        // ====================== YOUTUBE API SEARCH INTEGRAÇÃO ======================
+        let searchTimeout = null;
+        const YOUTUBE_API_KEY = "AIzaSyAa4OinW4x3tH3ggR9078pUrTb_ukX3mWo";
+
+        function decodeHTMLEntities(text) {
+            const textArea = document.createElement('textarea');
+            textArea.innerHTML = text;
+            return textArea.value;
+        }
+
+        async function performYouTubeSearch(query) {
+            const container = document.getElementById('songsListContainer');
+            container.innerHTML = '<div class="flex justify-center py-4"><svg class="animate-spin h-6 w-6 text-[#a874e4]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg></div>';
+            
+            try {
+                const res = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=5&q=${encodeURIComponent(query)}&type=video&key=${YOUTUBE_API_KEY}`);
+                const data = await res.json();
+                
+                if (data.items && data.items.length > 0) {
+                    searchResults = data.items.map(item => ({
+                        id: item.id.videoId,
+                        title: decodeHTMLEntities(item.snippet.title),
+                        artist: decodeHTMLEntities(item.snippet.channelTitle),
+                        cover: item.snippet.thumbnails.high.url
+                    }));
+                } else {
+                    searchResults = [];
+                }
+                renderSongs();
+            } catch (err) {
+                console.error(err);
+                container.innerHTML = '<div class="text-center text-sm text-red-400 py-4">Erro ao buscar música. Tente novamente.</div>';
+            }
+        }
+
         function setupInputListeners() {
-            // Step 2
-            document.getElementById('inputSenderName').addEventListener('input', (e) => { answers.senderName = e.target.value; validateStep(); });
+            document.getElementById('inputSenderName').addEventListener('input', (e) => { answers.senderName = e.target.value; validateStep(); syncPreview(); });
             document.getElementById('inputRecipientName').addEventListener('input', (e) => { 
                 answers.recipientName = e.target.value; 
                 document.getElementById('inputMessage').placeholder = `Escreva algo especial para ${answers.recipientName || 'quem vai receber'}...`;
-                validateStep(); 
+                validateStep(); syncPreview();
+            });
+            document.getElementById('inputMeetDate').addEventListener('change', (e) => { answers.meetDate = e.target.value; validateStep(); calculateTime(); syncPreview(); });
+            document.getElementById('inputMeetTime').addEventListener('change', (e) => { answers.meetTime = e.target.value; syncPreview(); });
+            
+            document.getElementById('inputTitle').addEventListener('input', (e) => { answers.title = e.target.value; validateStep(); syncPreview(); });
+            document.getElementById('inputMessage').addEventListener('input', (e) => { answers.message = e.target.value; validateStep(); syncPreview(); });
+            
+            // Listeners de Busca do Youtube API
+            document.getElementById('inputSearchSong').addEventListener('input', (e) => { 
+                const query = e.target.value.trim();
+                clearTimeout(searchTimeout);
+                if(query.length > 2) {
+                    searchTimeout = setTimeout(() => { performYouTubeSearch(query); }, 600);
+                } else if (query.length === 0) {
+                    searchResults = [...mockSongs];
+                    renderSongs();
+                }
             });
 
-            // Step 3
-            document.getElementById('inputMeetDate').addEventListener('change', (e) => { answers.meetDate = e.target.value; validateStep(); calculateTime(); });
-            document.getElementById('inputMeetTime').addEventListener('change', (e) => { answers.meetTime = e.target.value; calculateTime(); });
-            document.getElementById('inputMeetCity').addEventListener('input', (e) => { answers.meetCity = e.target.value; });
+            // Custom Player Edit
+            document.getElementById('inputCustomSongTitle').addEventListener('input', (e) => { answers.customSongTitle = e.target.value; validateStep(); syncPreview(); });
+            document.getElementById('inputCustomSongArtist').addEventListener('input', (e) => { answers.customSongArtist = e.target.value; validateStep(); syncPreview(); });
 
-            // Step 4
-            const inputTitle = document.getElementById('inputTitle');
-            const titleLength = document.getElementById('titleLength');
-            inputTitle.addEventListener('input', (e) => { 
-                answers.title = e.target.value; 
-                titleLength.innerText = `${answers.title.length}/50`;
-                titleLength.className = `text-[11px] font-semibold ${answers.title.length === 50 ? 'text-red-400' : 'text-gray-400'}`;
-                validateStep(); 
-            });
+            document.getElementById('inputSpecialMessage').addEventListener('input', (e) => { answers.specialMessage = e.target.value; validateStep(); syncPreview(); });
 
-            // Step 5
-            const inputMessage = document.getElementById('inputMessage');
-            const messageLength = document.getElementById('messageLength');
-            inputMessage.addEventListener('input', (e) => { 
-                answers.message = e.target.value; 
-                messageLength.innerText = `${answers.message.length}/1000`;
-                messageLength.className = `text-[11px] font-semibold ${answers.message.length === 1000 ? 'text-red-400' : 'text-gray-400'}`;
-                validateStep(); 
-            });
-
-            // Step 7
-            document.getElementById('inputSearchSong').addEventListener('input', (e) => { searchQuery = e.target.value; });
-
-            // Inicializa contador
             clockTimerId = setInterval(calculateTime, 1000);
         }
 
-        // IA Generator
-        function generateAI(field) {
-            if (field === 'title') {
-                answers.title = "Nosso amor escrito nas estrelas ✨";
-                const el = document.getElementById('inputTitle');
-                el.value = answers.title;
-                el.dispatchEvent(new Event('input'));
-            } else if (field === 'message') {
-                answers.message = "Desde o dia em que nossos caminhos se cruzaram, cada segundo ao seu lado se tornou a minha memória favorita. Você é a minha paz, minha maior aventura e o meu lugar seguro. Te amo mais a cada novo amanhecer! 💜";
-                const el = document.getElementById('inputMessage');
-                el.value = answers.message;
-                el.dispatchEvent(new Event('input'));
-            }
-        }
-
-        // Contador de Tempo Juntos
         function calculateTime() {
             const timeContainer = document.getElementById('timeContainer');
-            if (!answers.meetDate) {
-                timeContainer.classList.add('hidden');
-                return;
-            }
-
+            if (!answers.meetDate) { timeContainer.classList.add('hidden'); return; }
             const start = new Date(`${answers.meetDate}T${answers.meetTime || '00:00'}:00`);
             const now = new Date();
-            
-            if (now < start) {
-                timeContainer.classList.add('hidden');
-                return;
-            }
-
+            if (now < start) { timeContainer.classList.add('hidden'); return; }
             let y = now.getFullYear() - start.getFullYear();
             let m = now.getMonth() - start.getMonth();
             let d = now.getDate() - start.getDate();
-            let h = now.getHours() - start.getHours();
-            let min = now.getMinutes() - start.getMinutes();
-            let s = now.getSeconds() - start.getSeconds();
-
-            if (s < 0) { s += 60; min--; }
-            if (min < 0) { min += 60; h--; }
-            if (h < 0) { h += 24; d--; }
-            if (d < 0) {
-                m--;
-                const prevMonth = new Date(now.getFullYear(), now.getMonth(), 0).getDate();
-                d += prevMonth;
-            }
-            if (m < 0) {
-                m += 12;
-                y--;
-            }
-
+            if (d < 0) { m--; d += new Date(now.getFullYear(), now.getMonth(), 0).getDate(); }
+            if (m < 0) { m += 12; y--; }
             document.getElementById('timeY').innerText = y;
             document.getElementById('timeM').innerText = m;
             document.getElementById('timeD').innerText = d;
-            document.getElementById('timeH').innerText = h;
-            document.getElementById('timeMin').innerText = min;
-            document.getElementById('timeS').innerText = s;
-            
             timeContainer.classList.remove('hidden');
         }
 
-        // Upload de Fotos
-        function triggerPhotoUpload() {
-            if (answers.photoData.length < 8) {
-                document.getElementById('fileInput').click();
+        // IA Generator Inteligente
+        function generateAI(field) {
+            const sender = answers.senderName || 'Mim';
+            const recipient = answers.recipientName || 'Você';
+
+            const titlePool = [
+                `Nosso amor escrito nas estrelas ✨`,
+                `Para sempre ${recipient} e ${sender} 💖`,
+                `A melhor parte de mim é você`,
+                `Nossa história de amor em detalhes`,
+                `Com amor, de ${sender} para ${recipient}`,
+                `O inicio de uma vida inteira juntos`
+            ];
+
+            const messagePool = [
+                `Desde o dia em que nossos caminhos se cruzaram, cada segundo ao seu lado se tornou a minha memória favorita. Você é a minha paz, minha maior aventura e o meu lugar seguro. Te amo mais a cada novo amanhecer, ${recipient}! 💜`,
+                `${recipient}, você trouxe cor e alegria para a minha vida de um jeito que eu não imaginava ser possível. Cada momento nosso é um tesouro que guardo no peito. Com todo meu amor, ${sender}.`,
+                `Quando penso na sorte que tenho, a primeira coisa que me vem à cabeça é você, ${recipient}. Obrigado por ser meu abrigo e minha maior razão de sorrir. Te amo daqui até a eternidade! ✨`,
+                `Não importa quanto tempo passe, meu coração sempre vai bater mais forte quando estou com você. Você é o meu maior presente da vida. Te amo infinito!`,
+                `E pensar que tudo começou com um simples olhar... Hoje, ${recipient}, não consigo imaginar um único dia sem você. Com amor e carinho, ${sender}. 💖`,
+                `A vida é muito mais doce desde que você chegou. Quero construir infinitas memórias ao seu lado e te fazer a pessoa mais feliz do mundo. Amo você! 🦦`
+            ];
+
+            const specialPool = [
+                `Eu guardei essa mensagem secreta aqui só para te lembrar do quanto você me faz feliz todos os dias. Você é incrível! 💖`,
+                `Shh... É um segredo, mas o ${sender} é completamente apaixonado(a) por você, ${recipient}! 🥰`,
+                `Ei, não espalha... Mas você é a melhor coisa que já me aconteceu! Te amo infinito. ✨`,
+                `${recipient}, se você está lendo isso, saiba que tem alguém pensando em você nesse exato segundo. Sim, sou eu! 💜`,
+                `Um pequeno segredo só nosso: eu te escolheria em todas as vidas que eu tivesse. Com carinho, ${sender}.`,
+                `Só pra deixar registrado escondidinho aqui: meu coração é todinho seu! 🔒❤️`
+            ];
+
+            if (field === 'title') {
+                const random = titlePool[Math.floor(Math.random() * titlePool.length)];
+                document.getElementById('inputTitle').value = random; 
+                document.getElementById('inputTitle').dispatchEvent(new Event('input'));
+            } else if (field === 'message') {
+                const random = messagePool[Math.floor(Math.random() * messagePool.length)];
+                document.getElementById('inputMessage').value = random; 
+                document.getElementById('inputMessage').dispatchEvent(new Event('input'));
+            } else if (field === 'specialMessage') {
+                const random = specialPool[Math.floor(Math.random() * specialPool.length)];
+                document.getElementById('inputSpecialMessage').value = random; 
+                document.getElementById('inputSpecialMessage').dispatchEvent(new Event('input'));
             }
         }
 
+        // UPLOAD CARDS (Timeline)
+        function triggerPhotoUpload() { if (answers.photoData.length < 8) document.getElementById('fileInput').click(); }
         function handlePhotoUpload(e) {
             const files = Array.from(e.target.files);
             if (files.length === 0) return;
-
-            const newPhotoObjects = files.map(file => ({
-                url: URL.createObjectURL(file),
-                file: file,
-                title: '',
-                description: ''
-            }));
-
-            answers.photoData = [...answers.photoData, ...newPhotoObjects].slice(0, 8);
-            
-            e.target.value = ''; // Reset
-            renderPhotos();
-            validateStep();
+            const newPhotos = files.map(file => ({ url: URL.createObjectURL(file), title: '', description: '' }));
+            answers.photoData = [...answers.photoData, ...newPhotos].slice(0, 8);
+            e.target.value = ''; renderPhotos(); validateStep(); syncPreview();
         }
-
-        function removePhoto(indexToRemove) {
-            answers.photoData = answers.photoData.filter((_, index) => index !== indexToRemove);
-            renderPhotos();
-            validateStep();
-        }
-
-        function updatePhotoMetadata(index, field, value) {
-            if (answers.photoData[index]) {
-                answers.photoData[index][field] = value;
-            }
-        }
-
+        function removePhoto(idx) { answers.photoData = answers.photoData.filter((_, i) => i !== idx); renderPhotos(); validateStep(); syncPreview(); }
+        function updatePhotoMetadata(idx, field, val) { if(answers.photoData[idx]){ answers.photoData[idx][field]=val; syncPreview(); } }
+        
         function renderPhotos() {
             const area = document.getElementById('photoUploadArea');
-            const title = document.getElementById('photoUploadTitle');
-            const subtitle = document.getElementById('photoUploadSubtitle');
             const grid = document.getElementById('photoGrid');
-
-            // Atualiza Botão Área
+            document.getElementById('photoUploadSubtitle').innerText = `${answers.photoData.length}/8 fotos selecionadas`;
             if (answers.photoData.length >= 8) {
                 area.className = "w-full border-2 border-dashed rounded-[24px] p-6 flex flex-col items-center justify-center gap-3 transition-all bg-gray-50 border-gray-200 cursor-not-allowed opacity-60";
-                title.innerText = 'Limite atingido';
+                document.getElementById('photoUploadTitle').innerText = 'Limite atingido';
             } else {
                 area.className = "w-full border-2 border-dashed rounded-[24px] p-6 flex flex-col items-center justify-center gap-3 transition-all bg-[#fdfaff] border-[#cba4f1] hover:bg-[#f8f5ff] hover:border-[#a874e4] cursor-pointer";
-                title.innerText = 'Toque para enviar fotos';
+                document.getElementById('photoUploadTitle').innerText = 'Toque para enviar fotos';
             }
-            subtitle.innerText = `${answers.photoData.length}/8 fotos selecionadas`;
-
-            // Atualiza Lista de Fotos
             if (answers.photoData.length > 0) {
                 grid.classList.remove('hidden');
-                grid.className = "flex flex-col gap-4 mt-4";
-                grid.innerHTML = answers.photoData.map((data, index) => `
-                    <div class="bg-white rounded-[20px] p-3 border-2 border-gray-100 shadow-sm animate-fade-up relative">
-                        <button onclick="removePhoto(${index})" class="absolute top-3 right-3 z-10 w-8 h-8 bg-white/90 backdrop-blur-sm text-gray-500 rounded-full flex items-center justify-center shadow-sm border border-gray-100 hover:bg-red-50 hover:text-red-500 transition-all">
-                            <i data-lucide="trash-2" class="w-4 h-4"></i>
-                        </button>
-
+                grid.innerHTML = answers.photoData.map((d, i) => `
+                    <div class="bg-white rounded-[20px] p-4 border-2 border-gray-100 shadow-sm relative">
+                        <button onclick="removePhoto(${i})" class="absolute top-3 right-3 z-10 w-8 h-8 bg-white/90 backdrop-blur-sm text-gray-500 rounded-full flex items-center justify-center shadow-sm border border-gray-100 hover:bg-red-50 hover:text-red-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                         <div class="flex gap-4">
-                            <div class="relative w-24 h-24 rounded-[16px] overflow-hidden shrink-0 border border-gray-100">
-                                <img src="${data.url}" alt="Foto ${index + 1}" class="w-full h-full object-cover" />
-                            </div>
-
+                            <div class="relative w-24 h-24 rounded-[16px] overflow-hidden shrink-0 border border-gray-100"><img src="${d.url}" class="w-full h-full object-cover" /></div>
                             <div class="flex-1 flex flex-col gap-2 pr-8">
-                                <input
-                                    type="text"
-                                    placeholder="Título da foto (opcional)"
-                                    value="${data.title}"
-                                    oninput="updatePhotoMetadata(${index}, 'title', this.value)"
-                                    class="w-full text-[14px] font-semibold text-[#5b4a78] bg-[#f8f5ff] border-2 border-[#f3e8ff] rounded-xl py-2 px-3 focus:outline-none focus:border-[#a874e4] transition-all placeholder:text-gray-300 placeholder:font-normal"
-                                />
-                                <textarea
-                                    rows="2"
-                                    placeholder="Escreva uma breve descrição..."
-                                    oninput="updatePhotoMetadata(${index}, 'description', this.value)"
-                                    class="w-full text-[13px] font-medium text-[#5b4a78] bg-[#f8f5ff] border-2 border-[#f3e8ff] rounded-xl py-2 px-3 focus:outline-none focus:border-[#a874e4] transition-all placeholder:text-gray-300 placeholder:font-normal resize-none leading-relaxed"
-                                >${data.description}</textarea>
+                                <input type="text" placeholder="Título (opcional)" value="${d.title}" oninput="updatePhotoMetadata(${i}, 'title', this.value)" class="w-full text-[14px] font-semibold text-[#5b4a78] bg-[#f8f5ff] border-2 border-[#f3e8ff] rounded-xl py-2 px-3 focus:outline-none focus:border-[#a874e4]" />
+                                <textarea rows="2" placeholder="Descrição..." oninput="updatePhotoMetadata(${i}, 'description', this.value)" class="w-full text-[13px] font-medium text-[#5b4a78] bg-[#f8f5ff] border-2 border-[#f3e8ff] rounded-xl py-2 px-3 focus:outline-none focus:border-[#a874e4] resize-none"></textarea>
                             </div>
                         </div>
+                    </div>`).join('');
+                lucide.createIcons();
+            } else { grid.classList.add('hidden'); grid.innerHTML = ''; }
+        }
+
+        // UPLOAD PLAYER PHOTOS
+        function handlePlayerPhotoUpload(e) {
+            const files = Array.from(e.target.files);
+            if(files.length === 0) return;
+            const newPhotos = files.map((file, i) => {
+                const cIdx = (answers.playerPhotos.length + i) % defaultColors.length;
+                return { url: URL.createObjectURL(file), color: defaultColors[cIdx] };
+            });
+            answers.playerPhotos = [...answers.playerPhotos, ...newPhotos].slice(0, 10);
+            e.target.value = '';
+            renderPlayerPhotos(); syncPreview();
+        }
+        function removePlayerPhoto(idx) { answers.playerPhotos = answers.playerPhotos.filter((_, i) => i !== idx); renderPlayerPhotos(); syncPreview(); }
+        function updatePlayerColor(idx, col) { if(answers.playerPhotos[idx]) { answers.playerPhotos[idx].color = col; syncPreview(); } }
+
+        function renderPlayerPhotos() {
+            const grid = document.getElementById('playerPhotoGrid');
+            if(answers.playerPhotos.length > 0) {
+                grid.innerHTML = answers.playerPhotos.map((p, i) => `
+                    <div class="bg-gray-50 rounded-xl p-3 border border-gray-100 flex items-center gap-3">
+                        <img src="${p.url}" class="w-12 h-12 rounded-lg object-cover">
+                        <div class="flex-1 flex items-center justify-between">
+                            <span class="text-[12px] font-semibold text-[#8a8a9e]">Cor de Fundo:</span>
+                            <input type="color" value="${p.color}" oninput="updatePlayerColor(${i}, this.value)" class="w-8 h-8 rounded-lg cursor-pointer bg-transparent border-0 outline-none">
+                        </div>
+                        <button onclick="removePlayerPhoto(${i})" class="w-8 h-8 flex items-center justify-center text-red-400 hover:bg-red-50 rounded-lg"><i data-lucide="trash" class="w-4 h-4"></i></button>
                     </div>
                 `).join('');
                 lucide.createIcons();
             } else {
-                grid.classList.add('hidden');
-                grid.innerHTML = '';
+                grid.innerHTML = `<div class="text-[12px] text-gray-400 italic text-center py-2">Usaremos a capa original da música caso nenhuma foto seja adicionada.</div>`;
             }
         }
 
-        // Renderizadores de Listas
-        function renderTributes() {
-            const container = document.getElementById('directTributesContainer');
-            container.innerHTML = directTributes.map(tribute => `
-                <button onclick="handleNext('recipientType', '${tribute.id}')" class="rounded-[16px] py-2.5 px-4 flex items-center gap-2.5 transition-all duration-150 active:translate-y-[3px] active:shadow-none border-2 border-gray-100 bg-white shadow-[0_3px_0_0_#f1f1f5] hover:border-[#a874e4] hover:bg-[#fdfaff] hover:shadow-[0_3px_0_0_#dcc3f5] group">
-                    <div class="p-1.5 rounded-lg bg-[#f8f5ff] group-hover:bg-[#f3e8ff] transition-colors">
-                        <i data-lucide="${tribute.icon}" class="w-4 h-4 text-[#cba4f1] group-hover:text-[#a874e4]"></i>
+        // STORIES AVANÇADOS
+        function renderAdvancedStoriesUI() {
+            const container = document.getElementById('storiesAdvancedContainer');
+            container.innerHTML = answers.stories.map((story, i) => `
+                <div class="bg-white border-2 border-gray-100 rounded-[20px] p-4 flex flex-col gap-4 shadow-sm hover:border-[#dcc3f5] transition-colors">
+                    <div class="flex items-center gap-2 border-b border-gray-100 pb-2">
+                        <i data-lucide="edit-3" class="w-4 h-4 text-[#a874e4]"></i>
+                        <input type="text" value="${story.title}" oninput="updateStoryMetadata('${story.id}', 'title', this.value)" class="font-bold text-[#4a4a5f] text-[15px] bg-transparent focus:outline-none flex-1" placeholder="Título">
                     </div>
-                    <span class="text-[14.5px] font-medium tracking-tight text-[#4a4a5f] group-hover:text-[#5b4a78] transition-colors">${tribute.label}</span>
-                </button>
-            `).join('');
+                    <div class="flex gap-4">
+                        <div class="flex flex-col items-center gap-1 w-20 shrink-0">
+                            <span class="text-[10px] font-bold uppercase text-[#8a8a9e]">Capa</span>
+                            <button onclick="document.getElementById('cover_${story.id}').click()" class="relative w-16 h-16 rounded-xl border-2 border-dashed border-[#cba4f1] bg-[#f8f5ff] flex items-center justify-center hover:border-[#a874e4] overflow-hidden">
+                                ${story.coverUrl ? `<img src="${story.coverUrl}" class="absolute inset-0 w-full h-full object-cover">` : `<i data-lucide="image" class="w-5 h-5 text-[#a874e4]"></i>`}
+                            </button>
+                            <input type="file" accept="image/*" class="hidden" id="cover_${story.id}" onchange="handleStoryCoverUpload(event, '${story.id}')">
+                        </div>
+                        <div class="flex flex-col gap-1 flex-1">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[10px] font-bold uppercase text-[#8a8a9e]">Fotos internas (${story.photos.length}/5)</span>
+                                ${story.photos.length < 5 ? `<button onclick="document.getElementById('photos_${story.id}').click()" class="text-[10px] font-bold text-[#a874e4] bg-[#f3e8ff] px-2 py-1 rounded-md hover:bg-[#dcc3f5]">+ Add</button>` : ''}
+                            </div>
+                            <input type="file" multiple accept="image/*" class="hidden" id="photos_${story.id}" onchange="handleStoryPhotosUpload(event, '${story.id}')">
+                            <div class="flex flex-wrap gap-2 mt-1">
+                                ${story.photos.map((pUrl, pIdx) => `
+                                    <div class="relative w-10 h-10 rounded-lg overflow-hidden border border-gray-200">
+                                        <img src="${pUrl}" class="w-full h-full object-cover"><button onclick="removeStoryPhoto('${story.id}', ${pIdx})" class="absolute top-0 right-0 w-4 h-4 bg-red-500/80 text-white flex items-center justify-center rounded-bl-md"><i data-lucide="x" class="w-2 h-2"></i></button>
+                                    </div>`).join('')}
+                                ${story.photos.length===0?`<div class="text-[11px] text-gray-400 italic py-2">Nenhuma foto adicionada.</div>`:''}
+                            </div>
+                        </div>
+                    </div>
+                </div>`).join('');
+            lucide.createIcons();
+        }
+
+        function updateStoryMetadata(id, field, value) { const s = answers.stories.find(x => x.id === id); if (s) { s[field] = value; syncPreview(); } }
+        function handleStoryCoverUpload(e, id) {
+            if(!e.target.files[0]) return;
+            updateStoryMetadata(id, 'coverUrl', URL.createObjectURL(e.target.files[0]));
+            renderAdvancedStoriesUI();
+        }
+        function handleStoryPhotosUpload(e, id) {
+            const s = answers.stories.find(x => x.id === id);
+            if(!s || e.target.files.length===0) return;
+            const newUrls = Array.from(e.target.files).map(f => URL.createObjectURL(f));
+            s.photos = [...s.photos, ...newUrls].slice(0, 5);
+            renderAdvancedStoriesUI(); syncPreview();
+        }
+        function removeStoryPhoto(sid, pIdx) {
+            const s = answers.stories.find(x => x.id === sid);
+            if(s) { s.photos = s.photos.filter((_,i)=>i!==pIdx); renderAdvancedStoriesUI(); syncPreview(); }
+        }
+
+        // TRIBUTOS E MÚSICAS
+        function renderTributes() {
+            document.getElementById('directTributesContainer').innerHTML = directTributes.map(t => `
+                <button onclick="handleNext('recipientType', '${t.id}')" class="rounded-[16px] py-2.5 px-4 flex items-center gap-2.5 transition-all border-2 border-gray-100 bg-white shadow-[0_3px_0_0_#f1f1f5] hover:border-[#a874e4] group">
+                    <div class="p-1.5 rounded-lg bg-[#f8f5ff] group-hover:bg-[#f3e8ff]"><i data-lucide="${t.icon}" class="w-4 h-4 text-[#cba4f1] group-hover:text-[#a874e4]"></i></div>
+                    <span class="text-[14.5px] font-medium text-[#4a4a5f] group-hover:text-[#5b4a78]">${t.label}</span>
+                </button>`).join('');
         }
 
         function renderSongCategories() {
-            const container = document.getElementById('songCategoriesContainer');
-            container.innerHTML = songCategories.map(cat => {
-                const isSelected = selectedCategory === cat;
-                const baseClass = isSelected 
-                    ? 'bg-[#a874e4] text-white shadow-sm' 
-                    : 'bg-white text-[#8a8a9e] border border-gray-200 hover:border-[#a874e4] hover:text-[#a874e4]';
-                
-                return `
-                    <button onclick="selectCategory('${cat}')" class="whitespace-nowrap px-4 py-2 rounded-full text-[13px] font-semibold transition-all border ${baseClass}">
-                        ${cat}
-                    </button>
-                `;
+            document.getElementById('songCategoriesContainer').innerHTML = songCategories.map(cat => {
+                const baseClass = (selectedCategory===cat) ? 'bg-[#a874e4] text-white shadow-sm' : 'bg-white text-[#8a8a9e] border border-gray-200 hover:border-[#a874e4] hover:text-[#a874e4]';
+                return `<button onclick="selectCategory('${cat}')" class="whitespace-nowrap px-4 py-2 rounded-full text-[13px] font-semibold transition-all border ${baseClass}">${cat}</button>`;
             }).join('');
         }
 
-        function selectCategory(cat) {
-            selectedCategory = selectedCategory === cat ? '' : cat;
-            renderSongCategories();
-        }
-
-        function selectSong(id) {
-            answers.song = mockSongs.find(s => s.id === id);
-            renderSongs();
-            validateStep();
-        }
-
-        function compressImageFile(file, maxDim, quality) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    const img = new Image();
-                    img.onload = () => {
-                        let { width, height } = img;
-                        if (width > height && width > maxDim) {
-                            height = Math.round(height * (maxDim / width));
-                            width = maxDim;
-                        } else if (height >= width && height > maxDim) {
-                            width = Math.round(width * (maxDim / height));
-                            height = maxDim;
-                        }
-                        const canvas = document.createElement('canvas');
-                        canvas.width = width;
-                        canvas.height = height;
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, width, height);
-                        resolve(canvas.toDataURL('image/jpeg', quality));
-                    };
-                    img.onerror = reject;
-                    img.src = e.target.result;
-                };
-                reader.onerror = reject;
-                reader.readAsDataURL(file);
-            });
-        }
-
-        async function finishQuizAndGoToGift() {
-            const btn = document.getElementById('btnNext');
-            const btnText = document.getElementById('btnNextText');
-            btn.disabled = true;
-            btnText.innerText = 'Preparando seu presente...';
-
-            const giftData = {
-                recipientType: answers.recipientType,
-                senderName: answers.senderName,
-                recipientName: answers.recipientName,
-                meetDate: answers.meetDate,
-                meetTime: answers.meetTime,
-                meetCity: answers.meetCity,
-                title: answers.title,
-                message: answers.message,
-                song: answers.song,
-                photos: [], 
-                createdAt: Date.now()
-            };
-
-            const attempts = [
-                { maxDim: 1280, quality: 0.82 },
-                { maxDim: 900, quality: 0.72 },
-                { maxDim: 600, quality: 0.6 }
-            ];
-
-            let saved = false;
-            for (let i = 0; i < attempts.length && !saved; i++) {
-                try {
-                    const compressedUrls = await Promise.all(
-                        answers.photoData.map(data => compressImageFile(data.file, attempts[i].maxDim, attempts[i].quality))
-                    );
-
-                    giftData.photos = answers.photoData.map((data, index) => ({
-                        url: compressedUrls[index], 
-                        title: data.title,
-                        description: data.description
-                    }));
-
-                    localStorage.setItem('lontra_gift_data', JSON.stringify(giftData));
-                    saved = true;
-                } catch (err) {
-                    saved = false;
-                    console.error('Erro ao salvar na tentativa ' + i, err);
-                }
+        function selectCategory(c) { 
+            selectedCategory = (selectedCategory===c)?'':c; 
+            renderSongCategories(); 
+            if(selectedCategory) {
+                document.getElementById('inputSearchSong').value = '';
+                performYouTubeSearch(selectedCategory + " música oficial");
+            } else {
+                document.getElementById('inputSearchSong').value = '';
+                searchResults = [...mockSongs];
+                renderSongs();
             }
-
-            if (!saved) {
-                try {
-                    giftData.photos = [];
-                    localStorage.setItem('lontra_gift_data', JSON.stringify(giftData));
-                } catch (err) {
-                    console.error('Não foi possível salvar os dados do presente:', err);
-                }
-            }
-
-            window.location.href = 'demo.html';
         }
 
         function renderSongs() {
             const container = document.getElementById('songsListContainer');
-            container.innerHTML = mockSongs.map(song => {
-                const isSelected = answers.song?.id === song.id;
-                const baseClass = isSelected 
-                    ? 'bg-[#f8f5ff] border-[#a874e4] shadow-[0_3px_0_0_#dcc3f5]' 
-                    : 'bg-white border-gray-100 hover:border-gray-200 shadow-[0_2px_0_0_#f1f1f5]';
-                const titleColor = isSelected ? 'text-[#a874e4]' : 'text-[#4a4a5f]';
-                const iconColor = isSelected ? 'text-[#a874e4]' : 'text-gray-300';
-                
+            if (searchResults.length === 0) {
+                container.innerHTML = '<div class="text-center text-sm text-gray-400 py-4">Nenhuma música encontrada.</div>';
+                return;
+            }
+
+            container.innerHTML = searchResults.map(s => {
+                const isSel = answers.song?.id === s.id;
+                const baseClass = isSel ? 'bg-[#f8f5ff] border-[#a874e4] shadow-[0_3px_0_0_#dcc3f5]' : 'bg-white border-gray-100 shadow-[0_2px_0_0_#f1f1f5] hover:border-gray-200';
                 return `
-                    <button onclick="selectSong(${song.id})" class="flex items-center gap-4 p-3 rounded-[20px] transition-all border-2 text-left ${baseClass}">
+                    <button onclick="selectSong('${s.id}')" class="flex items-center gap-4 p-3 rounded-[20px] transition-all border-2 text-left ${baseClass}">
                         <div class="relative w-12 h-12 rounded-xl overflow-hidden shrink-0 bg-gray-100">
-                            <img src="${song.cover}" alt="Capa" class="w-full h-full object-cover" />
-                            <div class="absolute inset-0 flex items-center justify-center bg-black/20 transition-opacity ${isSelected ? 'opacity-100' : 'opacity-0'}">
-                                ${isSelected ? '<i data-lucide="check-circle-2" class="w-6 h-6 text-white"></i>' : '<i data-lucide="play-circle" class="w-6 h-6 text-white"></i>'}
+                            <img src="${s.cover}" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 flex items-center justify-center bg-black/20 transition-opacity ${isSel?'opacity-100':'opacity-0'}">
+                                ${isSel?'<i data-lucide="check-circle-2" class="w-6 h-6 text-white"></i>':'<i data-lucide="play-circle" class="w-6 h-6 text-white"></i>'}
                             </div>
                         </div>
                         <div class="flex-1 overflow-hidden">
-                            <h4 class="font-semibold text-[15px] truncate ${titleColor}">${song.title}</h4>
-                            <p class="text-[12px] text-[#8a8a9e] truncate">${song.artist}</p>
+                            <h4 class="font-semibold text-[15px] truncate ${isSel?'text-[#a874e4]':'text-[#4a4a5f]'}">${s.title}</h4>
+                            <p class="text-[12px] text-[#8a8a9e] truncate">${s.artist}</p>
                         </div>
-                        <div class="mr-2"><i data-lucide="music" class="w-5 h-5 ${iconColor}"></i></div>
-                    </button>
-                `;
+                    </button>`;
             }).join('');
             lucide.createIcons();
+        }
+
+        function selectSong(id) { 
+            answers.song = searchResults.find(x => x.id === id) || answers.song; 
+            if (answers.song) {
+                answers.customSongTitle = answers.song.title;
+                answers.customSongArtist = answers.song.artist;
+                document.getElementById('inputCustomSongTitle').value = answers.customSongTitle;
+                document.getElementById('inputCustomSongArtist').value = answers.customSongArtist;
+            }
+            renderSongs(); validateStep(); syncPreview(); 
+        }
+
+        function finishQuizAndGoToGift() {
+            document.getElementById('btnNext').disabled = true;
+            document.getElementById('btnNextText').innerText = 'Processando...';
+            setTimeout(() => alert("Compra finalizada do plano: " + answers.plan), 1000);
         }
     </script>
 </body>
