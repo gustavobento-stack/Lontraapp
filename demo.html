@@ -1433,6 +1433,10 @@ function setupStories() {
     storyImage.addEventListener('pointercancel', resumeStory);
     storyImage.addEventListener('pointerleave', resumeStory);
 
+    // MUDANÇA: Previne o menu de contexto (salvar imagem) ao segurar o toque
+    storyImage.addEventListener('contextmenu', (e) => e.preventDefault());
+    modal.addEventListener('contextmenu', (e) => e.preventDefault());
+
     // Fecha o modal se clicar fora da imagem (no background escuro)
     modal.addEventListener('click', (e) => {
         if (e.target === modal) {
@@ -1447,41 +1451,8 @@ function setupStories() {
 function setupResetButton() {
     const resetBtn = document.getElementById('resetBtn');
     resetBtn.addEventListener('click', () => {
-        // Esconde o conteúdo principal e o botão
-        const main = document.getElementById('mainContent');
-        main.classList.add('hidden');
-        main.classList.remove('flex');
-        resetBtn.classList.add('opacity-0', 'pointer-events-none');
-        resetBtn.classList.remove('opacity-100');
-
-        // Pausa a música
-        audioEl.pause();
-        audioEl.currentTime = 0;
-
-        // Reseta o portão de revelação para o estado inicial
-        const gate = document.getElementById('revealGate');
-        const loading = document.getElementById('loadingState');
-        const ready = document.getElementById('readyState');
-        const btn = document.getElementById('revealBtn');
-        const textEl = document.getElementById('revealBtnText');
-        const coin = document.getElementById('revealCoin');
-
-        gate.style.display = '';
-        gate.style.opacity = '';
-        gate.style.pointerEvents = '';
-
-        loading.classList.add('opacity-100', 'scale-100');
-        loading.classList.remove('opacity-0', 'scale-90', 'pointer-events-none');
-        
-        ready.classList.add('opacity-0', 'translate-y-8', 'pointer-events-none');
-        ready.classList.remove('opacity-100', 'translate-y-0');
-
-        btn.classList.remove('impacting');
-        textEl.innerText = 'Revelar Surpresa';
-        coin.style.transform = '';
-
-        // Reinicia a sequência de animação do portão
-        setupRevealGate();
+        // MUDANÇA: Simplificado para recarregar a página, como o link do rodapé
+        window.location.href = 'index.html';
     });
 }
 
