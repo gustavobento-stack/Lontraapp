@@ -1045,11 +1045,13 @@
                 bottomBar.classList.remove('-translate-x-1/2');
                 bottomBar.classList.add('-translate-x-[50%]');
 
+                // REMOVIDO as classes de ocultação e adicionado a flexibilidade para o desktop
                 previewArea.classList.remove('w-0', 'lg:w-0', 'hidden');
                 previewArea.classList.add('lg:w-[50%]', 'flex');
                 setTimeout(() => previewArea.classList.remove('opacity-0'), 50);
 
-                mobileBtn.classList.remove('hidden');
+                // Só mostra o botão mobile se estiver num layout móvel
+                if(window.innerWidth < 1024) mobileBtn.classList.remove('hidden');
 
                 syncPreview();
 
