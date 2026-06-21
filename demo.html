@@ -229,6 +229,21 @@
     #storyModal {
         touch-action: none; /* Evita rolagem no mobile */
     }
+
+    /* ---------- Estilos para a Barra de Progresso dos Stories Múltiplos ---------- */
+    .story-progress-segment {
+        flex: 1;
+        background-color: rgba(156, 163, 175, 0.5); /* bg-gray-600/50 */
+        border-radius: 9999px; /* rounded-full */
+        overflow: hidden;
+        height: 100%;
+    }
+    .story-progress-fill {
+        height: 100%;
+        background-color: white;
+        width: 0%;
+        transition: width 0.1s linear; /* Transição suave */
+    }
 </style>
 </head>
 <body class="antialiased overflow-x-hidden relative">
@@ -276,6 +291,11 @@
 
     <!-- ===================== CONTEÚDO PRINCIPAL ===================== -->
     <main id="mainContent" class="hidden min-h-screen flex-col items-center pb-12 w-full max-w-md mx-auto px-5 pt-12 gap-6 relative z-10">
+
+        <!-- MUDANÇA: Botão de Reset (X) para voltar ao início -->
+        <button id="resetBtn" class="absolute top-4 left-4 p-2 bg-white/80 backdrop-blur-sm rounded-full text-[#a874e4] shadow-sm opacity-0 transition-opacity duration-700 z-50 pointer-events-none" type="button">
+            <i data-lucide="x" class="w-6 h-6"></i>
+        </button>
 
         <!-- Mascote/Logo -->
         <div class="flex justify-center mb-2 fade-up delay-1">
@@ -530,26 +550,25 @@
                 <i data-lucide="more-horizontal" class="w-6 h-6"></i>
             </button>
         </div>
-        <!-- Barra de Progresso (opcional, mas dá o toque de story) -->
-        <div class="absolute top-14 left-0 right-0 h-1 bg-gray-600">
-            <div id="storyProgressBar" class="h-full bg-white w-0 transition-all duration-[5000ms] ease-linear"></div>
-        </div>
+        <!-- Barra de Progresso Múltipla (Segmentada) -->
+        <!-- MUDANÇA: Substituída a barra única por um container de segmentos -->
+        <div id="storyProgressContainer" class="absolute top-14 left-0 right-0 h-1 flex gap-1 px-1"></div>
+        
         <!-- Imagem do Story -->
-        <div class="flex-1 flex items-center justify-center">
-            <img id="storyImage" src="" alt="Story" class="max-h-full max-w-full object-contain">
+        <!-- MUDANÇA: Adicionado pointer-events-auto para receber os eventos de toque -->
+        <div class="flex-1 flex items-center justify-center pointer-events-auto">
+            <img id="storyImage" src="" alt="Story" class="max-h-full max-w-full object-contain select-none">
         </div>
-        <!-- Rodapé do Story (opcional, como no exemplo) -->
-        <div class="p-4 text-white flex items-center gap-3 absolute bottom-0 left-0 right-0 z-10 bg-gradient-to-t from-black/60 to-transparent">
+        <!-- Rodapé do Story -->
+        <div class="p-4 text-white flex items-center gap-3 absolute bottom-0 left-0 right-0 z-10 bg-gradient-to-t from-black/60 to-transparent pointer-events-none">
             <div class="w-10 h-10 rounded-lg overflow-hidden">
                 <img id="storySmallImage" src="" alt="Small" class="w-full h-full object-cover">
             </div>
             <div class="flex flex-col">
                 <span id="storyFooterTitle" class="font-bold text-sm">Título</span>
-                <span class="text-xs opacity-80">3 anos juntos</span>
+                <span class="text-xs opacity-80">Momento Especial</span>
             </div>
-            <div class="ml-auto">
-                <i data-lucide="check-circle" class="w-6 h-6 text-white/80"></i>
-            </div>
+            <!-- MUDANÇA: Removido o ícone de check -->
         </div>
     </div>
 
@@ -1172,6 +1191,13 @@ function revealMainContent() {
     // Navegadores podem bloquear o autoplay se não houver interação prévia suficiente.
     // O clique no botão de revelar geralmente é suficiente.
     audioEl.play().catch(e => console.log("Autoplay bloqueado pelo navegador:", e));
+
+    // MUDANÇA: Mostra o botão de reset após um pequeno delay para coincidir com as animações de entrada
+    setTimeout(() => {
+        const resetBtn = document.getElementById('resetBtn');
+        resetBtn.classList.remove('opacity-0', 'pointer-events-none');
+        resetBtn.classList.add('opacity-100');
+    }, 800);
 }
 
 /* ============================================================
@@ -1226,9 +1252,15 @@ function setupDesktopPolaroids() {
 }
 
 /* ============================================================
-   11) STORIES FUNCIONALIDADE (MUDANÇA: Agora usa as fotos dos cards principais)
+   11) STORIES FUNCIONALIDADE (MÚLTIPLAS FOTOS, NAVEGAÇÃO E PAUSA)
    ============================================================ */
-let storyTimeout;
+let storyTimer = null;
+let currentStoryPhotos = [];
+let currentStoryIndex = 0;
+let isPaused = false;
+let progressFills = [];
+// MUDANÇA: Removida a flag isHolding, usando timestamp agora
+let touchStartTime = 0;
 
 function setupStories() {
     const modal = document.getElementById('storyModal');
@@ -1237,71 +1269,219 @@ function setupStories() {
     const storyTitle = document.getElementById('storyTitle');
     const storyFooterTitle = document.getElementById('storyFooterTitle');
     const storySmallImage = document.getElementById('storySmallImage');
-    const progressBar = document.getElementById('storyProgressBar');
+    const progressContainer = document.getElementById('storyProgressContainer');
 
-    document.querySelectorAll('.story-card').forEach(card => {
-        card.addEventListener('click', () => {
-            if (cards.length === 0) return;
+    function openStory(storyType, clickedCard) {
+        if (cards.length === 0) return;
 
-            const storyType = card.dataset.story;
-            let cardData;
+        // Lógica para selecionar múltiplas fotos com base no tipo de story
+        switch(storyType) {
+            case 'dates':
+                currentStoryPhotos = cards.slice(0, Math.min(3, cards.length));
+                break;
+            case 'random':
+                const start = Math.min(3, cards.length);
+                const end = Math.min(6, cards.length);
+                currentStoryPhotos = cards.slice(start, end);
+                // Se não houver fotos suficientes, pega as últimas disponíveis
+                if (currentStoryPhotos.length === 0 && cards.length > 0) {
+                     currentStoryPhotos = cards.slice(-Math.min(3, cards.length));
+                }
+                break;
+            case 'trip':
+                currentStoryPhotos = cards.slice(Math.min(6, cards.length));
+                // Se não houver fotos suficientes, pega as últimas disponíveis
+                if (currentStoryPhotos.length === 0 && cards.length > 0) {
+                    currentStoryPhotos = cards.slice(-Math.min(3, cards.length));
+                }
+                break;
+            default:
+                currentStoryPhotos = cards.slice(0, 1);
+        }
 
-            // Mapeia o tipo de story para um card específico do array principal 'cards'
-            switch(storyType) {
-                case 'dates':
-                    cardData = cards[0]; // Primeira foto
-                    break;
-                case 'random':
-                    cardData = cards[Math.min(2, cards.length - 1)]; // Terceira foto (ou a última se houver menos)
-                    break;
-                case 'trip':
-                    cardData = cards[cards.length - 1]; // Última foto
-                    break;
-                default:
-                    cardData = cards[0];
-            }
+        if (currentStoryPhotos.length === 0) return;
 
-            if (!cardData) return;
-
-            // Usa os dados do card principal para preencher o modal do story
-            storyImage.src = cardData.imageUrl;
-            
-            // Pega o título da seção do próprio card clicado
-            const sectionTitle = card.querySelector('p.absolute.bottom-3').innerText;
-            storyTitle.innerText = sectionTitle;
-            storyFooterTitle.innerText = sectionTitle; // Título no rodapé
-            storySmallImage.src = cardData.imageUrl; // Usa a mesma imagem para o rodapé
-
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            document.body.style.overflow = 'hidden'; // Impede rolagem da página de fundo
-
-            // Reseta e inicia a barra de progresso
-            progressBar.style.width = '0%';
-            // Força um reflow para a transição funcionar
-            void progressBar.offsetWidth; 
-            progressBar.style.width = '100%';
-
-            clearTimeout(storyTimeout);
-            storyTimeout = setTimeout(() => {
-                closeStory();
-            }, 5000); // Fecha após 5 segundos
+        // Configura o título e a barra de progresso
+        const sectionTitle = clickedCard.querySelector('p.absolute.bottom-3').innerText;
+        storyTitle.innerText = sectionTitle;
+        
+        // Cria os segmentos da barra de progresso
+        progressContainer.innerHTML = '';
+        progressFills = [];
+        currentStoryPhotos.forEach(() => {
+            const segment = document.createElement('div');
+            segment.className = 'story-progress-segment';
+            const fill = document.createElement('div');
+            fill.className = 'story-progress-fill';
+            segment.appendChild(fill);
+            progressContainer.appendChild(segment);
+            progressFills.push(fill);
         });
-    });
+
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+
+        showStoryPhoto(0);
+    }
+
+    function showStoryPhoto(index) {
+        if (index < 0 || index >= currentStoryPhotos.length) {
+            closeStory();
+            return;
+        }
+        currentStoryIndex = index;
+        const photoData = currentStoryPhotos[index];
+
+        storyImage.src = photoData.imageUrl;
+        storyFooterTitle.innerText = photoData.title || 'Momento Especial';
+        storySmallImage.src = photoData.imageUrl;
+
+        // Atualiza as barras de progresso
+        progressFills.forEach((fill, i) => {
+            fill.style.transition = 'none'; // Reseta transição
+            fill.style.width = i < index ? '100%' : '0%';
+        });
+
+        // Força reflow para a nova transição funcionar
+        void progressFills[index].offsetWidth;
+
+        if (!isPaused) {
+            startStoryTimer();
+        }
+    }
+
+    function startStoryTimer() {
+        clearTimeout(storyTimer);
+        const currentFill = progressFills[currentStoryIndex];
+        currentFill.style.transition = 'width 5s linear';
+        currentFill.style.width = '100%';
+
+        storyTimer = setTimeout(() => {
+            nextStoryPhoto();
+        }, 5000);
+    }
+
+    function nextStoryPhoto() {
+        showStoryPhoto(currentStoryIndex + 1);
+    }
+
+    function prevStoryPhoto() {
+        showStoryPhoto(currentStoryIndex - 1);
+    }
 
     function closeStory() {
         modal.classList.add('hidden');
         modal.classList.remove('flex');
-        document.body.style.overflow = ''; // Restaura a rolagem
-        clearTimeout(storyTimeout);
-        progressBar.style.width = '0%';
+        document.body.style.overflow = '';
+        clearTimeout(storyTimer);
+        currentStoryPhotos = [];
+        currentStoryIndex = 0;
+        isPaused = false;
     }
 
+    // Event Listeners para os cards de story
+    document.querySelectorAll('.story-card').forEach(card => {
+        card.addEventListener('click', () => openStory(card.dataset.story, card));
+    });
+
+    // Event Listeners para o modal
     closeBtn.addEventListener('click', closeStory);
+    
+    // MUDANÇA: Lógica de pausa/navegação baseada em tempo de toque (timestamp)
+    const pauseStory = (e) => {
+        if (e.cancelable) e.preventDefault();
+        if (isPaused) return;
+        isPaused = true;
+        touchStartTime = Date.now(); // Registra o tempo inicial do toque
+        clearTimeout(storyTimer);
+        
+        // Para a animação da barra de progresso no ponto atual
+        const currentFill = progressFills[currentStoryIndex];
+        const computedStyle = window.getComputedStyle(currentFill);
+        const width = computedStyle.getPropertyValue('width');
+        currentFill.style.transition = 'none';
+        currentFill.style.width = width;
+    };
+
+    const resumeStory = (e) => {
+        if (!isPaused) return;
+        
+        // Retoma a animação
+        isPaused = false;
+        // Retoma a partir do ponto atual. Reinicia o timer para a foto atual.
+        progressFills[currentStoryIndex].style.width = '0%';
+        void progressFills[currentStoryIndex].offsetWidth;
+        startStoryTimer();
+
+        // Verifica se foi um toque rápido (menos de 200ms) para navegar
+        const touchDuration = Date.now() - touchStartTime;
+        if (touchDuration < 200 && e.type !== 'pointerleave' && e.type !== 'pointercancel') {
+            const rect = storyImage.getBoundingClientRect();
+            const x = (e.clientX || e.changedTouches[0].clientX) - rect.left;
+            if (x < rect.width / 2) {
+                prevStoryPhoto();
+            } else {
+                nextStoryPhoto();
+            }
+        }
+    };
+
+    // Usa pointer events para cobrir tanto mouse quanto toque
+    storyImage.addEventListener('pointerdown', pauseStory);
+    storyImage.addEventListener('pointerup', resumeStory);
+    storyImage.addEventListener('pointercancel', resumeStory);
+    storyImage.addEventListener('pointerleave', resumeStory);
+
+    // Fecha o modal se clicar fora da imagem (no background escuro)
     modal.addEventListener('click', (e) => {
-        if (e.target === modal || e.target === storyImage) {
+        if (e.target === modal) {
             closeStory();
         }
+    });
+}
+
+/* ============================================================
+   12) FUNCIONALIDADE DO BOTÃO DE RESET (VOLTAR AO INÍCIO)
+   ============================================================ */
+function setupResetButton() {
+    const resetBtn = document.getElementById('resetBtn');
+    resetBtn.addEventListener('click', () => {
+        // Esconde o conteúdo principal e o botão
+        const main = document.getElementById('mainContent');
+        main.classList.add('hidden');
+        main.classList.remove('flex');
+        resetBtn.classList.add('opacity-0', 'pointer-events-none');
+        resetBtn.classList.remove('opacity-100');
+
+        // Pausa a música
+        audioEl.pause();
+        audioEl.currentTime = 0;
+
+        // Reseta o portão de revelação para o estado inicial
+        const gate = document.getElementById('revealGate');
+        const loading = document.getElementById('loadingState');
+        const ready = document.getElementById('readyState');
+        const btn = document.getElementById('revealBtn');
+        const textEl = document.getElementById('revealBtnText');
+        const coin = document.getElementById('revealCoin');
+
+        gate.style.display = '';
+        gate.style.opacity = '';
+        gate.style.pointerEvents = '';
+
+        loading.classList.add('opacity-100', 'scale-100');
+        loading.classList.remove('opacity-0', 'scale-90', 'pointer-events-none');
+        
+        ready.classList.add('opacity-0', 'translate-y-8', 'pointer-events-none');
+        ready.classList.remove('opacity-100', 'translate-y-0');
+
+        btn.classList.remove('impacting');
+        textEl.innerText = 'Revelar Surpresa';
+        coin.style.transform = '';
+
+        // Reinicia a sequência de animação do portão
+        setupRevealGate();
     });
 }
 
@@ -1321,6 +1501,8 @@ document.addEventListener('DOMContentLoaded', () => {
     setupStories(); // Inicializa a funcionalidade de stories
     document.getElementById('qrBtn').addEventListener('click', handleDownloadQR);
     setupRevealGate();
+    // MUDANÇA: Inicializa o botão de reset
+    setupResetButton();
 });
 </script>
 </body>
