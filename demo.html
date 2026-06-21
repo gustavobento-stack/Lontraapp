@@ -44,6 +44,17 @@
     .delay-10 { animation-delay: 1.0s; }
     .delay-11 { animation-delay: 1.1s; }
 
+    /* NOVA ANIMAÇÃO ESPECÍFICA PARA OS DÍGITOS DO CONTADOR */
+    @keyframes fadeUpDigit {
+        0% { opacity: 0; transform: translateY(8px); }
+        100% { opacity: 1; transform: translateY(0); }
+    }
+    .digit-animate {
+        /* Usa uma curva bezier mais suave para um efeito elástico sutil */
+        animation: fadeUpDigit 0.4s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+        display: inline-block; /* Necessário para que 'transform' funcione corretamente em spans */
+    }
+
     /* ---------- Botão "Revelar Surpresa" (moeda 3D) ---------- */
     .myFlipBtn {
         display: flex; align-items: center; justify-content: center;
@@ -288,27 +299,28 @@
             <h3 class="text-[11px] font-bold text-[#5b4a78] uppercase tracking-widest mb-4">Compartilhando momentos há</h3>
             <div class="flex justify-between w-full gap-1.5">
                 <div class="flex flex-col items-center bg-[#f8f5ff] py-2 px-1 rounded-xl border border-[#dcc3f5]/50 flex-1">
-                    <span class="text-base font-black text-[#a874e4] leading-none mb-1" id="cYears">00</span>
+                    <!-- MUDANÇA: Adicionada a classe digit-animate para permitir a animação -->
+                    <span class="text-base font-black text-[#a874e4] leading-none mb-1 digit-animate" id="cYears">00</span>
                     <span class="text-[8px] font-bold text-[#8a8a9e] uppercase">Anos</span>
                 </div>
                 <div class="flex flex-col items-center bg-[#f8f5ff] py-2 px-1 rounded-xl border border-[#dcc3f5]/50 flex-1">
-                    <span class="text-base font-black text-[#a874e4] leading-none mb-1" id="cMonths">00</span>
+                    <span class="text-base font-black text-[#a874e4] leading-none mb-1 digit-animate" id="cMonths">00</span>
                     <span class="text-[8px] font-bold text-[#8a8a9e] uppercase">Meses</span>
                 </div>
                 <div class="flex flex-col items-center bg-[#f8f5ff] py-2 px-1 rounded-xl border border-[#dcc3f5]/50 flex-1">
-                    <span class="text-base font-black text-[#a874e4] leading-none mb-1" id="cDays">00</span>
+                    <span class="text-base font-black text-[#a874e4] leading-none mb-1 digit-animate" id="cDays">00</span>
                     <span class="text-[8px] font-bold text-[#8a8a9e] uppercase">Dias</span>
                 </div>
                 <div class="flex flex-col items-center bg-[#f8f5ff] py-2 px-1 rounded-xl border border-[#dcc3f5]/50 flex-1">
-                    <span class="text-base font-black text-[#a874e4] leading-none mb-1" id="cHours">00</span>
+                    <span class="text-base font-black text-[#a874e4] leading-none mb-1 digit-animate" id="cHours">00</span>
                     <span class="text-[8px] font-bold text-[#8a8a9e] uppercase">Horas</span>
                 </div>
                 <div class="flex flex-col items-center bg-[#f8f5ff] py-2 px-1 rounded-xl border border-[#dcc3f5]/50 flex-1">
-                    <span class="text-base font-black text-[#a874e4] leading-none mb-1" id="cMinutes">00</span>
+                    <span class="text-base font-black text-[#a874e4] leading-none mb-1 digit-animate" id="cMinutes">00</span>
                     <span class="text-[8px] font-bold text-[#8a8a9e] uppercase">Min</span>
                 </div>
                 <div class="flex flex-col items-center bg-[#f8f5ff] py-2 px-1 rounded-xl border border-[#dcc3f5]/50 flex-1">
-                    <span class="text-base font-black text-[#a874e4] leading-none mb-1" id="cSeconds">00</span>
+                    <span class="text-base font-black text-[#a874e4] leading-none mb-1 digit-animate" id="cSeconds">00</span>
                     <span class="text-[8px] font-bold text-[#8a8a9e] uppercase">Seg</span>
                 </div>
             </div>
@@ -655,17 +667,37 @@ function computeElapsed(start) {
     return { y, m, d, h, min, s };
 }
 
+// NOVA FUNÇÃO HELPER PARA ANIMAR OS DÍGITOS INDIVIDUALMENTE
+function updateCounterDigit(id, value) {
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    const newValueStr = String(value).padStart(2, '0');
+    // Verifica se o valor mudou antes de atualizar e animar
+    if (el.innerText !== newValueStr) {
+        // Remove a classe para resetar a animação
+        el.classList.remove('digit-animate');
+        // Força um "reflow" para que o navegador perceba a remoção da classe
+        void el.offsetWidth;
+        // Atualiza o texto e readiciona a classe para iniciar a animação
+        el.innerText = newValueStr;
+        el.classList.add('digit-animate');
+    }
+}
+
 function renderCounter() {
     const el = computeElapsed(START_DATE);
     const card = document.getElementById('counterCard');
     if (!el) { card.classList.add('hidden'); return; }
     card.classList.remove('hidden');
-    document.getElementById('cYears').innerText = String(el.y).padStart(2, '0');
-    document.getElementById('cMonths').innerText = String(el.m).padStart(2, '0');
-    document.getElementById('cDays').innerText = String(el.d).padStart(2, '0');
-    document.getElementById('cHours').innerText = String(el.h).padStart(2, '0');
-    document.getElementById('cMinutes').innerText = String(el.min).padStart(2, '0');
-    document.getElementById('cSeconds').innerText = String(el.s).padStart(2, '0');
+
+    // Atualiza cada dígito usando a função helper com animação
+    updateCounterDigit('cYears', el.y);
+    updateCounterDigit('cMonths', el.m);
+    updateCounterDigit('cDays', el.d);
+    updateCounterDigit('cHours', el.h);
+    updateCounterDigit('cMinutes', el.min);
+    updateCounterDigit('cSeconds', el.s);
 }
 
 /* ============================================================
