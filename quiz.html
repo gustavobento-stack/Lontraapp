@@ -1042,12 +1042,12 @@
                 quizArea.classList.add('lg:w-[50%]');
                 
                 bottomBar.classList.add('lg:left-1/4');
-                bottomBar.classList.remove('-translate-x-1/2');
-                bottomBar.classList.add('-translate-x-[50%]');
-
-                // REMOVIDO as classes de ocultação e adicionado a flexibilidade para o desktop
-                previewArea.classList.remove('w-0', 'lg:w-0', 'hidden');
-                previewArea.classList.add('lg:w-[50%]', 'flex');
+                
+                // MUDANÇA: Apenas remover as larguras limitadoras e permitir o tamanho via Tailwind
+                // O 'hidden lg:flex' original se encarregará de NÃO aparecer no mobile!
+                previewArea.classList.remove('w-0', 'lg:w-0');
+                previewArea.classList.add('lg:w-[50%]');
+                
                 setTimeout(() => previewArea.classList.remove('opacity-0'), 50);
 
                 // Só mostra o botão mobile se estiver num layout móvel
@@ -1082,14 +1082,14 @@
             avatarHeader.classList.add('hidden'); // Oculta o avatar/texto superior para dar foco nos planos
 
             setTimeout(() => {
-                previewArea.classList.remove('lg:w-[50%]', 'flex');
-                previewArea.classList.add('w-0', 'lg:w-0', 'hidden');
+                // MUDANÇA: Remove o lg:w-[50%] e volta a forçar 0 de largura
+                previewArea.classList.remove('lg:w-[50%]');
+                previewArea.classList.add('w-0', 'lg:w-0');
                 
                 quizArea.classList.remove('lg:w-[50%]');
                 quizArea.classList.add('lg:w-full');
                 
-                bottomBar.classList.remove('lg:left-1/4', '-translate-x-[50%]');
-                bottomBar.classList.add('-translate-x-1/2', 'left-1/2');
+                bottomBar.classList.remove('lg:left-1/4');
 
                 handleNext();
             }, 500);
@@ -1188,11 +1188,10 @@
                 quizArea.classList.remove('lg:w-full');
                 quizArea.classList.add('lg:w-[50%]');
                 
-                bottomBar.classList.remove('-translate-x-1/2', 'left-1/2');
-                bottomBar.classList.add('lg:left-1/4', '-translate-x-[50%]');
+                bottomBar.classList.add('lg:left-1/4');
 
-                previewArea.classList.remove('w-0', 'lg:w-0', 'hidden');
-                previewArea.classList.add('lg:w-[50%]', 'flex');
+                previewArea.classList.remove('w-0', 'lg:w-0');
+                previewArea.classList.add('lg:w-[50%]');
                 
                 setTimeout(() => {
                     previewArea.classList.remove('opacity-0');
