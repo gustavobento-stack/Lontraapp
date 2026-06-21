@@ -42,6 +42,7 @@
     .delay-8 { animation-delay: .80s; }
     .delay-9 { animation-delay: .90s; }
     .delay-10 { animation-delay: 1.0s; }
+    .delay-11 { animation-delay: 1.1s; }
 
     /* ---------- Botão "Revelar Surpresa" (moeda 3D) ---------- */
     .myFlipBtn {
@@ -206,6 +207,17 @@
         opacity: 1;
     }
 
+    /* ---------- Estilos para os Cards de Story ---------- */
+    .story-card {
+        transition: transform 0.2s ease;
+    }
+    .story-card:hover {
+        transform: scale(1.05);
+    }
+    /* Oculta a barra de rolagem no modal */
+    #storyModal {
+        touch-action: none; /* Evita rolagem no mobile */
+    }
 </style>
 </head>
 <body class="antialiased overflow-x-hidden relative">
@@ -410,8 +422,34 @@
             </button>
         </div>
 
-        <!-- Card Final VIP (Delay ajustado para 9) -->
-        <div class="fade-up delay-9 w-full bg-white border-2 border-[#dcc3f5] rounded-[32px] p-5 md:p-6 flex flex-col gap-6 mt-6 shadow-[0_8px_0_0_#f8f5ff]">
+        <!-- SEÇÃO DE STORIES (MOVIDA, RENOMEADA E COM ID) -->
+        <div id="storiesSection" class="fade-up delay-9 w-full bg-[#2c2c2c] rounded-[24px] p-5 flex flex-col gap-4 text-white shadow-[0_4px_0_0_rgba(0,0,0,0.1)] mt-3 transition-colors duration-500">
+            <h3 class="text-lg font-bold">Conheça Gustavo e Gabrielle</h3>
+            <div class="grid grid-cols-3 gap-3">
+                <!-- Card 1: Nossos Dates -->
+                <!-- MUDANÇA: src das imagens agora são controlados por JS -->
+                <div class="story-card relative h-48 rounded-xl overflow-hidden cursor-pointer" data-story="dates">
+                    <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Nossos Dates" class="w-full h-full object-cover transition-opacity duration-300 opacity-0">
+                    <div class="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/80 to-transparent"></div>
+                    <p class="absolute bottom-3 left-3 font-bold text-sm">Nossos Dates</p>
+                </div>
+                <!-- Card 2: Fotos aleatórias -->
+                <div class="story-card relative h-48 rounded-xl overflow-hidden cursor-pointer" data-story="random">
+                    <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Fotos aleatórias" class="w-full h-full object-cover transition-opacity duration-300 opacity-0">
+                    <div class="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/80 to-transparent"></div>
+                    <p class="absolute bottom-3 left-3 font-bold text-sm">Fotos aleatórias</p>
+                </div>
+                <!-- Card 3: Primeira viagem -->
+                <div class="story-card relative h-48 rounded-xl overflow-hidden cursor-pointer" data-story="trip">
+                    <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Primeira viagem" class="w-full h-full object-cover transition-opacity duration-300 opacity-0">
+                    <div class="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/80 to-transparent"></div>
+                    <p class="absolute bottom-3 left-3 font-bold text-sm">Primeira viagem</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card Final VIP (Delay ajustado para 10) -->
+        <div class="fade-up delay-10 w-full bg-white border-2 border-[#dcc3f5] rounded-[32px] p-5 md:p-6 flex flex-col gap-6 mt-6 shadow-[0_8px_0_0_#f8f5ff]">
             <a href="#" id="editPageBtn" class="bg-gradient-to-r from-[#a874e4] to-[#cba4f1] text-white rounded-[20px] p-4 flex items-center gap-4 shadow-[0_4px_0_0_#8b5bc4] hover:-translate-y-1 hover:shadow-[0_6px_0_0_#8b5bc4] active:translate-y-[2px] active:shadow-none transition-all cursor-pointer">
                 <div class="bg-white/20 p-2 rounded-xl text-lg backdrop-blur-sm">👑</div>
                 <div class="flex flex-col text-left flex-1">
@@ -445,8 +483,8 @@
             </div>
         </div>
 
-        <!-- Rodapé Redes Sociais (Delay ajustado para 10) -->
-        <div class="fade-up delay-10 flex flex-col items-center gap-4 mt-6 mb-8">
+        <!-- Rodapé Redes Sociais (Delay ajustado para 11) -->
+        <div class="fade-up delay-11 flex flex-col items-center gap-4 mt-6 mb-8">
             <span class="text-[#8a8a9e] font-bold text-xs uppercase tracking-widest">Siga-nos</span>
             <div class="flex gap-4">
                 <a href="#" class="social-icon-link w-11 h-11 rounded-full bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-500 flex items-center justify-center text-white shadow-[0_4px_0_0_#f1f1f5] hover:-translate-y-1 active:translate-y-0 active:shadow-none transition-all">
@@ -467,6 +505,41 @@
         <audio id="bgMusic" preload="auto" loop src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
 
     </main>
+
+    <!-- MODAL DE STORIES -->
+    <div id="storyModal" class="fixed inset-0 z-[100] bg-black hidden flex-col">
+        <!-- Cabeçalho do Story -->
+        <div class="flex items-center justify-between p-4 text-white absolute top-0 left-0 right-0 z-10">
+            <button id="closeStoryBtn" type="button">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+            <h3 id="storyTitle" class="font-bold text-lg">Título do Story</h3>
+            <button type="button">
+                <i data-lucide="more-horizontal" class="w-6 h-6"></i>
+            </button>
+        </div>
+        <!-- Barra de Progresso (opcional, mas dá o toque de story) -->
+        <div class="absolute top-14 left-0 right-0 h-1 bg-gray-600">
+            <div id="storyProgressBar" class="h-full bg-white w-0 transition-all duration-[5000ms] ease-linear"></div>
+        </div>
+        <!-- Imagem do Story -->
+        <div class="flex-1 flex items-center justify-center">
+            <img id="storyImage" src="" alt="Story" class="max-h-full max-w-full object-contain">
+        </div>
+        <!-- Rodapé do Story (opcional, como no exemplo) -->
+        <div class="p-4 text-white flex items-center gap-3 absolute bottom-0 left-0 right-0 z-10 bg-gradient-to-t from-black/60 to-transparent">
+            <div class="w-10 h-10 rounded-lg overflow-hidden">
+                <img id="storySmallImage" src="" alt="Small" class="w-full h-full object-cover">
+            </div>
+            <div class="flex flex-col">
+                <span id="storyFooterTitle" class="font-bold text-sm">Título</span>
+                <span class="text-xs opacity-80">3 anos juntos</span>
+            </div>
+            <div class="ml-auto">
+                <i data-lucide="check-circle" class="w-6 h-6 text-white/80"></i>
+            </div>
+        </div>
+    </div>
 
     <div id="toast"></div>
 
@@ -637,6 +710,9 @@ function buildCardStack() {
         cardEls.push(div);
     });
 
+    // MUDANÇA: Atualiza as imagens dos stories com base nos cards carregados
+    updateStoryCardImages();
+
     updateCardPositions();
     setupDragHandlers();
     startCardAutoplay();
@@ -645,6 +721,28 @@ function buildCardStack() {
     setupDesktopPolaroids();
     // MUDANÇA: Atualiza o player com a primeira foto/cor
     updatePlayerDisplay();
+}
+
+// MUDANÇA: Nova função para atualizar as miniaturas dos cards de story
+function updateStoryCardImages() {
+    if (cards.length === 0) return;
+
+    const storyImages = {
+        'dates': cards[0].imageUrl,
+        'random': cards[Math.min(2, cards.length - 1)].imageUrl, // Tenta usar a 3ª foto, ou a última se tiver menos
+        'trip': cards[cards.length - 1].imageUrl
+    };
+
+    for (const [storyType, imageUrl] of Object.entries(storyImages)) {
+        const card = document.querySelector(`.story-card[data-story="${storyType}"]`);
+        if (card) {
+            const img = card.querySelector('img');
+            if (img) {
+                img.src = imageUrl;
+                img.onload = () => img.classList.remove('opacity-0'); // Mostra a imagem suavemente
+            }
+        }
+    }
 }
 
 function updateCardPositions() {
@@ -677,11 +775,17 @@ function updatePlayerDisplay() {
     if (!cards.length) return;
     const currentCard = cards[activeIndex];
     const playerContainer = document.getElementById('musicPlayerContainer');
+    const storiesSection = document.getElementById('storiesSection'); // Seleciona a seção de stories
     const playerImage = document.getElementById('musicAlbumArtLarge');
 
     if (playerContainer && currentCard.color) {
         playerContainer.style.backgroundColor = currentCard.color;
     }
+    // MUDANÇA: Atualiza a cor de fundo da seção de stories para combinar com o player
+    if (storiesSection && currentCard.color) {
+        storiesSection.style.backgroundColor = currentCard.color;
+    }
+
     if (playerImage && currentCard.imageUrl) {
         // Efeito de fade para a imagem
         playerImage.style.opacity = '0';
@@ -743,7 +847,7 @@ function setupDragHandlers() {
         window.removeEventListener('pointermove', onMove);
         window.removeEventListener('pointerup', onEnd);
         window.removeEventListener('pointercancel', onEnd);
-        window.removeEventListener('touchmove', blockTouchScroll);
+        window.addEventListener('touchmove', blockTouchScroll);
 
         const SWIPE_THRESHOLD = 50;
         if (dx < -SWIPE_THRESHOLD || velocity < -0.5) {
@@ -988,6 +1092,12 @@ function setupRevealGate() {
     let clicked = false;
     btn.addEventListener('click', () => {
         if (clicked) return;
+        
+        // MUDANÇA: Feedback tátil no mobile
+        if ('vibrate' in navigator) {
+            navigator.vibrate(200);
+        }
+
         clicked = true;
         textEl.innerText = 'Preparando...';
         setTimeout(flipCoin, 50);
@@ -1084,6 +1194,86 @@ function setupDesktopPolaroids() {
 }
 
 /* ============================================================
+   11) STORIES FUNCIONALIDADE (MUDANÇA: Agora usa as fotos dos cards principais)
+   ============================================================ */
+let storyTimeout;
+
+function setupStories() {
+    const modal = document.getElementById('storyModal');
+    const closeBtn = document.getElementById('closeStoryBtn');
+    const storyImage = document.getElementById('storyImage');
+    const storyTitle = document.getElementById('storyTitle');
+    const storyFooterTitle = document.getElementById('storyFooterTitle');
+    const storySmallImage = document.getElementById('storySmallImage');
+    const progressBar = document.getElementById('storyProgressBar');
+
+    document.querySelectorAll('.story-card').forEach(card => {
+        card.addEventListener('click', () => {
+            if (cards.length === 0) return;
+
+            const storyType = card.dataset.story;
+            let cardData;
+
+            // Mapeia o tipo de story para um card específico do array principal 'cards'
+            switch(storyType) {
+                case 'dates':
+                    cardData = cards[0]; // Primeira foto
+                    break;
+                case 'random':
+                    cardData = cards[Math.min(2, cards.length - 1)]; // Terceira foto (ou a última se houver menos)
+                    break;
+                case 'trip':
+                    cardData = cards[cards.length - 1]; // Última foto
+                    break;
+                default:
+                    cardData = cards[0];
+            }
+
+            if (!cardData) return;
+
+            // Usa os dados do card principal para preencher o modal do story
+            storyImage.src = cardData.imageUrl;
+            
+            // Pega o título da seção do próprio card clicado
+            const sectionTitle = card.querySelector('p.absolute.bottom-3').innerText;
+            storyTitle.innerText = sectionTitle;
+            storyFooterTitle.innerText = sectionTitle; // Título no rodapé
+            storySmallImage.src = cardData.imageUrl; // Usa a mesma imagem para o rodapé
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.style.overflow = 'hidden'; // Impede rolagem da página de fundo
+
+            // Reseta e inicia a barra de progresso
+            progressBar.style.width = '0%';
+            // Força um reflow para a transição funcionar
+            void progressBar.offsetWidth; 
+            progressBar.style.width = '100%';
+
+            clearTimeout(storyTimeout);
+            storyTimeout = setTimeout(() => {
+                closeStory();
+            }, 5000); // Fecha após 5 segundos
+        });
+    });
+
+    function closeStory() {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        document.body.style.overflow = ''; // Restaura a rolagem
+        clearTimeout(storyTimeout);
+        progressBar.style.width = '0%';
+    }
+
+    closeBtn.addEventListener('click', closeStory);
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal || e.target === storyImage) {
+            closeStory();
+        }
+    });
+}
+
+/* ============================================================
    10) INICIALIZAÇÃO
    ============================================================ */
 document.addEventListener('DOMContentLoaded', () => {
@@ -1096,6 +1286,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupMusicDefaults();
     setupMusicHandlers();
     setupShareHandlers();
+    setupStories(); // Inicializa a funcionalidade de stories
     document.getElementById('qrBtn').addEventListener('click', handleDownloadQR);
     setupRevealGate();
 });
