@@ -21,6 +21,7 @@
         input[type="date"]::-webkit-calendar-picker-indicator,
         input[type="time"]::-webkit-calendar-picker-indicator {
             opacity: 0; width: 100%; height: 100%; position: absolute; top: 0; left: 0; cursor: pointer;
+            box-sizing: border-box; margin: 0; padding: 0;
         }
 
         /* Animações nativas para substituir o tailwindcss-animate do React */
@@ -87,9 +88,8 @@
                 <div class="relative w-full max-w-[320px]">
                     <div class="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white rotate-45 border-t border-l border-gray-100 shadow-sm z-0"></div>
                     <div class="bg-white px-6 py-5 rounded-[20px] shadow-[0_4px_24px_-8px_rgba(0,0,0,0.06)] border border-gray-100 relative z-10 text-center min-h-[82px] flex items-center justify-center">
-                        <h2 class="text-[#4a4a5f] text-[15px] font-medium leading-snug">
-                            <span id="displayedText"></span>
-                            <span id="typingCursor" class="animate-pulse ml-0.5 text-[#a874e4]">|</span>
+                        <!-- O ID foi movido para o h2 para controlarmos todo o HTML interno via JS -->
+                        <h2 id="typewriterContainer" class="text-[#4a4a5f] text-[15px] font-medium leading-snug w-full">
                         </h2>
                     </div>
                 </div>
@@ -169,7 +169,8 @@
                         </label>
                         <div class="relative w-full">
                             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none"><i data-lucide="calendar" class="h-5 w-5 text-[#cba4f1]"></i></div>
-                            <input id="inputMeetDate" type="date" class="w-full text-[16px] font-medium text-[#5b4a78] bg-white border-2 border-gray-100 rounded-[20px] py-4 pl-12 pr-3 shadow-sm focus:outline-none focus:border-[#a874e4] focus:ring-4 focus:ring-[#f3e8ff] transition-all relative" />
+                            <!-- Adicionado max-w-full, min-w-0 e appearance-none para resolver o tamanho no mobile -->
+                            <input id="inputMeetDate" type="date" class="w-full max-w-full min-w-0 appearance-none text-[16px] font-medium text-[#5b4a78] bg-white border-2 border-gray-100 rounded-[20px] py-4 pl-12 pr-4 shadow-sm focus:outline-none focus:border-[#a874e4] focus:ring-4 focus:ring-[#f3e8ff] transition-all relative block" />
                         </div>
                     </div>
                     
@@ -180,7 +181,8 @@
                         </label>
                         <div class="relative w-full">
                             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none"><i data-lucide="clock" class="h-5 w-5 text-[#cba4f1]"></i></div>
-                            <input id="inputMeetTime" type="time" class="w-full text-[16px] font-medium text-[#5b4a78] bg-white border-2 border-gray-100 rounded-[20px] py-4 pl-12 pr-3 shadow-sm focus:outline-none focus:border-[#a874e4] focus:ring-4 focus:ring-[#f3e8ff] transition-all relative" />
+                            <!-- Adicionado max-w-full, min-w-0 e appearance-none para resolver o tamanho no mobile -->
+                            <input id="inputMeetTime" type="time" class="w-full max-w-full min-w-0 appearance-none text-[16px] font-medium text-[#5b4a78] bg-white border-2 border-gray-100 rounded-[20px] py-4 pl-12 pr-4 shadow-sm focus:outline-none focus:border-[#a874e4] focus:ring-4 focus:ring-[#f3e8ff] transition-all relative block" />
                         </div>
                     </div>
                     
@@ -191,38 +193,38 @@
                         </label>
                         <div class="relative w-full">
                             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none"><i data-lucide="map-pin" class="h-5 w-5 text-[#cba4f1]"></i></div>
-                            <input id="inputMeetCity" type="text" placeholder="Ex: Curitiba" class="w-full text-[16px] font-medium text-[#5b4a78] bg-white border-2 border-gray-100 rounded-[20px] py-4 pl-12 pr-3 shadow-sm focus:outline-none focus:border-[#a874e4] focus:ring-4 focus:ring-[#f3e8ff] transition-all placeholder:text-gray-300" />
+                            <input id="inputMeetCity" type="text" placeholder="Ex: Curitiba" class="w-full max-w-full min-w-0 appearance-none text-[16px] font-medium text-[#5b4a78] bg-white border-2 border-gray-100 rounded-[20px] py-4 pl-12 pr-4 shadow-sm focus:outline-none focus:border-[#a874e4] focus:ring-4 focus:ring-[#f3e8ff] transition-all relative block placeholder:text-gray-300" />
                         </div>
                     </div>
 
                     <!-- Relógio em Tempo Real -->
-                    <div id="timeContainer" class="hidden mt-4 bg-gradient-to-br from-[#f8f5ff] to-[#f3e8ff] rounded-[20px] p-5 border border-[#dcc3f5] shadow-sm animate-fade-up">
-                        <p class="text-center text-[13px] font-bold text-[#a874e4] uppercase tracking-widest mb-3">
+                    <div id="timeContainer" class="hidden mt-4 bg-gradient-to-br from-[#f8f5ff] to-[#f3e8ff] rounded-[20px] p-5 border border-[#dcc3f5] shadow-sm">
+                        <p class="text-center text-[13px] font-bold text-[#a874e4] uppercase tracking-widest mb-3 animate-fade-up">
                             Uau, vocês estão juntos há:
                         </p>
                         <div class="grid grid-cols-3 gap-2">
                             <div class="bg-white rounded-xl p-2 text-center shadow-sm">
-                                <span id="timeY" class="block text-xl font-bold text-[#5b4a78]">0</span>
+                                <span id="timeY" class="block text-xl font-bold text-[#5b4a78] animate-fade-up" style="animation-delay: 0.1s; animation-fill-mode: both;">0</span>
                                 <span class="text-[10px] text-[#8a8a9e] font-semibold uppercase">Anos</span>
                             </div>
                             <div class="bg-white rounded-xl p-2 text-center shadow-sm">
-                                <span id="timeM" class="block text-xl font-bold text-[#5b4a78]">0</span>
+                                <span id="timeM" class="block text-xl font-bold text-[#5b4a78] animate-fade-up" style="animation-delay: 0.2s; animation-fill-mode: both;">0</span>
                                 <span class="text-[10px] text-[#8a8a9e] font-semibold uppercase">Meses</span>
                             </div>
                             <div class="bg-white rounded-xl p-2 text-center shadow-sm">
-                                <span id="timeD" class="block text-xl font-bold text-[#5b4a78]">0</span>
+                                <span id="timeD" class="block text-xl font-bold text-[#5b4a78] animate-fade-up" style="animation-delay: 0.3s; animation-fill-mode: both;">0</span>
                                 <span class="text-[10px] text-[#8a8a9e] font-semibold uppercase">Dias</span>
                             </div>
                             <div class="bg-white rounded-xl p-2 text-center shadow-sm">
-                                <span id="timeH" class="block text-xl font-bold text-[#a874e4]">0</span>
+                                <span id="timeH" class="block text-xl font-bold text-[#a874e4] animate-fade-up" style="animation-delay: 0.4s; animation-fill-mode: both;">0</span>
                                 <span class="text-[10px] text-[#8a8a9e] font-semibold uppercase">Horas</span>
                             </div>
                             <div class="bg-white rounded-xl p-2 text-center shadow-sm">
-                                <span id="timeMin" class="block text-xl font-bold text-[#a874e4]">0</span>
+                                <span id="timeMin" class="block text-xl font-bold text-[#a874e4] animate-fade-up" style="animation-delay: 0.5s; animation-fill-mode: both;">0</span>
                                 <span class="text-[10px] text-[#8a8a9e] font-semibold uppercase">Min</span>
                             </div>
                             <div class="bg-white rounded-xl p-2 text-center shadow-sm">
-                                <span id="timeS" class="block text-xl font-bold text-[#a874e4]">0</span>
+                                <span id="timeS" class="block text-xl font-bold text-[#a874e4] animate-fade-up" style="animation-delay: 0.6s; animation-fill-mode: both;">0</span>
                                 <span class="text-[10px] text-[#8a8a9e] font-semibold uppercase">Seg</span>
                             </div>
                         </div>
@@ -353,7 +355,7 @@
             meetCity: '',
             title: '',
             message: '',
-            photoData: [], // Array de objetos {url, file, title, description}
+            photoData: [], 
             song: null
         };
         let isTyping = false;
@@ -405,26 +407,27 @@
             updateStepVisibility();
         });
 
-        // Efeito Máquina de Escrever
+        // Efeito Máquina de Escrever - Lógica ajustada para prevenir quebra de layout
         function startTypewriter() {
             clearInterval(typewriterTimer);
             const text = questions[currentStep];
-            const displayEl = document.getElementById('displayedText');
-            const cursorEl = document.getElementById('typingCursor');
+            const headerEl = document.getElementById('typewriterContainer');
             
-            displayEl.innerText = '';
-            cursorEl.classList.remove('hidden');
             isTyping = true;
             let i = 0;
 
             typewriterTimer = setInterval(() => {
-                if (i < text.length) {
-                    displayEl.innerText += text.charAt(i);
+                if (i <= text.length) {
+                    // Separa o texto digitado do texto invisível.
+                    // O texto invisível ocupa exatamente o mesmo espaço, evitando que a caixa do texto mude de tamanho no meio do processo!
+                    const visible = text.substring(0, i);
+                    const hidden = text.substring(i);
+                    headerEl.innerHTML = visible + '<span class="animate-pulse ml-0.5 text-[#a874e4]">|</span><span class="opacity-0">' + hidden + '</span>';
                     i++;
                 } else {
                     isTyping = false;
-                    cursorEl.classList.add('hidden');
                     clearInterval(typewriterTimer);
+                    headerEl.innerHTML = text; // Remove o cursor no final
                 }
             }, 40);
         }
@@ -448,8 +451,7 @@
         function handleNextStep() {
             // Limpa a animação de digitação ANTES de mudar de passo
             clearInterval(typewriterTimer);
-            document.getElementById('displayedText').innerText = ''; // Limpa o texto anterior
-            document.getElementById('typingCursor').classList.add('hidden');
+            document.getElementById('typewriterContainer').innerHTML = '';
 
             if (currentStep === 7) {
                 finishQuizAndGoToGift();
@@ -461,8 +463,7 @@
         document.getElementById('btnBack').addEventListener('click', () => {
             // Limpa a animação de digitação ANTES de mudar de passo
             clearInterval(typewriterTimer);
-            document.getElementById('displayedText').innerText = ''; // Limpa o texto anterior
-            document.getElementById('typingCursor').classList.add('hidden');
+            document.getElementById('typewriterContainer').innerHTML = '';
 
             if (currentStep > 1) {
                 currentStep--;
@@ -497,7 +498,7 @@
             const progressPercentage = ((currentStep - 1) / 6) * 100;
             document.getElementById('progressBar').style.width = `${progressPercentage}%`;
 
-            // Botão Voltar - Sempre habilitado agora, mas com comportamento diferente na page 1
+            // Botão Voltar
             const btnBack = document.getElementById('btnBack');
             btnBack.disabled = false;
 
@@ -562,7 +563,7 @@
             });
 
             // Step 7
-            document.getElementById('inputSearchSong').addEventListener('input', (e) => { searchQuery = e.target.value; }); // Somente salva estado, numa lib real faria filtro
+            document.getElementById('inputSearchSong').addEventListener('input', (e) => { searchQuery = e.target.value; });
 
             // Inicializa contador
             clockTimerId = setInterval(calculateTime, 1000);
@@ -574,7 +575,6 @@
                 answers.title = "Nosso amor escrito nas estrelas ✨";
                 const el = document.getElementById('inputTitle');
                 el.value = answers.title;
-                // Dispara o evento de input para atualizar contadores
                 el.dispatchEvent(new Event('input'));
             } else if (field === 'message') {
                 answers.message = "Desde o dia em que nossos caminhos se cruzaram, cada segundo ao seu lado se tornou a minha memória favorita. Você é a minha paz, minha maior aventura e o meu lugar seguro. Te amo mais a cada novo amanhecer! 💜";
@@ -683,10 +683,9 @@
             }
             subtitle.innerText = `${answers.photoData.length}/8 fotos selecionadas`;
 
-            // Atualiza Lista de Fotos com Inputs
+            // Atualiza Lista de Fotos
             if (answers.photoData.length > 0) {
                 grid.classList.remove('hidden');
-                // Mudança de grid para coluna única para acomodar inputs
                 grid.className = "flex flex-col gap-4 mt-4";
                 grid.innerHTML = answers.photoData.map((data, index) => `
                     <div class="bg-white rounded-[20px] p-3 border-2 border-gray-100 shadow-sm animate-fade-up relative">
@@ -695,13 +694,11 @@
                         </button>
 
                         <div class="flex gap-4">
-                            <!-- Thumbnail -->
                             <div class="relative w-24 h-24 rounded-[16px] overflow-hidden shrink-0 border border-gray-100">
                                 <img src="${data.url}" alt="Foto ${index + 1}" class="w-full h-full object-cover" />
                             </div>
 
-                            <!-- Inputs fields -->
-                            <div class="flex-1 flex flex-col gap-2 pr-8"> <!-- pr-8 to avoid overlap with delete button -->
+                            <div class="flex-1 flex flex-col gap-2 pr-8">
                                 <input
                                     type="text"
                                     placeholder="Título da foto (opcional)"
@@ -766,8 +763,6 @@
             validateStep();
         }
 
-        // Reduz o tamanho da foto (redimensiona + comprime) antes de salvar,
-        // para a imagem caber no armazenamento local do navegador.
         function compressImageFile(file, maxDim, quality) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -797,8 +792,6 @@
             });
         }
 
-        // Monta o "presente" final com as respostas do quiz e guarda no navegador
-        // para a página do presente (demo.html) ler e exibir.
         async function finishQuizAndGoToGift() {
             const btn = document.getElementById('btnNext');
             const btnText = document.getElementById('btnNextText');
@@ -815,12 +808,10 @@
                 title: answers.title,
                 message: answers.message,
                 song: answers.song,
-                photos: [], // Será preenchido abaixo
+                photos: [], 
                 createdAt: Date.now()
             };
 
-            // Tenta salvar em qualidade boa; se o navegador recusar por falta de espaço,
-            // tenta de novo com fotos menores, até conseguir salvar algo.
             const attempts = [
                 { maxDim: 1280, quality: 0.82 },
                 { maxDim: 900, quality: 0.72 },
@@ -830,14 +821,12 @@
             let saved = false;
             for (let i = 0; i < attempts.length && !saved; i++) {
                 try {
-                    // Comprime as imagens
                     const compressedUrls = await Promise.all(
                         answers.photoData.map(data => compressImageFile(data.file, attempts[i].maxDim, attempts[i].quality))
                     );
 
-                    // Combina as URLs comprimidas de volta com seus metadados (título/descrição)
                     giftData.photos = answers.photoData.map((data, index) => ({
-                        url: compressedUrls[index], // A nova URL base64
+                        url: compressedUrls[index], 
                         title: data.title,
                         description: data.description
                     }));
@@ -851,7 +840,6 @@
             }
 
             if (!saved) {
-                // Último recurso: salva sem fotos, para o resto do presente não se perder.
                 try {
                     giftData.photos = [];
                     localStorage.setItem('lontra_gift_data', JSON.stringify(giftData));
@@ -889,7 +877,7 @@
                     </button>
                 `;
             }).join('');
-            lucide.createIcons(); // Atualiza ícones gerados dinamicamente
+            lucide.createIcons();
         }
     </script>
 </body>
