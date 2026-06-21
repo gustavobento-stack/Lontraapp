@@ -167,7 +167,7 @@
                             <span>Data que se conheceram</span>
                             <span class="text-red-400 text-[10px] uppercase tracking-wider">Obrigatório</span>
                         </label>
-                        <div class="relative">
+                        <div class="relative w-full">
                             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none"><i data-lucide="calendar" class="h-5 w-5 text-[#cba4f1]"></i></div>
                             <input id="inputMeetDate" type="date" class="w-full text-[16px] font-medium text-[#5b4a78] bg-white border-2 border-gray-100 rounded-[20px] py-4 pl-12 pr-3 shadow-sm focus:outline-none focus:border-[#a874e4] focus:ring-4 focus:ring-[#f3e8ff] transition-all relative" />
                         </div>
@@ -178,7 +178,7 @@
                             <span>Hora</span>
                             <span class="text-gray-300 text-[10px] uppercase tracking-wider">Opcional</span>
                         </label>
-                        <div class="relative">
+                        <div class="relative w-full">
                             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none"><i data-lucide="clock" class="h-5 w-5 text-[#cba4f1]"></i></div>
                             <input id="inputMeetTime" type="time" class="w-full text-[16px] font-medium text-[#5b4a78] bg-white border-2 border-gray-100 rounded-[20px] py-4 pl-12 pr-3 shadow-sm focus:outline-none focus:border-[#a874e4] focus:ring-4 focus:ring-[#f3e8ff] transition-all relative" />
                         </div>
@@ -189,7 +189,7 @@
                             <span>Cidade</span>
                             <span class="text-gray-300 text-[10px] uppercase tracking-wider">Opcional</span>
                         </label>
-                        <div class="relative">
+                        <div class="relative w-full">
                             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none"><i data-lucide="map-pin" class="h-5 w-5 text-[#cba4f1]"></i></div>
                             <input id="inputMeetCity" type="text" placeholder="Ex: Curitiba" class="w-full text-[16px] font-medium text-[#5b4a78] bg-white border-2 border-gray-100 rounded-[20px] py-4 pl-12 pr-3 shadow-sm focus:outline-none focus:border-[#a874e4] focus:ring-4 focus:ring-[#f3e8ff] transition-all placeholder:text-gray-300" />
                         </div>
@@ -437,14 +437,18 @@
             if (currentStep < 7) {
                 currentStep++;
                 updateStepVisibility();
-                startTypewriter();
+                // Inicia a animação apenas se não for o último passo
+                if (currentStep !== 7) {
+                    startTypewriter();
+                }
                 validateStep();
             }
         }
 
         function handleNextStep() {
-            // Limpa a animação de digitação antes de mudar de passo
+            // Limpa a animação de digitação ANTES de mudar de passo
             clearInterval(typewriterTimer);
+            document.getElementById('displayedText').innerText = ''; // Limpa o texto anterior
             document.getElementById('typingCursor').classList.add('hidden');
 
             if (currentStep === 7) {
@@ -455,8 +459,9 @@
         }
 
         document.getElementById('btnBack').addEventListener('click', () => {
-            // Limpa a animação de digitação antes de mudar de passo
+            // Limpa a animação de digitação ANTES de mudar de passo
             clearInterval(typewriterTimer);
+            document.getElementById('displayedText').innerText = ''; // Limpa o texto anterior
             document.getElementById('typingCursor').classList.add('hidden');
 
             if (currentStep > 1) {
