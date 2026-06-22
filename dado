@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verdade ou Desafio Picante</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fonte Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        html, body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #faf9fc;
+            color: #4a4a5f;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Animação do cursor piscando */
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        .animate-blink {
+            animation: blink 1s step-end infinite;
+        }
+
+        /* Animação para surgimento de elementos */
+        @keyframes fadeInUp {
+            0% { opacity: 0; transform: translateY(20px) scale(0.95); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .animate-fade-in-up {
+            animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* Classes para o Dado 3D */
+        .perspective-1000 { perspective: 1000px; }
+        .transform-style-3d { 
+            transform-style: preserve-3d; 
+            transition: transform 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+        }
+        .dice-face {
+            position: absolute; width: 100%; height: 100%;
+            background: #f8f5ff; border: 5px solid #dcc3f5;
+            border-radius: 24px; display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); padding: 12px; gap: 4px;
+            box-shadow: inset 0 0 15px rgba(168,116,228,0.1);
+            transition: background 0.3s, border-color 0.3s;
+        }
+        .dice-face .dot { background: #a874e4; border-radius: 50%; width: 100%; height: 100%; transition: background 0.3s; }
+        
+        .face-1 { transform: translateZ(56px); }
+        .face-2 { transform: rotateY(90deg) translateZ(56px); }
+        .face-3 { transform: rotateY(180deg) translateZ(56px); }
+        .face-4 { transform: rotateY(-90deg) translateZ(56px); }
+        .face-5 { transform: rotateX(90deg) translateZ(56px); }
+        .face-6 { transform: rotateX(-90deg) translateZ(56px); }
+
+        /* Flutuação dos corações no fundo */
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(5deg); }
+        }
+        .animate-float {
+            animation: float 4s ease-in-out infinite;
+        }
+        .animate-float-delayed {
+            animation: float 5s ease-in-out infinite;
+            animation-delay: 2s;
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col items-center justify-center relative p-4 py-8">
+
+    <!-- Decorações de Fundo -->
+    <svg class="absolute top-[10%] left-[5%] w-16 h-16 text-[#dcc3f5] fill-current animate-float opacity-60 z-0" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+    <svg class="absolute bottom-[10%] right-[5%] w-20 h-20 text-[#a874e4] fill-current animate-float-delayed opacity-40 z-0 transform rotate-12" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+
+    <!-- Header / Logo Lontra -->
+    <header class="relative z-10 flex flex-col items-center mb-6 md:mb-8 animate-fade-in-up">
+        <a href="#" class="flex items-center gap-2.5 group">
+            <div class="w-12 h-12 rounded-2xl bg-white border-2 border-[#dcc3f5] flex items-center justify-center shadow-[0_4px_0_0_#f1f1f5] group-hover:-translate-y-1 group-hover:border-[#a874e4] group-hover:shadow-[0_4px_0_0_#dcc3f5] transition-all p-1.5">
+                <img src="https://i.imgur.com/sTgAwVX.png" alt="Lontra Logo" class="w-full h-full object-contain">
+            </div>
+            <span class="text-[#4a4a5f] text-3xl font-black tracking-tight group-hover:text-[#a874e4] transition-colors">Lontra</span>
+        </a>
+    </header>
+
+    <!-- Card Principal do Jogo -->
+    <main class="bg-white border-2 border-gray-100 rounded-[32px] w-full max-w-md shadow-[0_12px_0_0_#f1f1f5] p-8 md:p-10 relative z-10 flex flex-col items-center text-center transition-all duration-300">
+        
+        <!-- Tag Superior -->
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#f8f5ff] border-2 border-[#dcc3f5] text-[#a874e4] font-bold text-[11px] uppercase tracking-widest mb-6 shadow-[0_2px_0_0_#f1f1f5]">
+            <span class="text-base">🔥</span>
+            <span>Joguinho de Casal</span>
+        </div>
+
+        <!-- Títulos -->
+        <h1 class="text-[32px] md:text-[38px] font-black text-[#4a4a5f] leading-tight mb-2 tracking-tight">
+            Verdade ou <br> <span class="text-[#a874e4]">Desafio</span>
+        </h1>
+        <p class="text-[14px] font-medium text-[#8a8a9e] mb-8 leading-relaxed max-w-[280px]">
+            Toque para girar o dado. <br>
+            <span class="text-[#22c55e] font-bold">Verde</span> é Verdade, <span class="text-[#ef4444] font-bold">Vermelho</span> é Desafio!
+        </p>
+
+        <!-- Área do Dado 3D -->
+        <div class="relative w-full flex justify-center mb-6 perspective-1000">
+            <div id="dice-container" class="w-28 h-28 transform-style-3d cursor-pointer active:scale-95" onclick="rollDice()" title="Clique para rolar" style="transform: rotateX(-15deg) rotateY(15deg);">
+                
+                <!-- Face 1 -->
+                <div class="dice-face face-1">
+                    <div></div><div></div><div></div>
+                    <div></div><div class="dot"></div><div></div>
+                    <div></div><div></div><div></div>
+                </div>
+                <!-- Face 2 -->
+                <div class="dice-face face-2">
+                    <div></div><div></div><div class="dot"></div>
+                    <div></div><div></div><div></div>
+                    <div class="dot"></div><div></div><div></div>
+                </div>
+                <!-- Face 3 -->
+                <div class="dice-face face-3">
+                    <div></div><div></div><div class="dot"></div>
+                    <div></div><div class="dot"></div><div></div>
+                    <div class="dot"></div><div></div><div></div>
+                </div>
+                <!-- Face 4 -->
+                <div class="dice-face face-4">
+                    <div class="dot"></div><div></div><div class="dot"></div>
+                    <div></div><div></div><div></div>
+                    <div class="dot"></div><div></div><div class="dot"></div>
+                </div>
+                <!-- Face 5 -->
+                <div class="dice-face face-5">
+                    <div class="dot"></div><div></div><div class="dot"></div>
+                    <div></div><div class="dot"></div><div></div>
+                    <div class="dot"></div><div></div><div class="dot"></div>
+                </div>
+                <!-- Face 6 -->
+                <div class="dice-face face-6">
+                    <div class="dot"></div><div></div><div class="dot"></div>
+                    <div class="dot"></div><div></div><div class="dot"></div>
+                    <div class="dot"></div><div></div><div class="dot"></div>
+                </div>
+            </div>
+        </div>
+
+        <p id="instruction" class="text-[13px] font-bold text-[#b4b4c4] tracking-wide uppercase mb-3">Clique no dado ou no botão</p>
+
+        <!-- Botão Girar Dado -->
+        <button id="spin-btn" onclick="rollDice()" class="mb-4 bg-[#a874e4] text-white font-bold text-[16px] px-8 py-3.5 rounded-2xl shadow-[0_4px_0_0_#8b5bc4] hover:bg-[#9760d6] active:translate-y-[4px] active:shadow-none transition-all flex items-center gap-2 mx-auto disabled:opacity-70 disabled:cursor-not-allowed">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"></path>
+                <path d="M21 3v5h-5"></path>
+            </svg>
+            Girar Dado
+        </button>
+
+        <!-- Área de Resultado (Oculta inicialmente) -->
+        <div id="result-container" class="hidden w-full flex-col items-center mt-2">
+            <div id="result-badge" class="px-4 py-1.5 rounded-full text-[12px] font-black uppercase tracking-widest mb-4">
+                <!-- Tipo inserido via JS -->
+            </div>
+            
+            <div class="bg-[#faf9fc] border-2 border-gray-100 rounded-[20px] p-6 w-full relative">
+                <!-- Aspas decorativas -->
+                <div class="absolute -top-3 -left-3 w-8 h-8 bg-white border-2 border-gray-100 rounded-full flex items-center justify-center text-[#dcc3f5] font-black text-xl leading-none">"</div>
+                <p id="result-text" class="text-[15px] md:text-[16px] font-bold text-[#5b4a78] leading-relaxed">
+                    <!-- Texto inserido via JS -->
+                </p>
+            </div>
+
+            <!-- Botão Já Cumpri -->
+            <button onclick="resetGame()" class="mt-5 w-full bg-[#f6f5f8] border-2 border-gray-100 text-[#8a8a9e] font-bold text-[15px] py-3.5 rounded-2xl hover:bg-[#ebe8f0] hover:text-[#4a4a5f] transition-all duration-200 active:scale-95 flex items-center justify-center gap-2 shadow-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                Já Cumpri
+            </button>
+        </div>
+
+    </main>
+
+    <!-- Rodapé Lontra -->
+    <footer class="relative z-10 mt-8 md:mt-10 animate-fade-in-up" style="animation-delay: 0.2s; animation-fill-mode: both;">
+        <p class="text-[#8a8a9e] text-[13px] md:text-sm font-semibold flex items-center justify-center gap-1.5">
+            Criado por <a href="#" class="text-[#a874e4] font-black hover:text-[#9760d6] transition-colors tracking-wide ml-0.5 flex items-center gap-1.5">Lontra <img src="https://i.imgur.com/sTgAwVX.png" alt="Lontra" class="w-4 h-4 object-contain"></a>
+        </p>
+    </footer>
+
+    <script>
+        // Banco de perguntas (exatamente 6 opções - associadas às faces do dado 1 a 6)
+        const verdades = [
+            "Qual é a sua fantasia mais secreta que nunca teve coragem de me contar?",
+            "Qual foi o lugar mais inusitado que você já teve vontade de transar comigo?",
+            "O que eu faço (até sem intenção) que mais te deixa completamente excitado(a)?",
+            "Qual roupa minha ou lingerie você acha mais provocante e por quê?",
+            "Tem algum fetiche novo que você gostaria de experimentar essa noite?",
+            "Qual foi a vez em que você sentiu mais tesão em mim em um lugar público?"
+        ];
+
+        // Banco de desafios (exatamente 6 opções - associadas às faces do dado 1 a 6)
+        const desafios = [
+            "Dê um beijo de cinema em mim por 1 minuto, com direito a muita mão boba.",
+            "Tire uma peça de roupa minha usando apenas os dentes (sem usar as mãos!).",
+            "Faça uma massagem provocante em mim por 2 minutos, descendo até onde achar que deve...",
+            "Sussurre no meu ouvido, bem de perto, exatamente o que você quer fazer comigo mais tarde.",
+            "Feche meus olhos e passe gelo (ou algo gelado/quente) em 3 partes do meu corpo à sua escolha.",
+            "Fique no controle absoluto: você escolhe o que fazer comigo pelos próximos 3 minutos."
+        ];
+
+        let isRolling = false;
+        let currentRotX = 0;
+        let currentRotY = 0;
+
+        function rollDice() {
+            if(isRolling) return;
+            isRolling = true;
+            
+            const spinBtn = document.getElementById('spin-btn');
+            if(spinBtn) {
+                spinBtn.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="animate-spin">
+                        <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"></path>
+                        <path d="M21 3v5h-5"></path>
+                    </svg>
+                    Girando...
+                `;
+                spinBtn.disabled = true;
+            }
+
+            const diceContainer = document.getElementById('dice-container');
+            const resultEl = document.getElementById('result-container');
+            const instructionEl = document.getElementById('instruction');
+            const resultText = document.getElementById('result-text');
+            const resultBadge = document.getElementById('result-badge');
+
+            // Esconder resultado anterior
+            resultEl.classList.add('hidden');
+            resultEl.classList.remove('animate-fade-in-up');
+            instructionEl.classList.add('hidden');
+            
+            // Resetar cores para o giro
+            resetDiceColors();
+
+            // GERADOR DE LÓGICA
+            // 1. Número do dado (1 a 6)
+            const num = Math.floor(Math.random() * 6) + 1;
+            
+            // 2. Cor do dado (50% de chance de ser Verde/Verdade ou Vermelho/Desafio independente do número)
+            const isVerdade = Math.random() < 0.5;
+            
+            // Base para manter o dado girando (sempre adicionando múltiplas voltas)
+            const baseSpins = Math.floor(currentRotX / 360) * 360 + 1080; // Pelo menos 3 giros completos
+            let finalX = baseSpins;
+            let finalY = baseSpins;
+
+            // Ajustar a rotação final de acordo com a face sorteada (num)
+            switch(num) {
+                case 1: finalX += 0;   finalY += 0;   break;
+                case 2: finalX += 0;   finalY -= 90;  break;
+                case 3: finalX += 0;   finalY -= 180; break;
+                case 4: finalX += 0;   finalY += 90;  break;
+                case 5: finalX -= 90;  finalY += 0;   break;
+                case 6: finalX += 90;  finalY += 0;   break;
+            }
+
+            // Aplicar o giro
+            diceContainer.style.transform = `rotateX(${finalX}deg) rotateY(${finalY}deg)`;
+            
+            // Salvar para o próximo giro
+            currentRotX = finalX;
+            currentRotY = finalY;
+
+            // Tempo de duração da animação (1.2s igual ao CSS transition)
+            setTimeout(() => {
+                
+                // Colorir os dados de Verde ou Vermelho baseado na variável isVerdade (independente do número)
+                applyDiceColors(isVerdade);
+                
+                if(isVerdade) {
+                    resultBadge.textContent = `Verdade #${num}`;
+                    resultBadge.className = "px-5 py-1.5 rounded-full text-[13px] font-black uppercase tracking-widest mb-4 bg-[#f0fdf4] text-[#16a34a] border-2 border-[#4ade80]";
+                    
+                    // Mostra o texto exato equivalente à face que caiu
+                    resultText.textContent = verdades[num - 1];
+                } else {
+                    resultBadge.textContent = `Desafio #${num}`;
+                    resultBadge.className = "px-5 py-1.5 rounded-full text-[13px] font-black uppercase tracking-widest mb-4 bg-[#fef2f2] text-[#dc2626] border-2 border-[#f87171]";
+                    
+                    // Mostra o texto exato equivalente à face que caiu
+                    resultText.textContent = desafios[num - 1];
+                }
+
+                // Mostrar o resultado
+                resultEl.classList.remove('hidden');
+                resultEl.classList.add('flex', 'animate-fade-in-up');
+                
+                if(spinBtn) {
+                    spinBtn.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"></path>
+                            <path d="M21 3v5h-5"></path>
+                        </svg>
+                        Girar de novo
+                    `;
+                    spinBtn.disabled = false;
+                }
+
+                isRolling = false;
+            }, 1200); 
+        }
+
+        function resetDiceColors() {
+            const faces = document.querySelectorAll('.dice-face');
+            const dots = document.querySelectorAll('.dot');
+            faces.forEach(f => { f.style.backgroundColor = '#f8f5ff'; f.style.borderColor = '#dcc3f5'; });
+            dots.forEach(d => { d.style.backgroundColor = '#a874e4'; });
+        }
+
+        function applyDiceColors(isVerdade) {
+            const faces = document.querySelectorAll('.dice-face');
+            const dots = document.querySelectorAll('.dot');
+            if (isVerdade) {
+                faces.forEach(f => { f.style.backgroundColor = '#f0fdf4'; f.style.borderColor = '#4ade80'; });
+                dots.forEach(d => { d.style.backgroundColor = '#16a34a'; });
+            } else {
+                faces.forEach(f => { f.style.backgroundColor = '#fef2f2'; f.style.borderColor = '#f87171'; });
+                dots.forEach(d => { d.style.backgroundColor = '#dc2626'; });
+            }
+        }
+
+        function resetGame() {
+            if(isRolling) return;
+            
+            const resultEl = document.getElementById('result-container');
+            const instructionEl = document.getElementById('instruction');
+            const diceContainer = document.getElementById('dice-container');
+            const spinBtn = document.getElementById('spin-btn');
+            
+            // Ocultar resultados
+            resultEl.classList.add('hidden');
+            resultEl.classList.remove('animate-fade-in-up');
+            instructionEl.classList.remove('hidden');
+            
+            if(spinBtn) {
+                spinBtn.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"></path>
+                        <path d="M21 3v5h-5"></path>
+                    </svg>
+                    Girar Dado
+                `;
+            }
+            
+            // Voltar para a cor padrão e colocar em uma posição "neutra"
+            resetDiceColors();
+            
+            // Dá um leve giro pra trás para simular que está pronto para outra rodada
+            currentRotX -= 15;
+            currentRotY += 15;
+            diceContainer.style.transform = `rotateX(${currentRotX}deg) rotateY(${currentRotY}deg)`;
+        }
+    </script>
+</body>
+</html>
